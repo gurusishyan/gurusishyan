@@ -1,5 +1,5 @@
 {
-  "npmScope": "gurushishiyan",
+  "npmScope": "gurusishyan",
   "implicitDependencies": {
     "workspace.json": "*",
     "package.json": {
