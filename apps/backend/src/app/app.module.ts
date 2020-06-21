@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm'
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm'
-import { VibeEntity } from '../entities/vibes/vibes.entity';
-import { ImploreEntity } from '../entities/implore/implore.entity';
-import { UserEntity } from '../entities/user/user.entity';
+import { ImploreModule } from './implore/implore.module';
+import { ImploreEntity, VibeEntity, UserEntity } from '../entities';
+import { VibeModule } from './vibe/vibe.module';
+
 @Module({
   imports: [TypeOrmModule.forRoot({
     "type":"postgres",
@@ -15,8 +16,9 @@ import { UserEntity } from '../entities/user/user.entity';
     "password":process.env.DB_PASSWORD,
     "database":process.env.DATABASE_NAME,
     "synchronize":true,
-    "logging":true
-})],
+    "logging":false,
+    entities:[ImploreEntity,VibeEntity,UserEntity]
+}), ImploreModule, VibeModule],
   controllers: [AppController],
   providers: [AppService],
 })
