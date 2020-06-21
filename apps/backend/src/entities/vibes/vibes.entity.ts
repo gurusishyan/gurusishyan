@@ -8,7 +8,8 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
-import { ImploreEntity, IMetadata } from '../implore/implore.entity';
+import { ImploreEntity } from '../implore/implore.entity';
+import { IMetadata } from '../metadata/metadata.class';
 
 @Entity({ name: 'vibe' })
 export class VibeEntity {
@@ -25,7 +26,7 @@ export class VibeEntity {
   @JoinColumn({name:'associated_implore'})
   associated_implore: string;
 
-  @Column('enum', { name: 'vibe_type', enum: {"ANSWER":"ANSWER","NOTES":"NOTES  "} })
+  @Column('enum', { name: 'vibe_type', enum: {"ANSWER":"ANSWER","NOTES":"NOTES"} })
   vibe_type: string;
 
   @Column('jsonb', { name: 'metadata' }) metadata: IMetadata;

@@ -10,18 +10,9 @@ import {
 } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 import { VibeEntity } from '../vibes/vibes.entity';
+import { IMetadata } from '../metadata/metadata.class';
 
-export class IMetadata {
-  class_of_study: string;
-  subject_interested: string;
-  board_of_education: string;
-  lesson_on_subject: string;
-  additional_notes: string;
-  document_attached: boolean;
-  document_url: string;
-  upvotes: number;
-  downvotes: number;
-}
+
 
 @Entity({ name: 'implore' })
 export class ImploreEntity {
