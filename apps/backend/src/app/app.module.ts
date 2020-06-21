@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { ImploreModule } from './implore/implore.module';
 import { ImploreEntity, VibeEntity, UserEntity } from '../entities';
 import { VibeModule } from './vibe/vibe.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -18,7 +19,7 @@ import { VibeModule } from './vibe/vibe.module';
     "synchronize":true,
     "logging":false,
     entities:[ImploreEntity,VibeEntity,UserEntity]
-}), ImploreModule, VibeModule],
+}), ImploreModule, VibeModule, UserModule],
   controllers: [AppController],
   providers: [AppService],
 })
