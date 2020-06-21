@@ -13,20 +13,25 @@ import { IMetadata } from '../metadata/metadata.class';
 
 @Entity({ name: 'vibe' })
 export class VibeEntity {
-  @PrimaryGeneratedColumn('uuid') vibe_id: string;
+  @PrimaryGeneratedColumn('uuid', { name: 'vibe_id' }) vibe_id: string;
 
-  @CreateDateColumn() created: Date;
+  @CreateDateColumn({ name: 'created' }) created: Date;
 
-  @OneToOne((type) => UserEntity, (user) => user.user_id) vibe_by: UserEntity;
+  @OneToOne((type) => UserEntity, (user) => user.user_id)
+  @JoinColumn({ name: 'vibe_by' })
+  vibe_by: UserEntity;
 
   @Column('boolean', { name: 'vibe_as_anonymous', default: false })
   vibe_as_anonymous: Boolean;
 
   @OneToOne((type) => ImploreEntity, (implore) => implore.implore_id)
-  @JoinColumn({name:'associated_implore'})
+  @JoinColumn({ name: 'associated_implore' })
   associated_implore: string;
 
-  @Column('enum', { name: 'vibe_type', enum: {"ANSWER":"ANSWER","NOTES":"NOTES"} })
+  @Column('enum', {
+    name: 'vibe_type',
+    enum: { ANSWER: 'ANSWER', NOTES: 'NOTES' },
+  })
   vibe_type: string;
 
   @Column('jsonb', { name: 'metadata' }) metadata: IMetadata;

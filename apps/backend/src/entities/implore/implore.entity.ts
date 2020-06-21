@@ -16,11 +16,12 @@ import { IMetadata } from '../metadata/metadata.class';
 
 @Entity({ name: 'implore' })
 export class ImploreEntity {
-  @PrimaryGeneratedColumn('uuid') implore_id: string;
+  @PrimaryGeneratedColumn('uuid',{name:'implore_id'}) implore_id: string;
 
-  @CreateDateColumn() created: Date;
+  @CreateDateColumn({name:'created'}) created: Date;
 
   @OneToOne((type) => UserEntity, (user) => user.user_id)
+  @JoinColumn({name:"implore_by"})
   implore_by: UserEntity;
 
   @Column('boolean', { name: 'implore_as_anonymous', default: false })
