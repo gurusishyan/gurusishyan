@@ -16,7 +16,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@gurusishyan-logger": ["apps/backend/src/logger"]
+      "@gurusishyan-logger": ["apps/backend/src/logger"],
+      "@gurusishyan-config":["apps/backend/src/config"]
     }
   },
   "exclude": ["node_modules", "tmp"]

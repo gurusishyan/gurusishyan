@@ -1,16 +1,14 @@
 import * as winston from 'winston';
 import * as fs from 'fs';
-import * as path from 'path';
-const { combine, timestamp, label, prettyPrint } = winston.format;
+const { combine } = winston.format;
 const logDir = 'logs';
 
 if (!fs.existsSync(logDir)) {
   fs.mkdirSync(logDir);
 }
 const logFormat = winston.format.printf((info) => {
-  return `${info.timeStamp} ${info.level} [${info.labels}]: ${info.message}`;
+  return `${info.timeStamp} ${info.level} [${info.label}]: ${info.message}`;
 });
-const labels = 'GurusishyanLogger';
 const timeStamp = () => {
   const dateObj = new Date();
 
@@ -22,13 +20,12 @@ const timeStamp = () => {
   const mm = dateObj.getMinutes();
   const ss = dateObj.getSeconds();
 
-  return `${dateObj.getFullYear()}-${month <= 9 ? '0':''}${month}-${
-    date <= 9 ? '0':''
-  }${date} ${hh <= 9 ? '0':''}${hh}:${mm <= 9 ? '0':''}${mm}:${
-    ss <= 9 ? '0':''
+  return `${year}-${month <= 9 ? '0' : ''}${month}-${
+    date <= 9 ? '0' : ''
+  }${date} ${hh <= 9 ? '0' : ''}${hh}:${mm <= 9 ? '0' : ''}${mm}:${
+    ss <= 9 ? '0' : ''
   }${ss}`;
 };
-const now = new Date();
 var logger = winston.createLogger({
   transports: [
     new winston.transports.File({
@@ -42,13 +39,22 @@ var logger = winston.createLogger({
 export const loggerInstance = {
   log: function (
     message,
-    level?: 'error' | 'warn' | 'info' | 'verbose' | 'debug' | 'silly'
+    level?: 'error' | 'warn' | 'info' | 'verbose' | 'debug' | 'silly',
+    label?: string
   ) {
     if (level) {
-      logger.log(level, message, { timeStamp: timeStamp(), level, labels });
+      logger.log(level, message, {
+        timeStamp: timeStamp(),
+        level,
+        label: label || 'GurusishyanLogger',
+      });
     } else {
-      logger.log('info', message, { timeStamp: timeStamp(), level, labels });
+      logger.log('info', message, {
+        timeStamp: timeStamp(),
+        level,
+        label: label || 'GurusishyanLogger',
+      });
     }
-    return
+    return;
   },
 };

@@ -16,7 +16,7 @@ async function bootstrap() {
   const host = process.env.HOST || '0.0.0.0'
   const protocol = process.env.API_PROTOCOL || 'http'
   await app.listen(port, host,() => {
-    Logger.log('Listening at http://localhost:' + port + '/' + globalPrefix+"\n",'Bootstrap',false);
+    Logger.log(`Gurusishyan server running at ${protocol}://${host}:${port}/${globalPrefix}\n`,'BootstrapModule',false);
     loggerInstance.log(`Nest App Initialized and successfully running at ${protocol}://${host}:${port}/${globalPrefix}`)
   });
 }

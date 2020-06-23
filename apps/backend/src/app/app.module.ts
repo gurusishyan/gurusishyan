@@ -19,8 +19,9 @@ import {
   UserEntity,
   StaticDataEntity,
 } from '../entities';
-import * as winston from 'winston'
+
 import { LoggerInterceptor } from './shared/interceptors/logger/logger.interceptor';
+import { StaticDataModule } from './static_data/static-data.module';
 @Module({
   imports: [
    
@@ -35,10 +36,11 @@ import { LoggerInterceptor } from './shared/interceptors/logger/logger.intercept
       logging: false,
       entities: [ImploreEntity, VibeEntity, UserEntity, StaticDataEntity],
     }),
-    ImploreModule,
     VibeModule,
+    ImploreModule,
     UserModule,
     SharedModule,
+    StaticDataModule
   ],
   controllers: [AppController],
   providers: [

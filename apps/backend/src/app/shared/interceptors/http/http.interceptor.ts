@@ -30,7 +30,6 @@ export class HttpInterceptor implements NestInterceptor {
           };
         } else {
          loggerInstance.log(`${method} ${res.statusCode} ${url} - Success`,"info")
-
           return {
             code: res.statusCode,
             payload: data,
