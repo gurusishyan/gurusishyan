@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 import { VibeEntity } from '../vibes/vibes.entity';
-import { IMetadata } from '../metadata/metadata.class';
+import { MetadataDTO } from '../metadata/metadata.class';
 
 
 
@@ -18,7 +18,7 @@ import { IMetadata } from '../metadata/metadata.class';
 export class ImploreEntity {
   @PrimaryGeneratedColumn('uuid',{name:'implore_id'}) implore_id: string;
 
-  @CreateDateColumn({name:'created'}) created: Date;
+  @CreateDateColumn({name:'created'}) created: string;
 
   @OneToOne((type) => UserEntity, (user) => user.user_id)
   @JoinColumn({name:"implore_by"})
@@ -27,12 +27,12 @@ export class ImploreEntity {
   @Column('boolean', { name: 'implore_as_anonymous', default: false })
   implore_as_anonymous: Boolean;
 
-  @ManyToOne((type) => VibeEntity, (vibe) => vibe)
+  @OneToMany((type) => VibeEntity, (vibe) => vibe.vibe_id)
   @JoinColumn({name:'associated_vibe'})
   associated_vibe: Array<VibeEntity>;
 
   @Column('enum', { name: 'implore_type', enum: ['QUESTION,NOTES'] })
   implore_type: string;
 
-  @Column('jsonb', { name: 'metadata' }) metadata: IMetadata;
+  @Column('jsonb', { name: 'metadata' }) metadata: MetadataDTO;
 }
