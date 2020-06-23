@@ -9,10 +9,11 @@ import {
 } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 import { ImploreEntity } from '../implore/implore.entity';
-import { IMetadata } from '../metadata/metadata.class';
+import { MetadataDTO } from '../metadata/metadata.class';
 
 @Entity({ name: 'vibe' })
 export class VibeEntity {
+  constructor(){}
   @PrimaryGeneratedColumn('uuid', { name: 'vibe_id' }) vibe_id: string;
 
   @CreateDateColumn({ name: 'created' }) created: Date;
@@ -26,7 +27,7 @@ export class VibeEntity {
 
   @OneToOne((type) => ImploreEntity, (implore) => implore.implore_id)
   @JoinColumn({ name: 'associated_implore' })
-  associated_implore: string;
+  associated_implore: ImploreEntity;
 
   @Column('enum', {
     name: 'vibe_type',
@@ -34,5 +35,5 @@ export class VibeEntity {
   })
   vibe_type: string;
 
-  @Column('jsonb', { name: 'metadata' }) metadata: IMetadata;
+  @Column('jsonb', { name: 'metadata' }) metadata: MetadataDTO;
 }
