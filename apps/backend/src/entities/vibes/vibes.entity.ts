@@ -13,10 +13,14 @@ import { MetadataDTO } from '../metadata/metadata.class';
 
 @Entity({ name: 'vibe' })
 export class VibeEntity {
-  constructor(){}
+  constructor() {}
   @PrimaryGeneratedColumn('uuid', { name: 'vibe_id' }) vibe_id: string;
 
-  @CreateDateColumn({ name: 'created' }) created: Date;
+  @CreateDateColumn({
+    name: 'created',
+    default: `${new Date().toDateString()} ${new Date().toLocaleTimeString()}`,
+  })
+  created: string;
 
   @OneToOne((type) => UserEntity, (user) => user.user_id)
   @JoinColumn({ name: 'vibe_by' })
@@ -36,4 +40,11 @@ export class VibeEntity {
   vibe_type: string;
 
   @Column('jsonb', { name: 'metadata' }) metadata: MetadataDTO;
+
+  @Column('enum', {
+    name: 'status',
+    enum: ['UNDER_REVIEW', 'APPROVED', 'REJECTED'],
+    default: 'UNDER_REVIEW',
+  })
+  status: 'UNDER_REVIEW' | 'APPROVED' | 'REJECTED';
 }

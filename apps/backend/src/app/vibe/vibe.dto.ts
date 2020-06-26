@@ -43,4 +43,9 @@ export class CreateVibeDTO {
   @Type(() => MetadataDTO)
   @IsNotEmpty()
   metadata: MetadataDTO;
+
+  @IsString({ message: 'Required Field Error: Status is missing' })
+  @IsIn([globalConfig.status])
+  @IsOptional()
+  status: 'UNDER_REVIEW' | 'APPROVED' | 'REJECTED';
 }

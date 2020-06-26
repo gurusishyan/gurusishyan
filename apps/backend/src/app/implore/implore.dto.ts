@@ -7,12 +7,12 @@ import {
   IsOptional,
   ValidateNested,
   IsObject,
-  IsNotEmpty
+  IsNotEmpty,
+  IsString,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { globalConfig } from '@gurusishyan-config';
 export class ImploreDTO {
-
   @IsUUID('4', { message: 'Invalid Format: Implore ID' })
   @IsOptional()
   implore_id: string;
@@ -29,18 +29,25 @@ export class ImploreDTO {
   @IsNotEmpty()
   implore_as_anonymous: boolean;
 
-  @IsIn(globalConfig.implore_types, { message: 'Invalid Option: Invalid Implore type' })
+  @IsIn(globalConfig.implore_types, {
+    message: 'Invalid Option: Invalid Implore type',
+  })
   @IsNotEmpty()
   implore_type: 'QUESTION' | 'NOTES';
 
-  @ValidateNested({each:true})
+  @ValidateNested({ each: true })
   @IsOptional()
   @Type(() => VibeEntity)
   associated_vibe: Array<VibeEntity>;
 
-  @IsObject({message:"ValidationError: Not a proper metadata object"})
-  @ValidateNested({message:"ValidationError: Not a proper metadata object"})
-  @Type(()=>MetadataDTO)
+  @IsObject({ message: 'ValidationError: Not a proper metadata object' })
+  @ValidateNested({ message: 'ValidationError: Not a proper metadata object' })
+  @Type(() => MetadataDTO)
   @IsNotEmpty()
   metadata!: MetadataDTO;
+
+  @IsString({ message: 'Required Field Error: Status is missing' })
+  @IsIn([globalConfig.status])
+  @IsOptional()
+  status: 'UNDER_REVIEW' | 'APPROVED' | 'REJECTED';
 }
