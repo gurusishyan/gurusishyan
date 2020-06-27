@@ -13,7 +13,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_SECRET,
       callbackURL: '/api/auth/google/callback',
-      scope: ['email', 'profile'],
+      scope: ['email', 'profile', 'openid'],
     });
   }
 
@@ -28,7 +28,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       user_email: emails[0].value,
       user_name: `${name.givenName} ${name.familyName}`,
       user_photo: photos[0].value,
-      access_token:accessToken
+      access_token: accessToken,
     };
     done(null, user);
   }
