@@ -27,7 +27,7 @@ export class UserRepository {
       where: { user_name: new_user.user_name },
     });
     if (user) {
-      throw new HttpException('User Already Exists', HttpStatus.BAD_REQUEST);
+      throw new HttpException('User Already Exists', HttpStatus.CONFLICT);
     } else {
       const entity_user = this.userRepository.create(new_user);
       const saved_user = await this.userRepository.save(entity_user);

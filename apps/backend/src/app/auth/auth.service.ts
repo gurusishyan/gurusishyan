@@ -24,7 +24,7 @@ export class AuthService {
           user_name,
         });
       } else {
-        return attempt_user;
+        return attempt_user.toResponseObject();
       }
     }
   };
