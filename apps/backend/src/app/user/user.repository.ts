@@ -8,17 +8,21 @@ export class UserRepository {
   constructor(
     @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>
   ) {}
+
   findUserWithUserNameAndPassword = async (
     user_name: string,
     password: string
-  ) =>
+  ): Promise<UserEntity> =>
     await this.userRepository.findOne({
       where: { user_name, password },
     });
 
+  findUserWithUserName = async (user_name: string): Promise<UserEntity> =>
+    await this.userRepository.findOne({ where: { user_name } });
+
   createUser = async (
     new_user: CreateUserDTO
-  ): Promise<Partial<CreateUserDTO>> => {
+  ): Promise<Partial<UserEntity>> => {
     const user = await this.userRepository.findOne({
       where: { user_name: new_user.user_name },
     });

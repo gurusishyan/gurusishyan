@@ -15,21 +15,27 @@ export class UserEntity {
   })
   created: string;
 
-  @Column('enum', { enum: ['GURU', 'ADMIN', 'SISHYAN'], name: 'user_role' })
+  @Column('enum', {
+    enum: ['GURU', 'ADMIN', 'SISHYAN', 'OTHERS'],
+    name: 'user_role',
+    default: 'OTHERS',
+  })
   user_role: string;
 
   @Column('varchar', { name: 'user_email' })
   user_email: string;
 
-  @Column('varchar', { name: 'password' })
+  @Column('varchar', { name: 'password', nullable: true })
   password: string;
 
   @BeforeInsert()
   hashPassword = () => {
-    this.password = crypto
-      .createHash('sha256')
-      .update(this.password)
-      .digest('hex');
+    if (this.password) {
+      this.password = crypto
+        .createHash('sha256')
+        .update(this.password)
+        .digest('hex');
+    }
   };
 
   toResponseObject = (shouldSendToken: boolean = true): UserRO => {
@@ -51,7 +57,7 @@ export class UserEntity {
     return jwt.sign(
       { user_name, user_id, user_role, user_email },
       jwtConstants.secret,
-      { expiresIn: '1h' }
+      { expiresIn: '7d' }
     );
   }
 }

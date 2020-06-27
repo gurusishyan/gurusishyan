@@ -15,11 +15,11 @@ export class CreateUserDTO {
   @IsString({ message: 'User role is missing' })
   @IsIn(globalConfig.roles, { message: 'Invalid option: Invalid user role' })
   @IsNotEmpty({ message: 'User role is missing' })
-  user_role: string;
+  user_role?: string;
 
   @IsString({ message: 'Required Field Error: Password is a required field' })
   @IsNotEmpty({ message: 'Required Field Error: Password is a required field' })
-  password: string;
+  password?: string;
 
   @IsEmail({}, { message: 'Invalid Format: Email Address' })
   user_email: string;
@@ -39,6 +39,6 @@ export class UserRO {
   user_name: string;
   created: string;
   token?: string;
-  user_role:string;
-  user_email:string;
+  user_role: string;
+  user_email: string;
 }
