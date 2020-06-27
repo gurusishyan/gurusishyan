@@ -13,7 +13,7 @@ export const Auth = () => {
       <button
         onClick={() => dispatch(signIN({ name: 'prem', password: 'rap' }))}
       >
-        Signin
+        Login
       </button>
     </div>
   );
