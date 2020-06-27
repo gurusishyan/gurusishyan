@@ -1,5 +1,5 @@
 version: 2.1
-jobs: 
+jobs:
   build:
     working_directory: ~/public
     docker:
@@ -8,8 +8,8 @@ jobs:
       - checkout
       - run:
           name: update-npm
-          command: "sudo npm install -g npm@latest"
-      - restore_cache
+          command: 'sudo npm install -g npm@latest'
+      - restore_cache:
           key: dependency-cache-{{checksum "package.json"}}
       - run:
           name: install-npm
@@ -23,7 +23,7 @@ jobs:
           command: npm run test
       - store_artifacts:
           path: test-results.xml
-          prefix:  tests
+          prefix: tests
       - store_artifacts:
           path: coverage
           prefix: coverage
