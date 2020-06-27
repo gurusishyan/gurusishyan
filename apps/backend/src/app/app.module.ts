@@ -22,6 +22,7 @@ import {
 
 import { LoggerInterceptor } from './shared/interceptors/logger/logger.interceptor';
 import { StaticDataModule } from './static_data/static-data.module';
+import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
    
@@ -40,7 +41,8 @@ import { StaticDataModule } from './static_data/static-data.module';
     ImploreModule,
     UserModule,
     SharedModule,
-    StaticDataModule
+    StaticDataModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [

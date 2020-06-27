@@ -24,7 +24,6 @@ export class ValidationPipe implements PipeTransform<any> {
     const object = plainToClass(metatype, value);
     const errors = await validate(object);
     if (errors.length > 0) {
-      // console.log(errors);
       throw new HttpException(
         `${this.formatErrors(errors)}`,
         HttpStatus.BAD_REQUEST
@@ -50,6 +49,7 @@ export class ValidationPipe implements PipeTransform<any> {
             })
             .join('\n');
         } else {
+          console.log(err.constraints)
           for (let property in err.constraints) {
             return err.constraints[property];
           }
