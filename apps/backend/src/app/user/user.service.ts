@@ -12,11 +12,13 @@ export class UserService {
   findUserWithUserNameAndPassword = async (
     username: string,
     password: string
-  ): Promise<UserRO> =>
-    await this.userRepository.findUserWithUserNameAndPassword(
+  ): Promise<UserRO> => {
+    const user = await this.userRepository.findUserWithUserNameAndPassword(
       username,
       password
     );
+    return user.toResponseObject();
+  };
 
   findUserWithUserName = async (user_name: string): Promise<UserEntity> =>
     this.userRepository.findUserWithUserName(user_name);

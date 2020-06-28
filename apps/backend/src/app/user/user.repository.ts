@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { CreateUserDTO, UserRO } from './user.dto';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { SharedService } from '../shared/shared.service';
+import { IErrorMessage } from '../shared/interfaces';
 
 export class UserRepository {
   private commonService = new SharedService();
@@ -11,7 +12,7 @@ export class UserRepository {
     @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>
   ) {}
 
-  findAllUsers = async () =>
+  findAllUsers = async (): Promise<UserRO[] | IErrorMessage> =>
     await this.userRepository
       .find({
         relations: ['upvotes', 'bookmarked_implores', 'bookmarked_vibes'],
@@ -24,12 +25,10 @@ export class UserRepository {
   findUserWithUserNameAndPassword = async (
     user_name: string,
     password: string
-  ): Promise<UserRO> =>
-    await this.userRepository
-      .findOne({
-        where: { user_name, password },
-      })
-      .then((user) => user.toResponseObject());
+  ): Promise<UserEntity> =>
+    await this.userRepository.findOne({
+      where: { user_name, password },
+    });
 
   findUserWithUserName = async (user_name: string): Promise<UserEntity> =>
     await this.userRepository.findOne({ where: { user_name } });

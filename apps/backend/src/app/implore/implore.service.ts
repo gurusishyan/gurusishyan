@@ -5,5 +5,5 @@ import { ImploreRepository } from './implore.repository';
 export class ImploreService {
     constructor(private imploreRepository:ImploreRepository){}
 
-
+    getAllImplores = async() => this.imploreRepository.getAllImplores()
 }
