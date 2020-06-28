@@ -8,7 +8,7 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { loggerInstance } from '@gurusishyan-logger';
 import { AppModule } from './app/app.module';
-
+import { existsSync, mkdirSync } from 'fs';
 function bindSwagger(app: INestApplication) {
   const options = new DocumentBuilder()
     .setTitle('GuruSishyan')
@@ -29,6 +29,9 @@ async function bootstrap() {
   const port = process.env.PORT || 3333;
   const host = process.env.HOST || '0.0.0.0';
   const protocol = process.env.API_PROTOCOL || 'http';
+  if(!existsSync(process.env.BASE_DIR_PATH)){
+    mkdirSync(process.env.BASE_DIR_PATH,{recursive:true})
+  }
   if (process.env.NODE_ENV === 'development') {
     bindSwagger(app);
     Logger.log(

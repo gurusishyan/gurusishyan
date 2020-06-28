@@ -1,4 +1,3 @@
-import { ImploreDTO } from '../implore/implore.dto';
 import { MetadataDTO, ImploreEntity } from '../../entities';
 import {
   IsUUID,

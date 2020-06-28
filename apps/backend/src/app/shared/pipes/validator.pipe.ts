@@ -10,7 +10,12 @@ import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class ValidationPipe implements PipeTransform<any> {
+  constructor() {}
+
   async transform(value: any, metadata: ArgumentMetadata) {
+    if(value.data){
+      value = JSON.parse(value.data)
+    }
     if (value instanceof Object && this.isEmptyObject(value)) {
       throw new HttpException(
         'Validation Failed. No Body provided.',
@@ -40,7 +45,8 @@ export class ValidationPipe implements PipeTransform<any> {
   private formatErrors = (errors: any[]) =>
     errors
       .map((err) => {
-        if (err.children.length) { // For Metadat Validation
+        if (err.children.length) {
+          // For Metadat Validation
           return err.children
             .map((err) => {
               for (let property in err.constraints) {
@@ -49,7 +55,6 @@ export class ValidationPipe implements PipeTransform<any> {
             })
             .join('\n');
         } else {
-          console.log(err.constraints)
           for (let property in err.constraints) {
             return err.constraints[property];
           }
