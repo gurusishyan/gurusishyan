@@ -23,7 +23,7 @@ export class ImploreDTO {
 
   @IsUUID('all', { message: 'Invalid Format: User ID' })
   @IsNotEmpty()
-  implore_by: string;
+  author: string;
 
   @IsBoolean({ message: 'Required Field Error: Anonymous is a required field' })
   @IsNotEmpty()
@@ -50,4 +50,17 @@ export class ImploreDTO {
   @IsIn([globalConfig.status])
   @IsOptional()
   status: 'UNDER_REVIEW' | 'APPROVED' | 'REJECTED';
+}
+
+export class ImploreRO {
+  implore_id: string;
+  created: string;
+  implore_as_anonymous: boolean;
+  implore_type: string;
+  associated_vibe: VibeEntity[];
+  metadata: MetadataDTO;
+  status: string;
+  upvotes: number;
+  downvotes: number;
+  views: number;
 }

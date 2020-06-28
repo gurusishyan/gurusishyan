@@ -7,6 +7,7 @@ import {
   IsOptional,
 } from 'class-validator';
 import { globalConfig } from '@gurusishyan-config';
+import { ImploreEntity, VibeEntity } from '../../entities';
 export class CreateUserDTO {
   @IsString({ message: 'ValidationError: User name is missing' })
   @IsNotEmpty({ message: 'ValidationError: User name is missing' })
@@ -41,4 +42,6 @@ export class UserRO {
   token?: string;
   user_role: string;
   user_email: string;
+  bookmarked_implores:ImploreEntity[]
+  bookmarked_vibes:VibeEntity[]
 }

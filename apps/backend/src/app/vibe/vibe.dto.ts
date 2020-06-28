@@ -1,5 +1,5 @@
 import { ImploreDTO } from '../implore/implore.dto';
-import { MetadataDTO } from '../../entities';
+import { MetadataDTO, ImploreEntity } from '../../entities';
 import {
   IsUUID,
   IsString,
@@ -24,7 +24,7 @@ export class CreateVibeDTO {
 
   @IsUUID('4', { message: 'Invalid Format: User ID' })
   @IsNotEmpty()
-  vibe_by: string;
+  author: string;
 
   @IsBoolean({ message: 'Required Field Error: Anonymous is a required field' })
   @IsNotEmpty()
@@ -48,4 +48,17 @@ export class CreateVibeDTO {
   @IsIn([globalConfig.status])
   @IsOptional()
   status: 'UNDER_REVIEW' | 'APPROVED' | 'REJECTED';
+}
+
+export class VibeRO {
+  vibe_id: string;
+  created: string;
+  vibe_as_anonymous: boolean;
+  vibe_type: string;
+  associated_implore: ImploreEntity;
+  metadata: MetadataDTO;
+  status: string;
+  upvotes: number;
+  downvotes: number;
+  views: number;
 }

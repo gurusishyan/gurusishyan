@@ -19,17 +19,23 @@ export class HttpInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((data) => {
         if (data.error) {
-         loggerInstance.log(`${method} ${res.statusCode} ${url} - Error :: ${data.message}`,"error")
+          loggerInstance.log(
+            `${method} ${res.statusCode} ${url} - Error :: ${data.message}`,
+            'error'
+          );
           return {
             code: res.statusCode,
-            payload: data.message || `Error Occured :: ${data}`,
+            payload: 'Error while processing the request',
             error: true,
             timeTaken: Date.now() - currentTime,
             url,
             method,
           };
         } else {
-         loggerInstance.log(`${method} ${res.statusCode} ${url} - Success`,"info")
+          loggerInstance.log(
+            `${method} ${res.statusCode} ${url} - Success`,
+            'info'
+          );
           return {
             code: res.statusCode,
             payload: data,

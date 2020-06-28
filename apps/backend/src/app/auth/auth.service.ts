@@ -40,8 +40,7 @@ export class AuthService {
         'Invalid Username/Password',
         HttpStatus.UNAUTHORIZED
       );
-    } else {
-      return attempt_user.toResponseObject(true);
     }
+    return attempt_user;
   };
 }

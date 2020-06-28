@@ -6,6 +6,8 @@ import {
   Column,
   OneToMany,
   JoinColumn,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 import { ImploreEntity } from '../implore/implore.entity';
@@ -23,8 +25,8 @@ export class VibeEntity {
   created: string;
 
   @OneToOne((type) => UserEntity, (user) => user.user_id)
-  @JoinColumn({ name: 'vibe_by' })
-  vibe_by: UserEntity;
+  @JoinColumn({ name: 'author' })
+  author: UserEntity;
 
   @Column('boolean', { name: 'vibe_as_anonymous', default: false })
   vibe_as_anonymous: Boolean;
@@ -47,4 +49,16 @@ export class VibeEntity {
     default: 'UNDER_REVIEW',
   })
   status: 'UNDER_REVIEW' | 'APPROVED' | 'REJECTED';
+
+  @ManyToMany((type) => UserEntity, { cascade: true })
+  @JoinTable()
+  upvotes: UserEntity[];
+
+  @ManyToMany((type) => UserEntity, { cascade: true })
+  @JoinTable()
+  downvotes: UserEntity[];
+
+  @ManyToMany((type) => UserEntity, { cascade: true })
+  @JoinTable()
+  views: UserEntity[];
 }
