@@ -33,6 +33,13 @@ export class ImploreController {
     return await this.imploreService.getAllImplores();
   }
 
+  @Get('owner')
+  @UseGuards(new AuthGuard())
+  async getUserAssociatedImplore(@CurrentUser('user_id') user: string) {
+    this.logData({ user });
+    return await this.imploreService.getImploresForAUser(user);
+  }
+
   @Post()
   @UseGuards(new AuthGuard())
   @UsePipes(new ValidationPipe())
@@ -43,6 +50,6 @@ export class ImploreController {
     @Body() data: CreateImploreDTO
   ) {
     this.logData({ user, data });
-    return await this.imploreService.saveImplore(uploads,data, user);
+    return await this.imploreService.saveImplore(uploads, data, user);
   }
 }

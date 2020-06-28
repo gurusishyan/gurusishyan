@@ -13,10 +13,33 @@ export class ImploreRepository {
     private imploreRepository: Repository<ImploreEntity>
   ) {}
 
+  /**
+   * Get All the implores present in the database
+   *
+   * Mostly for admin purpose
+   */
   getAllImplores = async (): Promise<ImploreRO[] | IErrorMessage> =>
     await this.imploreRepository
       .find()
       .then((implores) => implores.map((implore) => implore.toResponseObject()))
+      .catch((err) =>
+        this.commonService.sendErrorMessage(err.message || err, true)
+      );
+
+  /**
+   *
+   * @param author The author of the implores
+   *
+   * Synchronously gives all the implores associated for the author
+   */
+  getUserAssociatedImplores = async (
+    author: string
+  ): Promise<ImploreRO[] | IErrorMessage> =>
+    await this.imploreRepository
+      .find({ where: { author } })
+      .then((associated_implores) =>
+        associated_implores.map((implore) => implore.toResponseObject())
+      )
       .catch((err) =>
         this.commonService.sendErrorMessage(err.message || err, true)
       );

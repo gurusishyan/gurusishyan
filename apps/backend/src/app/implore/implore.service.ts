@@ -4,6 +4,7 @@ import { CreateImploreDTO, ImploreRO, UpdateImploreDTO } from './implore.dto';
 import { IErrorMessage, IFile } from '../shared/interfaces';
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
+import { loggerInstance } from '@gurusishyan-logger';
 
 @Injectable()
 export class ImploreService {
@@ -37,6 +38,7 @@ export class ImploreService {
       writeFileSync(path_to_write, file_details[i].data);
       paths.push(file_details[i].name);
     }
+    loggerInstance.log('Implore ' + implore.implore_id + ' attachment saved with paths');
     return paths;
   }
 
@@ -73,6 +75,20 @@ export class ImploreService {
       return created_implore;
     } else {
       const casted_implore = created_implore as ImploreRO;
+      loggerInstance.log(
+        'Implore ' +
+          casted_implore.implore_id +
+          ' saved without saving attachments'
+      );
+      uploads.length
+        ? loggerInstance.log(
+            'Implore ' +
+              casted_implore.implore_id +
+              ' has attachments and will be saved'
+          )
+        : loggerInstance.log(
+            'Implore ' + casted_implore.implore_id + ' has no attachments'
+          );
       if (casted_implore.metadata.document_attached && uploads.length) {
         const document_paths = this.writeAttachments(
           uploads,
@@ -86,4 +102,15 @@ export class ImploreService {
       }
     }
   };
+
+  /**
+   *
+   * @param author The author of the implores
+   *
+   * Synchronously gives all the implores associated for the author
+   */
+  getImploresForAUser = async (
+    author: string
+  ): Promise<ImploreRO[] | IErrorMessage> =>
+    await this.imploreRepository.getUserAssociatedImplores(author);
 }
