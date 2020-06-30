@@ -21,7 +21,7 @@ export class ImploreRepository {
    */
   getAllImplores = async (): Promise<ImploreRO[] | IErrorMessage> =>
     await this.imploreRepository
-      .find()
+      .find({ relations: ['author', 'upvotes', 'downvotes', 'views'] })
       .then((implores) => implores.map((implore) => implore.toResponseObject()))
       .catch((err) =>
         this.commonService.sendErrorMessage(err.message || err, true)
@@ -37,7 +37,10 @@ export class ImploreRepository {
     author: string
   ): Promise<ImploreRO[] | IErrorMessage> =>
     await this.imploreRepository
-      .find({ where: { author }, relations: ['upvotes', 'downvotes', 'views'] })
+      .find({
+        where: { author },
+        relations: ['upvotes', 'downvotes', 'views', 'author'],
+      })
       .then((associated_implores) =>
         associated_implores.map((implore) => implore.toResponseObject())
       )
@@ -62,7 +65,7 @@ export class ImploreRepository {
 
   updateImplore = async (
     data: ImploreRO | UpdateImploreDTO
-  ): Promise<ImploreRO | IErrorMessage> => {
+  ): Promise<ImploreRO> => {
     const implore = await this.imploreRepository.findOne({
       where: { implore_id: data.implore_id },
     });
@@ -74,14 +77,16 @@ export class ImploreRepository {
     }
     const casted_data = data as UpdateImploreDTO;
     const entity_instance = this.imploreRepository.create(casted_data);
+    console.log(entity_instance);
     return await this.imploreRepository
       .save({ implore_id: entity_instance.implore_id, ...entity_instance })
       .then((updated_implore) => {
         return updated_implore.toResponseObject();
       })
-      .catch((err) =>
-        this.commonService.sendErrorMessage(err.message || err, true)
-      );
+      .catch((err) => {
+        const message = err.message || err;
+        throw new HttpException(message, HttpStatus.INTERNAL_SERVER_ERROR);
+      });
   };
 
   /**
@@ -154,7 +159,7 @@ export class ImploreRepository {
       loggerInstance.log(
         `${user.user_name} already downvoted implore ${implore_id} or ${user.user_name} must be the owner of implore ${implore_id}`
       );
-      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
+      throw new HttpException('Bad Request. You are not allowed to do this because', HttpStatus.METHOD_NOT_ALLOWED);
     } else {
       implore.downvotes.push(user);
       loggerInstance.log(`${user.user_name} downvoted implore ${implore_id}`);

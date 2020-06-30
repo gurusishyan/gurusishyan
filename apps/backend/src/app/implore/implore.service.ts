@@ -2,8 +2,6 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { ImploreRepository } from './implore.repository';
 import { CreateImploreDTO, ImploreRO, UpdateImploreDTO } from './implore.dto';
 import { IErrorMessage, IFile } from '../shared/interfaces';
-import { writeFileSync, existsSync, mkdirSync } from 'fs';
-import { join } from 'path';
 import { loggerInstance } from '@gurusishyan-logger';
 import { SharedService } from '../shared/shared.service';
 import { UserService } from '../user/user.service';
@@ -16,6 +14,33 @@ export class ImploreService {
     private userService: UserService
   ) {}
 
+  private saveAttachments = async (
+    BASE_PATH: string,
+    casted_implore: ImploreRO,
+    uploads: IFile[]
+  ) => {
+    uploads.length
+      ? loggerInstance.log(
+          'Implore ' +
+            casted_implore.implore_id +
+            ' has attachments and will be saved'
+        )
+      : loggerInstance.log(
+          'Implore ' + casted_implore.implore_id + ' has no attachments'
+        );
+    if (casted_implore.metadata.document_attached && uploads.length) {
+      const document_paths = this.commonService.writeAttachments(
+        uploads,
+        BASE_PATH,
+        casted_implore.implore_id,
+        'Implore'
+      );
+      casted_implore.metadata.document_url = document_paths;
+      return await this.imploreRepository.updateImplore(casted_implore);
+    } else {
+      return casted_implore;
+    }
+  };
   /**
    * Synchronously gives all the implores
    */
@@ -26,8 +51,25 @@ export class ImploreService {
    *
    * The update operation is performed synchronously
    */
-  updateImplore = async (data: ImploreRO) =>
-    await this.imploreRepository.updateImplore(data);
+  updateImplore = async (
+    data: ImploreRO,
+    user_name: string,
+    uploads?: IFile[]
+  ) => {
+    //  data;
+    const BASE_PATH = process.env.BASE_DIR_PATH;
+    const user = await this.userService.findUserWithUserName(user_name);
+    if (user) {
+      if (user.user_id !== data.author.user_id) {
+        throw new HttpException(
+          'You are not the owner of this implore.',
+          HttpStatus.BAD_REQUEST
+        );
+      }
+    }
+    const updated_implore = await this.imploreRepository.updateImplore(data);
+    return await this.saveAttachments(BASE_PATH, updated_implore, uploads);
+  };
 
   /**
    * The implore is saved asynchronously
@@ -54,27 +96,7 @@ export class ImploreService {
           casted_implore.implore_id +
           ' saved without saving attachments'
       );
-      uploads.length
-        ? loggerInstance.log(
-            'Implore ' +
-              casted_implore.implore_id +
-              ' has attachments and will be saved'
-          )
-        : loggerInstance.log(
-            'Implore ' + casted_implore.implore_id + ' has no attachments'
-          );
-      if (casted_implore.metadata.document_attached && uploads.length) {
-        const document_paths = this.commonService.writeAttachments(
-          uploads,
-          BASE_PATH,
-          casted_implore.implore_id,
-          'Implore'
-        );
-        casted_implore.metadata.document_url = document_paths;
-        return await this.imploreRepository.updateImplore(casted_implore);
-      } else {
-        return casted_implore;
-      }
+      return await this.saveAttachments(BASE_PATH, casted_implore, uploads);
     }
   };
 

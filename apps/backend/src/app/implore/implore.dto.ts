@@ -64,7 +64,6 @@ export class UpdateImploreDTO {
   @IsString({ message: 'ValidationError: Not a valid Date' })
   created: string;
 
-  @IsString({ message: 'Required Field Error: Author is a required field' })
   author: UserEntity;
 
   @IsBoolean({ message: 'Invalid Type: Anonymous should be of type boolean' })

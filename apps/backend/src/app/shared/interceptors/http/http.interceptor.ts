@@ -18,6 +18,9 @@ export class HttpInterceptor implements NestInterceptor {
     const url = req.url;
     return next.handle().pipe(
       map((data) => {
+        if (!data) {
+          return data;
+        }
         if (data.error) {
           loggerInstance.log(
             `${method} ${res.statusCode} ${url} - Error :: ${data.message}`,

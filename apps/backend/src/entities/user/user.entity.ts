@@ -90,7 +90,6 @@ export class UserEntity {
   };
 
   comparePassword = (password) => {
-    console.log(this.password);
     return password === this.password;
   };
 

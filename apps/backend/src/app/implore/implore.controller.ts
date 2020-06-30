@@ -10,11 +10,13 @@ import {
   UploadedFiles,
   Put,
   Param,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { ImploreService } from './implore.service';
 import { AuthGuard } from '../shared/guards/auth.guard';
 import { CurrentUser } from '../shared/decorators/user.decorator';
-import { CreateImploreDTO, UpdateImploreDTO } from './implore.dto';
+import { CreateImploreDTO, UpdateImploreDTO, ImploreRO } from './implore.dto';
 import { ValidationPipe } from '../shared/pipes/validator.pipe';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { loggerInstance } from '@gurusishyan-logger';
@@ -47,7 +49,7 @@ export class ImploreController {
   @UseInterceptors(FilesInterceptor('files[]', 10))
   async getUserAssociatedImplores(
     @UploadedFiles() uploads,
-    @CurrentUser('user_id') user: string,
+    @CurrentUser() user: any,
     @Body() data: CreateImploreDTO
   ) {
     this.logData({ user, data });
@@ -56,10 +58,24 @@ export class ImploreController {
 
   @Put(':id')
   @UseGuards(new AuthGuard())
-  @UsePipes(new ValidationPipe())
   @UseInterceptors(FilesInterceptor('files[]', 10))
-  async updateImplore(@Body() data: UpdateImploreDTO) {
-    return data;
+  @UsePipes(new ValidationPipe())
+  async updateImplore(
+    @Body() data: UpdateImploreDTO,
+    @UploadedFiles() uploads,
+    @CurrentUser('user_name') user_name: string
+  ) {
+    if (data.author.user_name !== user_name) {
+      throw new HttpException(
+        'You are not owner of this implore',
+        HttpStatus.BAD_REQUEST
+      );
+    }
+    return await this.imploreService.updateImplore(
+      (data as unknown) as ImploreRO,
+      user_name,
+      uploads
+    );
   }
 
   @Put('upvote/:id')
@@ -84,7 +100,7 @@ export class ImploreController {
     return await this.imploreService.downvoteImplore(implore_id, user_name);
   }
 
-  @Put('view/:id')
+  @Get('view/:id')
   @UseGuards(new AuthGuard())
   async viewImplore(
     @Param('id') implore_id: string,
