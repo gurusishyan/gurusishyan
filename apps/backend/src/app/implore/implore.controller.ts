@@ -12,6 +12,7 @@ import {
   Param,
   HttpException,
   HttpStatus,
+  Delete,
 } from '@nestjs/common';
 import { ImploreService } from './implore.service';
 import { AuthGuard } from '../shared/guards/auth.guard';
@@ -41,6 +42,17 @@ export class ImploreController {
   async getUserAssociatedImplore(@CurrentUser('user_id') user: string) {
     this.logData({ user });
     return await this.imploreService.getImploresForAUser(user);
+  }
+
+  @Get('view/:id')
+  @UseGuards(new AuthGuard())
+  async viewImplore(
+    @Param('id') implore_id: string,
+    @CurrentUser('user_name') user_name: string
+  ) {
+    this.logData({ user: user_name, id: implore_id });
+    loggerInstance.log(`User: ${user_name} to view implore ${implore_id}`);
+    return await this.imploreService.viewImplore(implore_id, user_name);
   }
 
   @Post()
@@ -100,14 +112,12 @@ export class ImploreController {
     return await this.imploreService.downvoteImplore(implore_id, user_name);
   }
 
-  @Get('view/:id')
+  @Delete(':id')
   @UseGuards(new AuthGuard())
-  async viewImplore(
+  async deleteImplore(
     @Param('id') implore_id: string,
     @CurrentUser('user_name') user_name: string
   ) {
-    this.logData({ user: user_name, id: implore_id });
-    loggerInstance.log(`User: ${user_name} to view implore ${implore_id}`);
-    return await this.imploreService.viewImplore(implore_id, user_name);
+    return await this.imploreService.deleteImplore(implore_id, user_name);
   }
 }

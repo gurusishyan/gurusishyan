@@ -1,6 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { ImploreEntity, UserEntity } from '../../entities';
-import { Repository } from 'typeorm';
+import { Repository, DeleteResult } from 'typeorm';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { SharedService } from '../shared/shared.service';
 import { ImploreRO, CreateImploreDTO, UpdateImploreDTO } from './implore.dto';
@@ -159,7 +159,10 @@ export class ImploreRepository {
       loggerInstance.log(
         `${user.user_name} already downvoted implore ${implore_id} or ${user.user_name} must be the owner of implore ${implore_id}`
       );
-      throw new HttpException('Bad Request. You are not allowed to do this because', HttpStatus.METHOD_NOT_ALLOWED);
+      throw new HttpException(
+        'Bad Request. You are not allowed to do this because',
+        HttpStatus.METHOD_NOT_ALLOWED
+      );
     } else {
       implore.downvotes.push(user);
       loggerInstance.log(`${user.user_name} downvoted implore ${implore_id}`);
@@ -204,6 +207,54 @@ export class ImploreRepository {
           const message = err.message || err;
           throw new HttpException(message, HttpStatus.INTERNAL_SERVER_ERROR);
         });
+    }
+  };
+
+  deleteImplore = async (
+    implore_id: string,
+    user: UserEntity
+  ): Promise<ImploreRO> => {
+    const implore = await this.imploreRepository
+      .findOne({
+        where: { implore_id },
+        relations: ['upvotes', 'author', 'downvotes', 'views'],
+      })
+      .then((implore) => {
+        if (implore) {
+          return implore.toResponseObject();
+        }
+        throw new HttpException('Unable to find implore', HttpStatus.NOT_FOUND);
+      })
+      .catch((err) => {
+        const message = err.message || err;
+        throw new HttpException(message, HttpStatus.INTERNAL_SERVER_ERROR);
+      });
+
+    if (implore.author.user_id !== user.user_id) {
+      throw new HttpException(
+        'You are not owner of this implore',
+        HttpStatus.BAD_REQUEST
+      );
+    }
+
+    if (!implore) {
+      throw new HttpException('Implore not found', HttpStatus.NOT_FOUND);
+    }
+
+    const deleted_implore = await this.imploreRepository
+      .delete({ implore_id })
+      .then((implore) => implore)
+      .catch((err) => {
+        const message = err.message || err;
+        throw new HttpException(message, HttpStatus.INTERNAL_SERVER_ERROR);
+      });
+    if (deleted_implore.affected > 0) {
+      return implore;
+    } else {
+      throw new HttpException(
+        'Some error occured',
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
     }
   };
 }

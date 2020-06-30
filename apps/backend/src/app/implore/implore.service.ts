@@ -149,4 +149,12 @@ export class ImploreService {
 
     return await this.imploreRepository.viewImplore(implore_id, user);
   };
+
+  deleteImplore = async (implore_id: string, user_name: string) => {
+    const user = await this.userService.findUserWithUserName(user_name);
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    return await this.imploreRepository.deleteImplore(implore_id, user);
+  };
 }

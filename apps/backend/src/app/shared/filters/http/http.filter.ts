@@ -24,7 +24,9 @@ export class HttpErrorFilter implements ExceptionFilter {
       payload:
         status !== HttpStatus.INTERNAL_SERVER_ERROR
           ? exception.message.error || `${exception.message}` || null
-          : 'Internal server error',
+          : exception.message.error ||
+            `${exception.message}` ||
+            'Internal server error',
       error: true,
       url,
       method,
