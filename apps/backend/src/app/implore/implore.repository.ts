@@ -98,7 +98,7 @@ export class ImploreRepository {
   ): Promise<ImploreRO> => {
     const implore = await this.imploreRepository.findOne({
       where: { implore_id },
-      relations: ['upvotes', 'author'],
+      relations: ['upvotes', 'downvotes', 'views', 'author'],
     });
     if (!implore) {
       throw new HttpException('Implore not found', HttpStatus.NOT_FOUND);
@@ -115,6 +115,82 @@ export class ImploreRepository {
       throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     } else {
       implore.upvotes.push(user);
+      loggerInstance.log(`${user.user_name} upvoted implore ${implore_id}`);
+      return await this.imploreRepository
+        .save({ ...implore })
+        .then((implore) => implore.toResponseObject())
+        .catch((err) => {
+          const message = err.message || err;
+          throw new HttpException(message, HttpStatus.INTERNAL_SERVER_ERROR);
+        });
+    }
+  };
+
+  /**
+   *
+   * @param implore_id Implore id to upvote
+   * @param user User entity to register upvote
+   *
+   *
+   * Synchronously updates the downvotes key of implore table. If upvote already present, it's ignored. If user is owner of implore, user cannot downvote the implore.
+   */
+  downvoteImplore = async (
+    implore_id: string,
+    user: UserEntity
+  ): Promise<ImploreRO> => {
+    const implore = await this.imploreRepository.findOne({
+      where: { implore_id },
+      relations: ['downvotes', 'upvotes', 'views', 'author'],
+    });
+    if (!implore) {
+      throw new HttpException('Implore not found', HttpStatus.NOT_FOUND);
+    }
+
+    if (
+      implore.downvotes.filter((user_) => user_.user_id === user.user_id)
+        .length >= 1 ||
+      implore.author.user_id === user.user_id
+    ) {
+      loggerInstance.log(
+        `${user.user_name} already downvoted implore ${implore_id} or ${user.user_name} must be the owner of implore ${implore_id}`
+      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
+    } else {
+      implore.downvotes.push(user);
+      loggerInstance.log(`${user.user_name} downvoted implore ${implore_id}`);
+      return await this.imploreRepository
+        .save({ ...implore })
+        .then((implore) => implore.toResponseObject())
+        .catch((err) => {
+          const message = err.message || err;
+          throw new HttpException(message, HttpStatus.INTERNAL_SERVER_ERROR);
+        });
+    }
+  };
+
+  viewImplore = async (
+    implore_id: string,
+    user: UserEntity
+  ): Promise<ImploreRO> => {
+    const implore = await this.imploreRepository.findOne({
+      where: { implore_id },
+      relations: ['downvotes', 'upvotes', 'views', 'author'],
+    });
+    if (!implore) {
+      throw new HttpException('Implore not found', HttpStatus.NOT_FOUND);
+    }
+
+    if (
+      implore.views.filter((user_) => user_.user_id === user.user_id).length >=
+        1 ||
+      implore.author.user_id === user.user_id
+    ) {
+      loggerInstance.log(
+        `${user.user_name} already viewed implore ${implore_id} or ${user.user_name} must be the owner of implore ${implore_id}`
+      );
+      return implore.toResponseObject();
+    } else {
+      implore.views.push(user);
       loggerInstance.log(`${user.user_name} upvoted implore ${implore_id}`);
       return await this.imploreRepository
         .save({ ...implore })

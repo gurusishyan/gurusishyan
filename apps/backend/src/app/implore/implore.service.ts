@@ -101,4 +101,30 @@ export class ImploreService {
 
     return await this.imploreRepository.upvoteImplore(implore_id, user);
   };
+
+  downvoteImplore = async (
+    implore_id: string,
+    user_name: string
+  ): Promise<ImploreRO> => {
+    const user = await this.userService.findUserWithUserName(user_name);
+
+    if (!user) {
+      throw new HttpException('Unable to find user', HttpStatus.NOT_FOUND);
+    }
+
+    return await this.imploreRepository.downvoteImplore(implore_id, user);
+  };
+
+  viewImplore = async (
+    implore_id: string,
+    user_name: string
+  ): Promise<ImploreRO> => {
+    const user = await this.userService.findUserWithUserName(user_name);
+
+    if (!user) {
+      throw new HttpException('Unable to find user', HttpStatus.NOT_FOUND);
+    }
+
+    return await this.imploreRepository.viewImplore(implore_id, user);
+  };
 }

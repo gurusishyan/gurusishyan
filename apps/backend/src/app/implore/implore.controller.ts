@@ -72,4 +72,26 @@ export class ImploreController {
     loggerInstance.log(`User: ${user_name} to upvote implore ${implore_id}`);
     return await this.imploreService.upvoteImplore(implore_id, user_name);
   }
+
+  @Put('downvote/:id')
+  @UseGuards(new AuthGuard())
+  async downvoteImplore(
+    @Param('id') implore_id: string,
+    @CurrentUser('user_name') user_name: string
+  ) {
+    this.logData({ user: user_name, id: implore_id });
+    loggerInstance.log(`User: ${user_name} to downvote implore ${implore_id}`);
+    return await this.imploreService.downvoteImplore(implore_id, user_name);
+  }
+
+  @Put('view/:id')
+  @UseGuards(new AuthGuard())
+  async viewImplore(
+    @Param('id') implore_id: string,
+    @CurrentUser('user_name') user_name: string
+  ) {
+    this.logData({ user: user_name, id: implore_id });
+    loggerInstance.log(`User: ${user_name} to view implore ${implore_id}`);
+    return await this.imploreService.viewImplore(implore_id, user_name);
+  }
 }
