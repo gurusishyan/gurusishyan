@@ -41,7 +41,7 @@ export class UserEntity {
   @Column('varchar', { name: 'user_email' })
   user_email: string;
 
-  @Column('varchar', { name: 'password', nullable: true })
+  @Column('varchar', { name: 'password', nullable: true, select: false })
   password: string;
 
   @BeforeInsert()

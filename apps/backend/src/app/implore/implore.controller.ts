@@ -8,14 +8,16 @@ import {
   UsePipes,
   UseInterceptors,
   UploadedFiles,
+  Put,
+  Param,
 } from '@nestjs/common';
 import { ImploreService } from './implore.service';
 import { AuthGuard } from '../shared/guards/auth.guard';
 import { CurrentUser } from '../shared/decorators/user.decorator';
-import { CreateImploreDTO } from './implore.dto';
+import { CreateImploreDTO, UpdateImploreDTO } from './implore.dto';
 import { ValidationPipe } from '../shared/pipes/validator.pipe';
-import { MultipleFormData } from '../shared/decorators/form-data.decorator';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { loggerInstance } from '@gurusishyan-logger';
 @Controller('implore')
 export class ImploreController {
   private logger = new Logger('ImploreController');
@@ -28,7 +30,6 @@ export class ImploreController {
   constructor(private imploreService: ImploreService) {}
 
   @Get()
-  @UseGuards(new AuthGuard())
   async getAllImplores() {
     return await this.imploreService.getAllImplores();
   }
@@ -51,5 +52,24 @@ export class ImploreController {
   ) {
     this.logData({ user, data });
     return await this.imploreService.saveImplore(uploads, data, user);
+  }
+
+  @Put(':id')
+  @UseGuards(new AuthGuard())
+  @UsePipes(new ValidationPipe())
+  @UseInterceptors(FilesInterceptor('files[]', 10))
+  async updateImplore(@Body() data: UpdateImploreDTO) {
+    return data;
+  }
+
+  @Put('upvote/:id')
+  @UseGuards(new AuthGuard())
+  async upvoteImplore(
+    @Param('id') implore_id: string,
+    @CurrentUser('user_name') user_name: string
+  ) {
+    this.logData({ user: user_name, id: implore_id });
+    loggerInstance.log(`User: ${user_name} to upvote implore ${implore_id}`);
+    return await this.imploreService.upvoteImplore(implore_id, user_name);
   }
 }

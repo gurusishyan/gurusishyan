@@ -55,11 +55,19 @@ export class ImploreEntity {
   status: 'UNDER_REVIEW' | 'APPROVED' | 'REJECTED';
 
   @ManyToMany((type) => UserEntity, { cascade: true })
-  @JoinTable()
+  @JoinTable({
+    name: 'implore_upvotes_user',
+    inverseJoinColumn: { name: 'user_id', referencedColumnName: 'user_id' },
+    joinColumn: { name: 'implore_id', referencedColumnName: 'implore_id' },
+  })
   upvotes: UserEntity[];
 
   @ManyToMany((type) => UserEntity, { cascade: true })
-  @JoinTable()
+  @JoinTable({
+    name: 'implore_downvotes_user',
+    inverseJoinColumn: { name: 'user_id', referencedColumnName: 'user_id' },
+    joinColumn: { name: 'implore_id', referencedColumnName: 'implore_id' },
+  })
   downvotes: UserEntity[];
 
   @ManyToMany((type) => UserEntity, { cascade: true })
@@ -78,20 +86,26 @@ export class ImploreEntity {
       status,
       associated_vibe,
       metadata,
+      author,
     } = this;
 
-
+    const mapped_upvotes = upvotes ? upvotes.map((user) => user.user_id) : [];
+    const mapped_downvotes = downvotes
+      ? downvotes.map((user) => user.user_id)
+      : [];
+    const mapped_views = views ? views.map((user) => user.user_id) : [];
     return {
       implore_id,
       created,
       implore_as_anonymous,
       implore_type,
-      upvotes: upvotes ? upvotes.length : 0,
-      downvotes: downvotes ? downvotes.length : 0,
-      views: views ? views.length : 0,
+      upvotes: mapped_upvotes,
+      downvotes: mapped_downvotes,
+      views: mapped_views,
       status,
       associated_vibe,
       metadata,
+      author,
     };
   };
 }

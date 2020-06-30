@@ -10,12 +10,16 @@ import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class ValidationPipe implements PipeTransform<any> {
-  constructor() {}
+  constructor(private ignoreOtherKeys?: boolean) {}
 
   async transform(value: any, metadata: ArgumentMetadata) {
-    if(value.data){
-      value = JSON.parse(value.data)
+    if (value.data) {
+      value = JSON.parse(value.data);
     }
+    if (!this.ignoreOtherKeys) {
+      this.ignoreOtherKeys = false;
+    }
+    console.log(this.ignoreOtherKeys)
     if (value instanceof Object && this.isEmptyObject(value)) {
       throw new HttpException(
         'Validation Failed. No Body provided.',

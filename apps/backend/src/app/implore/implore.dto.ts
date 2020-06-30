@@ -61,12 +61,10 @@ export class UpdateImploreDTO {
   @IsOptional()
   implore_id: string;
 
-  @IsDateString({ message: 'ValidationError: Not a valid Date' })
-  @IsOptional()
+  @IsString({ message: 'ValidationError: Not a valid Date' })
   created: string;
 
-  @IsUUID('all', { message: 'Invalid Format: User ID' })
-  @IsOptional()
+  @IsString({ message: 'Required Field Error: Author is a required field' })
   author: UserEntity;
 
   @IsBoolean({ message: 'Invalid Type: Anonymous should be of type boolean' })
@@ -95,8 +93,7 @@ export class UpdateImploreDTO {
   metadata!: MetadataDTO;
 
   @IsString({ message: 'Required Field Error: Status is missing' })
-  @IsIn([globalConfig.status])
-  @IsOptional()
+  @IsIn(globalConfig.status)
   status: 'UNDER_REVIEW' | 'APPROVED' | 'REJECTED';
 }
 export class ImploreRO {
@@ -107,7 +104,8 @@ export class ImploreRO {
   associated_vibe: VibeEntity[];
   metadata: MetadataDTO;
   status: string;
-  upvotes: number;
-  downvotes: number;
-  views: number;
+  upvotes: string[];
+  downvotes: string[];
+  views: string[];
+  author: UserEntity;
 }

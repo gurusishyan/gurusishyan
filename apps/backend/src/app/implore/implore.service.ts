@@ -1,46 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { ImploreRepository } from './implore.repository';
 import { CreateImploreDTO, ImploreRO, UpdateImploreDTO } from './implore.dto';
 import { IErrorMessage, IFile } from '../shared/interfaces';
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { loggerInstance } from '@gurusishyan-logger';
+import { SharedService } from '../shared/shared.service';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class ImploreService {
-  constructor(private imploreRepository: ImploreRepository) {}
-
-  /**
-   *
-   * @param uploads Array of documents to store for the implore
-   * @param base_path base path of the document to be saved. Usually BASE_PATH_DIR from .env
-   * @param implore Corresponding implore for which the document to be saved
-   */
-  private writeAttachments(
-    uploads: IFile[],
-    base_path: string,
-    implore: ImploreRO
-  ) {
-    const file_details = uploads.map((file) => {
-      if (!existsSync(join(base_path, implore.implore_id))) {
-        mkdirSync(join(base_path, implore.implore_id), {
-          recursive: true,
-        });
-      }
-      return {
-        name: join(implore.implore_id, file.originalname),
-        data: file.buffer,
-      };
-    });
-    let paths: string[] = [];
-    for (let i = 0; i < file_details.length; i++) {
-      const path_to_write = join(base_path, file_details[i].name);
-      writeFileSync(path_to_write, file_details[i].data);
-      paths.push(file_details[i].name);
-    }
-    loggerInstance.log('Implore ' + implore.implore_id + ' attachment saved with paths');
-    return paths;
-  }
+  constructor(
+    private imploreRepository: ImploreRepository,
+    private commonService: SharedService,
+    private userService: UserService
+  ) {}
 
   /**
    * Synchronously gives all the implores
@@ -90,10 +64,11 @@ export class ImploreService {
             'Implore ' + casted_implore.implore_id + ' has no attachments'
           );
       if (casted_implore.metadata.document_attached && uploads.length) {
-        const document_paths = this.writeAttachments(
+        const document_paths = this.commonService.writeAttachments(
           uploads,
           BASE_PATH,
-          casted_implore
+          casted_implore.implore_id,
+          'Implore'
         );
         casted_implore.metadata.document_url = document_paths;
         return await this.imploreRepository.updateImplore(casted_implore);
@@ -113,4 +88,17 @@ export class ImploreService {
     author: string
   ): Promise<ImploreRO[] | IErrorMessage> =>
     await this.imploreRepository.getUserAssociatedImplores(author);
+
+  upvoteImplore = async (
+    implore_id: string,
+    user_name: string
+  ): Promise<ImploreRO> => {
+    const user = await this.userService.findUserWithUserName(user_name);
+
+    if (!user) {
+      throw new HttpException('Unable to find user', HttpStatus.NOT_FOUND);
+    }
+
+    return await this.imploreRepository.upvoteImplore(implore_id, user);
+  };
 }
