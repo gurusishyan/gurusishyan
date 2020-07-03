@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useDispatch } from 'react-redux';
 
 import './auth.scss';
 import { signIN } from '../store/authentication/signIn';
+import CustomButton from '../shared/components/custom-button/custom-button';
 
 export const Auth = () => {
   const dispatch = useDispatch();
@@ -10,11 +11,12 @@ export const Auth = () => {
   return (
     <div>
       <h1>Welcome to auth!</h1>
-      <button
+      <CustomButton
+        className="btn btn-danger"
         onClick={() => dispatch(signIN({ name: 'prem', password: 'rap' }))}
       >
         Login
-      </button>
+      </CustomButton>
     </div>
   );
 };
