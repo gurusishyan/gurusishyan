@@ -1,15 +1,27 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-
-@Entity('static_data')
-export class StaticDataEntity {
-  @PrimaryGeneratedColumn('uuid', { name: 'static_data_id' })
-  static_data_id: string;
-
-  @Column('varchar', { length: 35, name: 'data_label_key' })
+import * as mongoose from 'mongoose';
+export class IStaticDataSchema extends mongoose.Document {
+  _id: string;
   data_label_key: string;
-
-  @Column('varchar', { length: 35, name: 'data_label_type' })
   data_label_type: string;
-
-  @Column('varchar', { name: 'data_label_value' }) data_label_value: string;
+  data_label_value: string;
 }
+export const StaticDataEntity = new mongoose.Schema({
+  data_label_key: {
+    type: String,
+    required: true,
+  },
+  data_label_type: {
+    type: String,
+    required: true,
+  },
+  data_label_value: {
+    type: mongoose.Schema.Types.Mixed,
+    required: true,
+  },
+});
+
+export const StaticData = mongoose.model<IStaticDataSchema>(
+  'StaticData',
+  StaticDataEntity,
+  'static_data'
+);

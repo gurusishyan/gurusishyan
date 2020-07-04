@@ -1,7 +1,6 @@
-import { MetadataDTO, VibeEntity, UserEntity } from '../../entities';
+import { MetadataDTO } from '../../entities';
 import {
   IsUUID,
-  IsDateString,
   IsBoolean,
   IsIn,
   IsOptional,
@@ -9,6 +8,7 @@ import {
   IsObject,
   IsNotEmpty,
   IsString,
+  IsMongoId,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { globalConfig } from '@gurusishyan-config';
@@ -21,9 +21,9 @@ export class CreateImploreDTO {
   // @IsOptional()
   // created: string;
 
-  // @IsUUID('all', { message: 'Invalid Format: User ID' })
-  // @IsOptional()
-  // author: string;
+  @IsUUID('all', { message: 'Invalid Format: User ID' })
+  @IsOptional()
+  author: string;
 
   @IsBoolean({ message: 'Invalid Type: Anonymous should be of type boolean' })
   @IsNotEmpty({
@@ -57,14 +57,15 @@ export class CreateImploreDTO {
 }
 
 export class UpdateImploreDTO {
-  @IsUUID('4', { message: 'Invalid Format: Implore ID' })
+  @IsMongoId({ message: 'Invalid Format: Implore ID' })
   @IsOptional()
-  implore_id: string;
+  _id: string;
 
   @IsString({ message: 'ValidationError: Not a valid Date' })
   created: string;
 
-  author: UserEntity;
+  @IsMongoId({ message: 'Invalid Format: Author' })
+  author: string;
 
   @IsBoolean({ message: 'Invalid Type: Anonymous should be of type boolean' })
   @IsNotEmpty({
@@ -82,8 +83,7 @@ export class UpdateImploreDTO {
 
   @ValidateNested({ each: true })
   @IsOptional()
-  @Type(() => VibeEntity)
-  associated_vibe: Array<VibeEntity>;
+  associated_vibe: Array<string>;
 
   @IsObject({ message: 'ValidationError: Not a proper metadata object' })
   @ValidateNested({ message: 'ValidationError: Not a proper metadata object' })
@@ -94,17 +94,4 @@ export class UpdateImploreDTO {
   @IsString({ message: 'Required Field Error: Status is missing' })
   @IsIn(globalConfig.status)
   status: 'UNDER_REVIEW' | 'APPROVED' | 'REJECTED';
-}
-export class ImploreRO {
-  implore_id: string;
-  created: string;
-  implore_as_anonymous: boolean;
-  implore_type: string;
-  associated_vibe: VibeEntity[];
-  metadata: MetadataDTO;
-  status: string;
-  upvotes: string[];
-  downvotes: string[];
-  views: string[];
-  author: UserEntity;
 }

@@ -1,111 +1,76 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  OneToMany,
-  ManyToOne,
-  Column,
-  JoinColumn,
-  ManyToMany,
-  JoinTable,
-} from 'typeorm';
-import { UserEntity } from '../user/user.entity';
-import { VibeEntity } from '../vibes/vibes.entity';
 import { MetadataDTO } from '../metadata/metadata.class';
-import { ImploreRO } from '../../app/implore/implore.dto';
-
-@Entity({ name: 'implore' })
-export class ImploreEntity {
-  @PrimaryGeneratedColumn('uuid', { name: 'implore_id' }) implore_id: string;
-
-  @Column('varchar', {
-    name: 'created',
-    default: `${new Date().toDateString()} ${new Date().toLocaleTimeString()}`,
-  })
+import * as mongoose from 'mongoose';
+import { MetadataSchema } from '../metadata/metadata.class';
+export class IImploreSchema extends mongoose.Document {
+  _id: string;
   created: string;
-
-  @ManyToOne((type) => UserEntity, (user) => user.user_id)
-  @JoinColumn({ name: 'author' })
-  author: UserEntity;
-
-  @Column('boolean', { name: 'implore_as_anonymous', default: false })
+  author: string;
   implore_as_anonymous: boolean;
-
-  @OneToMany((type) => VibeEntity, (vibe) => vibe.vibe_id)
-  @JoinColumn({ name: 'associated_vibe' })
-  associated_vibe: Array<VibeEntity>;
-
-  @Column('enum', {
-    name: 'implore_type',
-    enum: { QUESTION: 'QUESTION', NOTES: 'NOTES' },
-  })
+  associated_vibe: string[];
   implore_type: string;
-
-  @Column('jsonb', { name: 'metadata' }) metadata: MetadataDTO;
-
-  @Column('enum', {
-    name: 'status',
-    enum: {
-      UNDER_REVIEW: 'UNDER_REVIEW',
-      APPROVED: 'APPROVED',
-      REJECTED: 'REJECTED',
-    },
-    default: 'UNDER_REVIEW',
-  })
+  metadata: MetadataDTO;
   status: 'UNDER_REVIEW' | 'APPROVED' | 'REJECTED';
-
-  @ManyToMany((type) => UserEntity, { cascade: true })
-  @JoinTable({
-    name: 'implore_upvotes_user',
-    inverseJoinColumn: { name: 'user_id', referencedColumnName: 'user_id' },
-    joinColumn: { name: 'implore_id', referencedColumnName: 'implore_id' },
-  })
-  upvotes: UserEntity[];
-
-  @ManyToMany((type) => UserEntity, { cascade: true })
-  @JoinTable({
-    name: 'implore_downvotes_user',
-    inverseJoinColumn: { name: 'user_id', referencedColumnName: 'user_id' },
-    joinColumn: { name: 'implore_id', referencedColumnName: 'implore_id' },
-  })
-  downvotes: UserEntity[];
-
-  @ManyToMany((type) => UserEntity, { cascade: true })
-  @JoinTable()
-  views: UserEntity[];
-
-  toResponseObject = (): ImploreRO => {
-    const {
-      implore_id,
-      created,
-      implore_as_anonymous,
-      implore_type,
-      upvotes,
-      downvotes,
-      views,
-      status,
-      associated_vibe,
-      metadata,
-      author,
-    } = this;
-
-    const mapped_upvotes = upvotes ? upvotes.map((user) => user.user_id) : [];
-    const mapped_downvotes = downvotes
-      ? downvotes.map((user) => user.user_id)
-      : [];
-    const mapped_views = views ? views.map((user) => user.user_id) : [];
-    return {
-      implore_id,
-      created,
-      implore_as_anonymous,
-      implore_type,
-      upvotes: mapped_upvotes,
-      downvotes: mapped_downvotes,
-      views: mapped_views,
-      status,
-      associated_vibe,
-      metadata,
-      author,
-    };
-  };
+  upvotes: string[];
+  downvotes: string[];
+  views: string[];
 }
+export const ImploreEntity = new mongoose.Schema({
+  created: {
+    type: String,
+    default: `${new Date().toDateString()} ${new Date().toLocaleTimeString()}`,
+    required: true,
+  },
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  implore_as_anonymous: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  associated_vibe: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Vibe',
+      required: false,
+    },
+  ],
+  status: {
+    type: String,
+    enum: ['UNDER_REVIEW', 'APPROVED', 'REJECTED'],
+    default: 'APPROVED',
+  },
+  metadata: MetadataSchema,
+  implore_type: {
+    type: String,
+    enum: ['QUESTION', 'NOTES'],
+  },
+  upvotes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: false,
+    },
+  ],
+  downvotes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: false,
+    },
+  ],
+  views: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: false,
+    },
+  ],
+});
+export const Implore = mongoose.model<IImploreSchema>(
+  'Implore',
+  ImploreEntity,
+  'implore'
+);

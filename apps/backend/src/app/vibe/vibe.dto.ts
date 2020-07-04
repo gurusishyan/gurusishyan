@@ -54,7 +54,7 @@ export class VibeRO {
   created: string;
   vibe_as_anonymous: boolean;
   vibe_type: string;
-  associated_implore: ImploreEntity;
+  associated_implore: string[];
   metadata: MetadataDTO;
   status: string;
   upvotes: number;

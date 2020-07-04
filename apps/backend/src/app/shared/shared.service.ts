@@ -1,7 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import * as crypto from 'crypto';
 import { IFile } from './interfaces';
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import {
+  existsSync,
+  mkdirSync,
+  writeFileSync,
+  unlinkSync,
+  rmdirSync,
+} from 'fs';
 import { join } from 'path';
 import { loggerInstance } from '@gurusishyan-logger';
 @Injectable()
@@ -10,7 +16,10 @@ export class SharedService {
   createHash = (stringToHash: string) =>
     crypto.createHash('sha256').update(stringToHash).digest('hex');
 
-  sendErrorMessage = (message: string, error: boolean) => ({ error, message });
+  sendErrorMessage = (message: any, error?: boolean) => {
+    message = message.message || message;
+    throw new HttpException(message, HttpStatus.INTERNAL_SERVER_ERROR);
+  };
 
   /**
    *
@@ -31,13 +40,13 @@ export class SharedService {
     request_type: string
   ) {
     const file_details = uploads.map((file) => {
-      if (!existsSync(join(base_path, id))) {
-        mkdirSync(join(base_path, id), {
+      if (!existsSync(join(base_path, id.toString()))) {
+        mkdirSync(join(base_path, id.toString()), {
           recursive: true,
         });
       }
       return {
-        name: join(id, file.originalname),
+        name: join(id.toString(), file.originalname),
         data: file.buffer,
       };
     });
@@ -48,8 +57,21 @@ export class SharedService {
       paths.push(file_details[i].name);
     }
     loggerInstance.log(
-      request_type + ' ' + id + ' attachment saved with paths'
+      request_type + ' ' + id.toString() + ' attachment saved with paths'
     );
     return paths;
   }
+
+  deleteImages = (_id: string) => {
+    const BASE_PATH = process.env.BASE_DIR_PATH;
+    try {
+      rmdirSync(join(BASE_PATH, _id), { recursive: true });
+      loggerInstance.log('Successfully deleted assets ' + join(BASE_PATH, _id));
+    } catch (error) {
+      loggerInstance.log(
+        'Error occured while deleting images ' + error,
+        'error'
+      );
+    }
+  };
 }

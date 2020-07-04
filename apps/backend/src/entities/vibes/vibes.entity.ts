@@ -1,64 +1,72 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  OneToOne,
-  Column,
-  OneToMany,
-  JoinColumn,
-  ManyToMany,
-  JoinTable,
-} from 'typeorm';
-import { UserEntity } from '../user/user.entity';
-import { ImploreEntity } from '../implore/implore.entity';
-import { MetadataDTO } from '../metadata/metadata.class';
-
-@Entity({ name: 'vibe' })
-export class VibeEntity {
-  constructor() {}
-  @PrimaryGeneratedColumn('uuid', { name: 'vibe_id' }) vibe_id: string;
-
-  @CreateDateColumn({
-    name: 'created',
-    default: `${new Date().toDateString()} ${new Date().toLocaleTimeString()}`,
-  })
+import { IMetadata, MetadataSchema } from '../metadata/metadata.class';
+import * as mongoose from 'mongoose';
+export interface IVibeSchema extends mongoose.Document {
+  _id: string;
   created: string;
-
-  @OneToOne((type) => UserEntity, (user) => user.user_id)
-  @JoinColumn({ name: 'author' })
-  author: UserEntity;
-
-  @Column('boolean', { name: 'vibe_as_anonymous', default: false })
+  author: string;
   vibe_as_anonymous: Boolean;
-
-  @OneToOne((type) => ImploreEntity, (implore) => implore.implore_id)
-  @JoinColumn({ name: 'associated_implore' })
-  associated_implore: ImploreEntity;
-
-  @Column('enum', {
-    name: 'vibe_type',
-    enum: { ANSWER: 'ANSWER', NOTES: 'NOTES' },
-  })
+  associated_implore: string;
   vibe_type: string;
-
-  @Column('jsonb', { name: 'metadata' }) metadata: MetadataDTO;
-
-  @Column('enum', {
-    name: 'status',
-    enum: ['UNDER_REVIEW', 'APPROVED', 'REJECTED'],
-    default: 'UNDER_REVIEW',
-  })
+  metadata: IMetadata;
   status: 'UNDER_REVIEW' | 'APPROVED' | 'REJECTED';
-
-  @ManyToMany((type) => UserEntity, { cascade: true })
-  @JoinTable()
-  upvotes: UserEntity[];
-
-  @ManyToMany((type) => UserEntity, { cascade: true })
-  @JoinTable()
-  downvotes: UserEntity[];
-
-  @ManyToMany((type) => UserEntity, { cascade: true })
-  @JoinTable()
-  views: UserEntity[];
+  upvotes: string[];
+  downvotes: string[];
+  views: string[];
 }
+export const VibeSchema = new mongoose.Schema({
+  created: {
+    type: String,
+    default: `${new Date().toDateString()} ${new Date().toLocaleTimeString()}`,
+    required: true,
+  },
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  vibe_as_anonymous: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  associated_implore: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Implore',
+      required: false,
+    },
+  ],
+  status: {
+    type: String,
+    enum: ['UNDER_REVIEW', 'APPROVED', 'REJECTED'],
+    default: 'APPROVED',
+  },
+  metadata: MetadataSchema,
+  vibe_type: {
+    type: String,
+    enum: ['ANSWER', 'NOTE'],
+  },
+  upvotes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: false,
+    },
+  ],
+  downvotes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: false,
+    },
+  ],
+  views: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: false,
+    },
+  ],
+});
+
+export const Vibe = mongoose.model<IVibeSchema>('Vibe', VibeSchema, 'vibe');

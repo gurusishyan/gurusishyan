@@ -5,7 +5,9 @@ import {
   IsBoolean,
   IsIn,
   IsNotEmpty,
+  IsArray,
 } from 'class-validator';
+import * as mongoose from 'mongoose';
 import { globalConfig } from '@gurusishyan-config';
 export class MetadataDTO {
   @IsString({
@@ -36,8 +38,8 @@ export class MetadataDTO {
   @IsOptional()
   lesson_on_subject: string;
 
+  @IsString({ message: 'Required Field Error: Additional Notes' })
   @IsOptional()
-  @IsString({ message: 'Required Field Error: Board Of Education' })
   additional_notes: string;
 
   @IsNotEmpty({
@@ -49,18 +51,42 @@ export class MetadataDTO {
   document_attached: boolean;
 
   @IsOptional()
-  @IsString({ message: 'Required Field Error: Board Of Education' })
+  @IsArray({ message: 'Required Field Error: Document urls is missing' })
   document_url: Array<string>;
-
-  @IsPositive({
-    message: 'ValidationError: Upvotes should be a positive number',
-  })
-  @IsOptional()
-  upvotes: number;
-
-  @IsPositive({
-    message: 'ValidationError: Downvotes should be a positive number',
-  })
-  @IsOptional()
-  downvotes: number;
+}
+export const MetadataSchema = new mongoose.Schema({
+  class_of_study: {
+    type: String,
+    enum: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+    required: true,
+  },
+  subject_interested: {
+    type: String,
+    required: true,
+  },
+  board_of_education: {
+    type: String,
+    required: true,
+  },
+  lesson_on_subject: {
+    type: String,
+    required: false,
+  },
+  additional_notes: { type: String, required: false },
+  document_attached: { type: Boolean, required: true },
+  document_url: [
+    {
+      type: String,
+      required: false,
+    },
+  ],
+});
+export interface IMetadata {
+  class_of_study: string;
+  subject_interested: string;
+  board_of_education: string;
+  lesson_on_subject: string;
+  additional_notes?: string;
+  document_attached: boolean;
+  document_url?: Array<string>;
 }

@@ -17,7 +17,7 @@ import {
 import { ImploreService } from './implore.service';
 import { AuthGuard } from '../shared/guards/auth.guard';
 import { CurrentUser } from '../shared/decorators/user.decorator';
-import { CreateImploreDTO, UpdateImploreDTO, ImploreRO } from './implore.dto';
+import { CreateImploreDTO, UpdateImploreDTO } from './implore.dto';
 import { ValidationPipe } from '../shared/pipes/validator.pipe';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { loggerInstance } from '@gurusishyan-logger';
@@ -48,11 +48,11 @@ export class ImploreController {
   @UseGuards(new AuthGuard())
   async viewImplore(
     @Param('id') implore_id: string,
-    @CurrentUser('user_name') user_name: string
+    @CurrentUser('_id') user_id: string
   ) {
-    this.logData({ user: user_name, id: implore_id });
-    loggerInstance.log(`User: ${user_name} to view implore ${implore_id}`);
-    return await this.imploreService.viewImplore(implore_id, user_name);
+    this.logData({ user: user_id, id: implore_id });
+    loggerInstance.log(`User: ${user_id} to view implore ${implore_id}`);
+    return await this.imploreService.viewImplore(implore_id, user_id);
   }
 
   @Post()
@@ -61,7 +61,7 @@ export class ImploreController {
   @UseInterceptors(FilesInterceptor('files[]', 10))
   async getUserAssociatedImplores(
     @UploadedFiles() uploads,
-    @CurrentUser() user: any,
+    @CurrentUser('_id') user: any,
     @Body() data: CreateImploreDTO
   ) {
     this.logData({ user, data });
@@ -75,49 +75,45 @@ export class ImploreController {
   async updateImplore(
     @Body() data: UpdateImploreDTO,
     @UploadedFiles() uploads,
-    @CurrentUser('user_name') user_name: string
+    @CurrentUser('_id') user_id: string
   ) {
-    if (data.author.user_name !== user_name) {
+    if (data.author !== user_id) {
       throw new HttpException(
         'You are not owner of this implore',
         HttpStatus.BAD_REQUEST
       );
     }
-    return await this.imploreService.updateImplore(
-      (data as unknown) as ImploreRO,
-      user_name,
-      uploads
-    );
+    return await this.imploreService.updateImplore(data, user_id, uploads);
   }
 
   @Put('upvote/:id')
   @UseGuards(new AuthGuard())
   async upvoteImplore(
     @Param('id') implore_id: string,
-    @CurrentUser('user_name') user_name: string
+    @CurrentUser('_id') user_id: string
   ) {
-    this.logData({ user: user_name, id: implore_id });
-    loggerInstance.log(`User: ${user_name} to upvote implore ${implore_id}`);
-    return await this.imploreService.upvoteImplore(implore_id, user_name);
+    this.logData({ user: user_id, id: implore_id });
+    loggerInstance.log(`User: ${user_id} to upvote implore ${implore_id}`);
+    return await this.imploreService.upvoteImplore(implore_id, user_id);
   }
 
   @Put('downvote/:id')
   @UseGuards(new AuthGuard())
   async downvoteImplore(
     @Param('id') implore_id: string,
-    @CurrentUser('user_name') user_name: string
+    @CurrentUser('_id') user_id: string
   ) {
-    this.logData({ user: user_name, id: implore_id });
-    loggerInstance.log(`User: ${user_name} to downvote implore ${implore_id}`);
-    return await this.imploreService.downvoteImplore(implore_id, user_name);
+    this.logData({ user: user_id, id: implore_id });
+    loggerInstance.log(`User: ${user_id} to downvote implore ${implore_id}`);
+    return await this.imploreService.downvoteImplore(implore_id, user_id);
   }
 
   @Delete(':id')
   @UseGuards(new AuthGuard())
   async deleteImplore(
     @Param('id') implore_id: string,
-    @CurrentUser('user_name') user_name: string
+    @CurrentUser('_id') user_id: string
   ) {
-    return await this.imploreService.deleteImplore(implore_id, user_name);
+    return await this.imploreService.deleteImplore(implore_id, user_id);
   }
 }

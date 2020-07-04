@@ -1,11 +1,6 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-
-import { VibeEntity } from '../../entities';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class VibeRepository{
-    constructor(@InjectRepository(VibeEntity)
-    private imploreRepository: Repository<VibeEntity>){}
+export class VibeRepository {
+  constructor() {}
 }

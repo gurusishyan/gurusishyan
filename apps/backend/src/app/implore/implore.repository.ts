@@ -1,32 +1,33 @@
-import { InjectRepository } from '@nestjs/typeorm';
-import { ImploreEntity, UserEntity } from '../../entities';
-import { Repository, DeleteResult } from 'typeorm';
+import {
+  ImploreEntity,
+  UserEntity,
+  Implore,
+  IImploreSchema,
+} from '../../entities';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { SharedService } from '../shared/shared.service';
-import { ImploreRO, CreateImploreDTO, UpdateImploreDTO } from './implore.dto';
+import { CreateImploreDTO } from './implore.dto';
 import { IErrorMessage } from '../shared/interfaces';
 import { loggerInstance } from '@gurusishyan-logger';
 @Injectable()
 export class ImploreRepository {
   commonService = new SharedService();
-  constructor(
-    @InjectRepository(ImploreEntity)
-    private imploreRepository: Repository<ImploreEntity>
-  ) {}
+  constructor() {}
 
   /**
    * Get All the implores present in the database
    *
    * Mostly for admin purpose
    */
-  getAllImplores = async (): Promise<ImploreRO[] | IErrorMessage> =>
-    await this.imploreRepository
-      .find({ relations: ['author', 'upvotes', 'downvotes', 'views'] })
-      .then((implores) => implores.map((implore) => implore.toResponseObject()))
-      .catch((err) =>
-        this.commonService.sendErrorMessage(err.message || err, true)
-      );
+  getAllImplores = async (): Promise<IImploreSchema[] | IErrorMessage> =>
+    await Implore.find()
+      .then((implores) => implores)
+      .catch((err) => this.commonService.sendErrorMessage(err));
 
+  findImploreWithID = async (_id: string): Promise<IImploreSchema> =>
+    await Implore.findOne({ _id })
+      .then((implore) => implore)
+      .catch((err) => this.commonService.sendErrorMessage(err));
   /**
    *
    * @param author The author of the implores
@@ -35,57 +36,40 @@ export class ImploreRepository {
    */
   getUserAssociatedImplores = async (
     author: string
-  ): Promise<ImploreRO[] | IErrorMessage> =>
-    await this.imploreRepository
-      .find({
-        where: { author },
-        relations: ['upvotes', 'downvotes', 'views', 'author'],
-      })
-      .then((associated_implores) =>
-        associated_implores.map((implore) => implore.toResponseObject())
-      )
-      .catch((err) =>
-        this.commonService.sendErrorMessage(err.message || err, true)
-      );
+  ): Promise<IImploreSchema[]> =>
+    await Implore.find({ author })
+      .populate('upvotes')
+      .populate('downvotes')
+      .populate('views')
+      .populate('author')
+      .then((associated_implores) => associated_implores)
+      .catch((err) => this.commonService.sendErrorMessage(err));
 
   saveImplore = async (
     data: CreateImploreDTO,
     author: any
-  ): Promise<ImploreRO | IErrorMessage> => {
-    const entity_instance = this.imploreRepository.create(data);
-    entity_instance.author = author;
-    return await this.imploreRepository
-      .save(entity_instance)
-      .then((saved_implore) => saved_implore.toResponseObject())
-      .catch((err) => {
-        console.log(err);
-        return this.commonService.sendErrorMessage(err.message || err, true);
-      });
+  ): Promise<IImploreSchema> => {
+    data.author = author;
+    return await new Implore(data)
+      .save({ validateBeforeSave: true })
+      .then((saved_implore) => saved_implore)
+      .catch((err) => this.commonService.sendErrorMessage(err));
   };
 
-  updateImplore = async (
-    data: ImploreRO | UpdateImploreDTO
-  ): Promise<ImploreRO> => {
-    const implore = await this.imploreRepository.findOne({
-      where: { implore_id: data.implore_id },
-    });
+  updateImplore = async (data: any): Promise<IImploreSchema> => {
+    const implore = await Implore.findOne({ _id: data._id });
     if (!implore) {
       throw new HttpException(
         'Unable to find an implore.',
         HttpStatus.BAD_REQUEST
       );
     }
-    const casted_data = data as UpdateImploreDTO;
-    const entity_instance = this.imploreRepository.create(casted_data);
-    console.log(entity_instance);
-    return await this.imploreRepository
-      .save({ implore_id: entity_instance.implore_id, ...entity_instance })
-      .then((updated_implore) => {
-        return updated_implore.toResponseObject();
-      })
+    return await Implore.findOneAndUpdate({ _id: data._id }, data, {
+      new: true,
+    })
+      .then((updated_implore) => updated_implore)
       .catch((err) => {
-        const message = err.message || err;
-        throw new HttpException(message, HttpStatus.INTERNAL_SERVER_ERROR);
+        return this.commonService.sendErrorMessage(err);
       });
   };
 
@@ -98,37 +82,12 @@ export class ImploreRepository {
    * Synchronously updates the upvotes key of implore table. If upvote already present, it's ignored. If user is owner of implore, user cannot upvote the implore.
    */
   upvoteImplore = async (
-    implore_id: string,
-    user: UserEntity
-  ): Promise<ImploreRO> => {
-    const implore = await this.imploreRepository.findOne({
-      where: { implore_id },
-      relations: ['upvotes', 'downvotes', 'views', 'author'],
-    });
-    if (!implore) {
-      throw new HttpException('Implore not found', HttpStatus.NOT_FOUND);
-    }
-
-    if (
-      implore.upvotes.filter((user_) => user_.user_id === user.user_id)
-        .length >= 1 ||
-      implore.author.user_id === user.user_id
-    ) {
-      loggerInstance.log(
-        `${user.user_name} already upvoted implore ${implore_id} or ${user.user_name} must be the owner of implore ${implore_id}`
-      );
-      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
-    } else {
-      implore.upvotes.push(user);
-      loggerInstance.log(`${user.user_name} upvoted implore ${implore_id}`);
-      return await this.imploreRepository
-        .save({ ...implore })
-        .then((implore) => implore.toResponseObject())
-        .catch((err) => {
-          const message = err.message || err;
-          throw new HttpException(message, HttpStatus.INTERNAL_SERVER_ERROR);
-        });
-    }
+    implore: IImploreSchema,
+    _id: string
+  ): Promise<IImploreSchema> => {
+    return await Implore.findOneAndUpdate({ _id }, implore, { new: true })
+      .then((implore) => implore)
+      .catch((err) => this.commonService.sendErrorMessage(err));
   };
 
   /**
@@ -140,121 +99,23 @@ export class ImploreRepository {
    * Synchronously updates the downvotes key of implore table. If upvote already present, it's ignored. If user is owner of implore, user cannot downvote the implore.
    */
   downvoteImplore = async (
-    implore_id: string,
-    user: UserEntity
-  ): Promise<ImploreRO> => {
-    const implore = await this.imploreRepository.findOne({
-      where: { implore_id },
-      relations: ['downvotes', 'upvotes', 'views', 'author'],
-    });
-    if (!implore) {
-      throw new HttpException('Implore not found', HttpStatus.NOT_FOUND);
-    }
-
-    if (
-      implore.downvotes.filter((user_) => user_.user_id === user.user_id)
-        .length >= 1 ||
-      implore.author.user_id === user.user_id
-    ) {
-      loggerInstance.log(
-        `${user.user_name} already downvoted implore ${implore_id} or ${user.user_name} must be the owner of implore ${implore_id}`
-      );
-      throw new HttpException(
-        'Bad Request. You are not allowed to do this because',
-        HttpStatus.METHOD_NOT_ALLOWED
-      );
-    } else {
-      implore.downvotes.push(user);
-      loggerInstance.log(`${user.user_name} downvoted implore ${implore_id}`);
-      return await this.imploreRepository
-        .save({ ...implore })
-        .then((implore) => implore.toResponseObject())
-        .catch((err) => {
-          const message = err.message || err;
-          throw new HttpException(message, HttpStatus.INTERNAL_SERVER_ERROR);
-        });
-    }
-  };
+    implore: IImploreSchema,
+    _id: string
+  ): Promise<IImploreSchema> =>
+    await Implore.findOneAndUpdate({ _id }, implore, { new: true })
+      .then((implore) => implore)
+      .catch((err) => this.commonService.sendErrorMessage(err));
 
   viewImplore = async (
-    implore_id: string,
-    user: UserEntity
-  ): Promise<ImploreRO> => {
-    const implore = await this.imploreRepository.findOne({
-      where: { implore_id },
-      relations: ['downvotes', 'upvotes', 'views', 'author'],
-    });
-    if (!implore) {
-      throw new HttpException('Implore not found', HttpStatus.NOT_FOUND);
-    }
-
-    if (
-      implore.views.filter((user_) => user_.user_id === user.user_id).length >=
-        1 ||
-      implore.author.user_id === user.user_id
-    ) {
-      loggerInstance.log(
-        `${user.user_name} already viewed implore ${implore_id} or ${user.user_name} must be the owner of implore ${implore_id}`
-      );
-      return implore.toResponseObject();
-    } else {
-      implore.views.push(user);
-      loggerInstance.log(`${user.user_name} upvoted implore ${implore_id}`);
-      return await this.imploreRepository
-        .save({ ...implore })
-        .then((implore) => implore.toResponseObject())
-        .catch((err) => {
-          const message = err.message || err;
-          throw new HttpException(message, HttpStatus.INTERNAL_SERVER_ERROR);
-        });
-    }
-  };
-
-  deleteImplore = async (
-    implore_id: string,
-    user: UserEntity
-  ): Promise<ImploreRO> => {
-    const implore = await this.imploreRepository
-      .findOne({
-        where: { implore_id },
-        relations: ['upvotes', 'author', 'downvotes', 'views'],
-      })
-      .then((implore) => {
-        if (implore) {
-          return implore.toResponseObject();
-        }
-        throw new HttpException('Unable to find implore', HttpStatus.NOT_FOUND);
-      })
-      .catch((err) => {
-        const message = err.message || err;
-        throw new HttpException(message, HttpStatus.INTERNAL_SERVER_ERROR);
-      });
-
-    if (implore.author.user_id !== user.user_id) {
-      throw new HttpException(
-        'You are not owner of this implore',
-        HttpStatus.BAD_REQUEST
-      );
-    }
-
-    if (!implore) {
-      throw new HttpException('Implore not found', HttpStatus.NOT_FOUND);
-    }
-
-    const deleted_implore = await this.imploreRepository
-      .delete({ implore_id })
+    implore: IImploreSchema,
+    _id: string
+  ): Promise<IImploreSchema> =>
+    await Implore.findByIdAndUpdate({ _id }, implore, { new: true })
       .then((implore) => implore)
-      .catch((err) => {
-        const message = err.message || err;
-        throw new HttpException(message, HttpStatus.INTERNAL_SERVER_ERROR);
-      });
-    if (deleted_implore.affected > 0) {
-      return implore;
-    } else {
-      throw new HttpException(
-        'Some error occured',
-        HttpStatus.INTERNAL_SERVER_ERROR
-      );
-    }
-  };
+      .catch((err) => this.commonService.sendErrorMessage(err));
+
+  deleteImplore = async (_id: string): Promise<IImploreSchema> =>
+    await Implore.findOneAndDelete({ _id })
+      .then((implore) => implore)
+      .catch((err) => this.commonService.sendErrorMessage(err));
 }

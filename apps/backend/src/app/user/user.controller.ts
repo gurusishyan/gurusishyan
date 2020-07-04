@@ -20,10 +20,4 @@ export class UserController {
   async getAllUsers() {
     return await this.userService.findAllUsers();
   }
-
-  @Post()
-  @UsePipes(new ValidationPipe())
-  async createUser(@Body() user: CreateUserDTO) {
-    return await this.userService.createUser(user);
-  }
 }
