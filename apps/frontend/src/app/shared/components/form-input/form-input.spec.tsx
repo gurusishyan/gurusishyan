@@ -1,11 +1,11 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
-import { CustomButton } from './custom-button.component';
+import { FormInput } from './form-input.component';
 
 describe('CustomButtom', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<CustomButton> </CustomButton>);
+    const { baseElement } = render(<FormInput />);
 
     expect(baseElement).toBeTruthy();
   });
