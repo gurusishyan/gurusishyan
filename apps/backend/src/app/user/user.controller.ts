@@ -1,11 +1,4 @@
-import {
-  Controller,
-  UseGuards,
-  Get,
-  Put,
-  Param,
-  Logger,
-} from '@nestjs/common';
+import { Controller, UseGuards, Get, Put, Param, Logger } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthGuard } from '../shared/guards/auth.guard';
 import { CurrentUser } from '../shared/decorators/user.decorator';
@@ -39,7 +32,7 @@ export class UserController {
     return await this.userService.bookmarkImplore(user_id, _id);
   }
 
-  @UseGuards(new AuthGuard(),RoleGuard)
+  @UseGuards(new AuthGuard(), RoleGuard)
   @Roles('ADMIN')
   @Put('bookmark/vibe/:id')
   async bookmarkVibe(
@@ -49,7 +42,7 @@ export class UserController {
     return await this.userService.bookmarkVibe(user_id, _id);
   }
 
-  @UseGuards(new AuthGuard(),RoleGuard)
+  @UseGuards(new AuthGuard(), RoleGuard)
   @Roles('ADMIN')
   @Put('role/:role')
   async updateRole(
@@ -57,5 +50,25 @@ export class UserController {
     @Param('role') role: string
   ) {
     return await this.userService.updateRole(_id, role);
+  }
+
+  @UseGuards(new AuthGuard(), RoleGuard)
+  @Roles('ADMIN', 'OTHERS', 'TEACHER', 'STUDENT')
+  @Put('unbookmark/implore/:id')
+  async unBookmarkImplore(
+    @CurrentUser('_id') _id: string,
+    @Param('id') implore_id: string
+  ) {
+    return await this.userService.unBookmarkImplore(_id, implore_id);
+  }
+
+  @UseGuards(new AuthGuard(), RoleGuard)
+  @Roles('ADMIN', 'OTHERS', 'TEACHER', 'STUDENT')
+  @Put('unbookmark/vibe/:id')
+  async unBookmarkVibe(
+    @CurrentUser('_id') _id: string,
+    @Param('id') vibe_id: string
+  ) {
+    return await this.userService.unBookmarkVibe(_id, vibe_id);
   }
 }

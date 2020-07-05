@@ -40,4 +40,10 @@ export class UserService {
     user.token = this.commonService.signJWT(user);
     return user;
   };
+
+  unBookmarkImplore = async (_id: string, implore_id: string) =>
+    await this.userRepository.unBookmarkImplore(_id, implore_id);
+
+  unBookmarkVibe = async (_id: string, vibe_id: string) =>
+    await this.userRepository.unBookmarkVibe(_id, vibe_id);
 }

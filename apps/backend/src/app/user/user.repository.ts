@@ -69,4 +69,22 @@ export class UserRepository {
     await User.findOneAndUpdate({ _id }, { user_role: role }, { new: true })
       .then((user) => user)
       .catch((err) => this.commonService.sendErrorMessage(err));
+
+  unBookmarkImplore = async (_id: string, implore_id: string) =>
+    await User.findByIdAndUpdate(
+      { _id },
+      { $pull: { bookmarked_implores: implore_id } },
+      { new: true }
+    )
+      .then((user) => user)
+      .catch((err) => this.commonService.sendErrorMessage(err));
+
+  unBookmarkVibe = async (_id: string, vibe_id: string) =>
+    await User.findByIdAndUpdate(
+      { _id },
+      { $pull: { bookmarked_vibes: vibe_id } },
+      { new: true }
+    )
+      .then((user) => user)
+      .catch((err) => this.commonService.sendErrorMessage(err));
 }
