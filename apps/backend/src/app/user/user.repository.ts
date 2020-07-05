@@ -7,10 +7,14 @@ export class UserRepository {
   private commonService = new SharedService();
   constructor() {}
 
+  findUserWithID = async (_id: string) =>
+    await User.findOne({ _id })
+      .then((user) => user)
+      .catch((err) => this.commonService.sendErrorMessage(err));
+
   findAllUsers = async (): Promise<IUserSchema[]> =>
     await User.find()
       .populate('bookmarked_vibes')
-      .populate('upvote')
       .populate('bookmarked_implores')
       .then((users) => users.map((user) => user))
       .catch((err) => this.commonService.sendErrorMessage(err, true));
@@ -19,10 +23,8 @@ export class UserRepository {
     user_name: string,
     password: string
   ): Promise<IUserSchema> => {
-    console.log(await User.find());
     return await User.findOne({ user_name, password })
       .then((user) => {
-        console.log(user);
         return user;
       })
       .catch((err) => this.commonService.sendErrorMessage(err, true));
@@ -44,4 +46,22 @@ export class UserRepository {
         .catch((err) => this.commonService.sendErrorMessage(err, true));
     }
   };
+
+  bookmarkImplore = async (_id: string, implore_id: string) =>
+    await User.findOneAndUpdate(
+      { _id },
+      { $addToSet: { bookmarked_implores: implore_id } },
+      { new: true }
+    )
+      .then((user) => user)
+      .catch((err) => this.commonService.sendErrorMessage(err));
+
+  bookmarkVibe = async (_id: string, vibe_id: string) =>
+    await User.findOneAndUpdate(
+      { _id },
+      { $addToSet: { bookmarked_implores: vibe_id } },
+      { new: true }
+    )
+      .then((user) => user)
+      .catch((err) => this.commonService.sendErrorMessage(err));
 }

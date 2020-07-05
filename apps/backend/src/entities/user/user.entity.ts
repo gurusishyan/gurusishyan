@@ -9,13 +9,21 @@ export class IUserSchema extends mongoose.Document {
   is_active?: boolean;
   created_on?: Date;
   token?: string;
+  bookmarked_implores: string[];
+  bookmarked_vibes: string[];
 }
 const isValidUserName = async (user_name: string) => {
   const users = await User.find({ user_name });
   if (users.length === 0) return true;
   return false;
 };
+const uniqueElements = (value, index, self) => {
+  return self.indexOf(value) === index;
+};
 
+const filterArrays = async (value) => {
+  const user = await User.find();
+};
 export const UserEntity = new mongoose.Schema({
   user_name: {
     type: String,
@@ -29,7 +37,7 @@ export const UserEntity = new mongoose.Schema({
   password: {
     type: String,
     required: false,
-    select:false
+    select: false,
   },
   created_on: {
     type: String,
@@ -51,5 +59,19 @@ export const UserEntity = new mongoose.Schema({
     type: String,
     required: false,
   },
+  bookmarked_implores: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      required: false,
+      ref: 'Implore',
+    },
+  ],
+  bookmarked_vibes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      required: false,
+      ref: 'Vibe',
+    },
+  ],
 });
 export const User = mongoose.model<IUserSchema>('User', UserEntity, 'user');
