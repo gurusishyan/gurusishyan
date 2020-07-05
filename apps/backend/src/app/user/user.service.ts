@@ -34,4 +34,10 @@ export class UserService {
 
   bookmarkVibe = async (user_id: string, vibe_id: string) =>
     await this.userRepository.bookmarkVibe(user_id, vibe_id);
+
+  updateRole = async (_id: string, user_role: string) => {
+    const user = await this.userRepository.updateRole(_id, user_role);
+    user.token = this.commonService.signJWT(user);
+    return user;
+  };
 }

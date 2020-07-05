@@ -64,4 +64,9 @@ export class UserRepository {
     )
       .then((user) => user)
       .catch((err) => this.commonService.sendErrorMessage(err));
+
+  updateRole = async (_id: string, role: string) =>
+    await User.findOneAndUpdate({ _id }, { user_role: role }, { new: true })
+      .then((user) => user)
+      .catch((err) => this.commonService.sendErrorMessage(err));
 }

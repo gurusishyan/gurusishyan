@@ -1,8 +1,5 @@
 import {
   Controller,
-  Post,
-  Body,
-  UsePipes,
   UseGuards,
   Get,
   Put,
@@ -10,10 +7,10 @@ import {
   Logger,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDTO } from './user.dto';
-import { ValidationPipe } from '../shared/pipes/validator.pipe';
 import { AuthGuard } from '../shared/guards/auth.guard';
 import { CurrentUser } from '../shared/decorators/user.decorator';
+import { RoleGuard } from '../shared/guards/role.guard';
+import { Roles } from '../shared/decorators/roles.decorator';
 
 @Controller('user')
 export class UserController {
@@ -42,12 +39,23 @@ export class UserController {
     return await this.userService.bookmarkImplore(user_id, _id);
   }
 
-  @UseGuards(new AuthGuard())
+  @UseGuards(new AuthGuard(),RoleGuard)
+  @Roles('ADMIN')
   @Put('bookmark/vibe/:id')
   async bookmarkVibe(
     @CurrentUser('_id') user_id: string,
     @Param('id') _id: string
   ) {
     return await this.userService.bookmarkVibe(user_id, _id);
+  }
+
+  @UseGuards(new AuthGuard(),RoleGuard)
+  @Roles('ADMIN')
+  @Put('role/:role')
+  async updateRole(
+    @CurrentUser('_id') _id: string,
+    @Param('role') role: string
+  ) {
+    return await this.userService.updateRole(_id, role);
   }
 }

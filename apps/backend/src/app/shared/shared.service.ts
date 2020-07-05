@@ -5,11 +5,13 @@ import {
   existsSync,
   mkdirSync,
   writeFileSync,
-  unlinkSync,
   rmdirSync,
 } from 'fs';
 import { join } from 'path';
 import { loggerInstance } from '@gurusishyan-logger';
+import { IUserSchema } from '../../entities';
+import * as jwt from 'jsonwebtoken'
+import { jwtConstants } from '../auth/constants';
 @Injectable()
 export class SharedService {
   constructor() {}
@@ -73,5 +75,14 @@ export class SharedService {
         'error'
       );
     }
+  };
+
+   signJWT = (user: IUserSchema) => {
+    const { user_name, user_role, user_email, _id } = user;
+    return jwt.sign(
+      { user_name, user_role, user_email, _id },
+      jwtConstants.secret,
+      { expiresIn: '7d' }
+    );
   };
 }

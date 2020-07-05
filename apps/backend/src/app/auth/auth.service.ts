@@ -11,14 +11,7 @@ export class AuthService {
     private userService: UserService,
     private commonService: SharedService
   ) {}
-  private signJWT = (user: IUserSchema) => {
-    const { user_name, user_role, user_email, _id } = user;
-    return jwt.sign(
-      { user_name, user_role, user_email, _id },
-      jwtConstants.secret,
-      { expiresIn: '7d' }
-    );
-  };
+
   googleLogin = async (req: any): Promise<IUserSchema> => {
     if (!req.user) {
       throw new HttpException('Invalid User', HttpStatus.UNAUTHORIZED);
@@ -32,10 +25,10 @@ export class AuthService {
           user_email,
           user_name,
         });
-        user.token = this.signJWT(user);
+        user.token = this.commonService.signJWT(user);
         return user;
       } else {
-        attempt_user.token = this.signJWT(attempt_user);
+        attempt_user.token = this.commonService.signJWT(attempt_user);
         return attempt_user;
       }
     }
@@ -55,14 +48,14 @@ export class AuthService {
     }
     const { password, ...result } = attempt_user.toObject();
 
-    result.token = this.signJWT(attempt_user);
+    result.token = this.commonService.signJWT(attempt_user);
     return result;
   };
 
   register = async (user: CreateUserDTO): Promise<IUserSchema> => {
     const created_user = await this.userService.createUser(user);
     const { password, ...result } = created_user.toObject();
-    result.token = this.signJWT(created_user);
+    result.token = this.commonService.signJWT(created_user);
     return result;
   };
 }
