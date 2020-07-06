@@ -1,12 +1,11 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
-import { FormInput } from './form-input.component';
+import { Spinner } from './spinner.component';
 
-describe('FormInput', () => {
+describe(' Spinner', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<FormInput />);
-
+    const { baseElement } = render(<Spinner />);
     expect(baseElement).toBeTruthy();
   });
 });

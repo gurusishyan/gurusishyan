@@ -1,16 +1,19 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import './auth.scss';
 import { signIN } from '../store/authentication/signIn';
-import { CustomButton, FormInput, Label, Info } from '../shared/components';
+import {
+  CustomButton,
+  FormInput,
+  Label,
+  Info,
+  Spinner,
+} from '../shared/components';
 
 export const Auth = () => {
   const dispatch = useDispatch();
-
-  const inputChange = (e) => {
-    console.log(e.target.value);
-  };
+  const loginState = useSelector((state) => state.signIn);
 
   return (
     <form>
@@ -47,10 +50,11 @@ export const Auth = () => {
       </div>
 
       <CustomButton
-        className="btn btn-danger"
+        type="button"
+        className="btn btn-danger btn-lg btn-block"
         onClick={() => dispatch(signIN({ name: 'prem', password: 'rap' }))}
       >
-        Login
+        {loginState.loading ? <Spinner /> : 'Login'}
       </CustomButton>
     </form>
   );
