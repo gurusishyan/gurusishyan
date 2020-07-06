@@ -14,7 +14,7 @@ const slice = createSlice({
       state.loading = false;
     },
     SIGN_IN_FAILED: (state, action) => {
-      state.loading = false;
+      state.loading = true;
     },
   },
 });

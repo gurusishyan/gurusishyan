@@ -1,21 +1,62 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import './auth.scss';
 import { signIN } from '../store/authentication/signIn';
+import {
+  CustomButton,
+  FormInput,
+  Label,
+  Info,
+  Spinner,
+} from '../shared/components';
 
 export const Auth = () => {
   const dispatch = useDispatch();
+  const loginState = useSelector((state) => state.signIn);
 
   return (
-    <div>
-      <h1>Welcome to auth!</h1>
-      <button
+    <form>
+      <div className="row">
+        <div className="form-group col-md-10">
+          <Label htmlFor="email">Name</Label>
+          <FormInput
+            id="email"
+            aria-describedby="emailHelp"
+            type="email"
+            className="form-control"
+          />
+          <Info id="emailHelp">
+            {' '}
+            We will never share your email with any one
+          </Info>
+        </div>
+      </div>
+
+      <div className="row">
+        <div className="form-group col-md-10">
+          <Label htmlFor="email">Name</Label>
+          <FormInput
+            id="email"
+            aria-describedby="emailHelp"
+            type="email"
+            className="form-control"
+          />
+          <Info id="emailHelp">
+            {' '}
+            We will never share your email with any one
+          </Info>
+        </div>
+      </div>
+
+      <CustomButton
+        type="button"
+        className="btn btn-danger btn-lg btn-block"
         onClick={() => dispatch(signIN({ name: 'prem', password: 'rap' }))}
       >
-        Login
-      </button>
-    </div>
+        {loginState.loading ? <Spinner /> : 'Login'}
+      </CustomButton>
+    </form>
   );
 };
 
