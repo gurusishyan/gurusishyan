@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 import './auth.scss';
 import { signIN } from '../store/authentication/signIn';
@@ -13,7 +14,7 @@ import {
 
 export const Auth = () => {
   const dispatch = useDispatch();
-  const loginState = useSelector((state) => state.signIn);
+  const loginState = useSelector((state: any) => state.signIn);
 
   return (
     <form>
@@ -56,6 +57,8 @@ export const Auth = () => {
       >
         {loginState.loading ? <Spinner /> : 'Login'}
       </CustomButton>
+
+      <Link to="/student-registration"> Student Registration </Link>
     </form>
   );
 };
