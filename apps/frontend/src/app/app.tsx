@@ -7,12 +7,12 @@ import RegistrationStudent from './auth/components/registration-student/registra
 
 export const App = () => {
   return (
-    <Route>
+    <div>
       <Switch>
         <Route exact path="/" component={Auth} />
         <Route path="/student-registration" component={RegistrationStudent} />
       </Switch>
-    </Route>
+    </div>
   );
 };
 
