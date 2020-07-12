@@ -7,10 +7,14 @@ import {
   Form,
   Input,
 } from '../../../shared/components/dropdown/HooksForm';
+import { useDispatch } from 'react-redux';
+import { registerStudent } from '../../../store/authentication/store_registration';
 
 const RegistrationStudent = () => {
+  const dispatch = useDispatch();
+
   const onSubmit = (data) => {
-    console.log(data);
+    dispatch(registerStudent(data));
   };
   return (
     <div>
