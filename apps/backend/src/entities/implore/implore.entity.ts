@@ -1,46 +1,76 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  OneToMany,
-  OneToOne,
-  Column,
-  ManyToOne,
-  JoinColumn,
-} from 'typeorm';
-import { UserEntity } from '../user/user.entity';
-import { VibeEntity } from '../vibes/vibes.entity';
 import { MetadataDTO } from '../metadata/metadata.class';
-
-@Entity({ name: 'implore' })
-export class ImploreEntity {
-  @PrimaryGeneratedColumn('uuid', { name: 'implore_id' }) implore_id: string;
-
-  @CreateDateColumn({
-    name: 'created',
-    default: `${new Date().toDateString()} ${new Date().toLocaleTimeString()}`,
-  })
+import * as mongoose from 'mongoose';
+import { MetadataSchema } from '../metadata/metadata.class';
+export class IImploreSchema extends mongoose.Document {
+  _id: string;
   created: string;
-
-  @OneToOne((type) => UserEntity, (user) => user.user_id)
-  @JoinColumn({ name: 'implore_by' })
-  implore_by: UserEntity;
-
-  @Column('boolean', { name: 'implore_as_anonymous', default: false })
-  implore_as_anonymous: Boolean;
-
-  @OneToMany((type) => VibeEntity, (vibe) => vibe.vibe_id)
-  @JoinColumn({ name: 'associated_vibe' })
-  associated_vibe: Array<VibeEntity>;
-
-  @Column('enum', { name: 'implore_type', enum: ['QUESTION,NOTES'] })
+  author: string;
+  implore_as_anonymous: boolean;
+  associated_vibe: string[];
   implore_type: string;
-
-  @Column('jsonb', { name: 'metadata' }) metadata: MetadataDTO;
-
-  @Column('enum', {
-    name: 'status',
-    enum: ['UNDER_REVIEW', 'APPROVED', 'REJECTED'],
-  })
+  metadata: MetadataDTO;
   status: 'UNDER_REVIEW' | 'APPROVED' | 'REJECTED';
+  upvotes: string[];
+  downvotes: string[];
+  views: string[];
 }
+export const ImploreEntity = new mongoose.Schema({
+  created: {
+    type: String,
+    default: `${new Date().toDateString()} ${new Date().toLocaleTimeString()}`,
+    required: true,
+  },
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  implore_as_anonymous: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  associated_vibe: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Vibe',
+      required: false,
+    },
+  ],
+  status: {
+    type: String,
+    enum: ['UNDER_REVIEW', 'APPROVED', 'REJECTED'],
+    default: 'APPROVED',
+  },
+  metadata: MetadataSchema,
+  implore_type: {
+    type: String,
+    enum: ['QUESTION', 'NOTES'],
+  },
+  upvotes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: false,
+    },
+  ],
+  downvotes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: false,
+    },
+  ],
+  views: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: false,
+    },
+  ],
+});
+export const Implore = mongoose.model<IImploreSchema>(
+  'Implore',
+  ImploreEntity,
+  'implore'
+);

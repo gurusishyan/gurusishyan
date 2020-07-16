@@ -1,10 +1,8 @@
 import {
-  IsUUID,
   IsString,
   IsIn,
   IsNotEmpty,
   IsEmail,
-  IsOptional,
 } from 'class-validator';
 import { globalConfig } from '@gurusishyan-config';
 export class CreateUserDTO {
@@ -33,12 +31,4 @@ export class LoginUserDTO {
   @IsString({ message: 'Required Field Error: Password is a required field' })
   @IsNotEmpty({ message: 'Required Field Error: Password is a required field' })
   password: string;
-}
-export class UserRO {
-  user_id: string;
-  user_name: string;
-  created: string;
-  token?: string;
-  user_role: string;
-  user_email: string;
 }

@@ -3,20 +3,17 @@ import {
   Get,
   UseGuards,
   Req,
-  Request,
   Post,
   Body,
   UsePipes,
-  Param,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
-import { LoginUserDTO } from '../user/user.dto';
+import { LoginUserDTO, CreateUserDTO } from '../user/user.dto';
 import { ValidationPipe } from '../shared/pipes/validator.pipe';
 
 @Controller('auth')
 export class AuthController {
-
   constructor(private authService: AuthService) {}
 
   @UseGuards(AuthGuard('google'))
@@ -33,5 +30,11 @@ export class AuthController {
   @UsePipes(new ValidationPipe())
   async login(@Body() data: LoginUserDTO) {
     return await this.authService.jwtLogin(data);
+  }
+
+  @Post('register')
+  @UsePipes(new ValidationPipe())
+  async createUser(@Body() user: CreateUserDTO) {
+    return await this.authService.register(user);
   }
 }
