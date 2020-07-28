@@ -11,8 +11,8 @@
     background-color: rgb(255, 144, 32);
   }
 
-  &:active {
-    background-color: rgb(255, 144, 32);
+  &:focus {
+    outline: 0;
   }
 }
 

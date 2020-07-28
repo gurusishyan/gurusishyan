@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import './auth.scss';
-import { signIN } from '../store/authentication/signIn';
+import { signIN } from '../store/authentication/store_signin';
 import {
   CustomButton,
   FormInput,

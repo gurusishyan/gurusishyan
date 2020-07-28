@@ -43,6 +43,7 @@ export const mongooseConnection = mongoose.connect(
 async function bootstrap() {
   loggerInstance.log('Initializing Nest Module', 'info');
   const app = await NestFactory.create(AppModule);
+  app.enableCors()
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
   const port = process.env.PORT || 3333;

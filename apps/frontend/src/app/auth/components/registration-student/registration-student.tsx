@@ -2,11 +2,7 @@ import React from 'react';
 
 import './registration-student.scss';
 import { CustomButton } from '../../../shared/components';
-import {
-  Dropdown,
-  Form,
-  Input,
-} from '../../../shared/components/dropdown/HooksForm';
+import { Dropdown, Form, Input } from '../../../shared/components/HooksForm';
 import { useDispatch } from 'react-redux';
 import { registerStudent } from '../../../store/authentication/store_registration';
 

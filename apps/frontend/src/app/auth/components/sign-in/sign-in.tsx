@@ -1,25 +1,31 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { AiOutlineUser, AiOutlineLock } from 'react-icons/ai';
+import { ToastContainer, toast } from 'react-toastify';
+import { useDispatch, useSelector } from 'react-redux';
+import { AiOutlineLock } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
 import { useForm } from 'react-hook-form';
 
 import './sign-in.scss';
 import LoginPage from '../../../../assets/png/LoginPage.png';
 import Logo from '../../../../assets/svg/Logo.svg';
-import { CustomButton } from '../../../shared/components';
-import { signIN } from '../../../store/authentication/signIn';
+import { CustomButton, Spinner } from '../../../shared/components';
+import { signIN } from '../../../store/authentication/store_signin';
 
 /* eslint-disable-next-line */
 export interface SignInProps {}
 
 export const SignIn = (props: SignInProps) => {
   const { register, handleSubmit } = useForm();
+  const loginState = useSelector((state: any) => state.signIn);
   const dispatch = useDispatch();
 
   const onLoginRequested = (credentials) => {
     dispatch(signIN(credentials));
   };
+
+  if (loginState.error) {
+    toast.error(loginState.errorMessage);
+  }
 
   return (
     <div className="login_main_ctn">
@@ -74,11 +80,14 @@ export const SignIn = (props: SignInProps) => {
             </div>
 
             <CustomButton className="golden_button" type="submit">
-              <span className="register"> Sign In </span>
+              {loginState.loading ? (
+                <Spinner />
+              ) : (
+                <span className="register"> Sign In </span>
+              )}
             </CustomButton>
-
+            <ToastContainer position="bottom-left" autoClose={3000} />
             <div className="text-center or_text">or</div>
-
             <CustomButton className="google_button" type="button">
               <FcGoogle size={23} className="google_login_page" />
               Sign In with Google
