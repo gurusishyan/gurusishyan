@@ -2,8 +2,6 @@ import axios from 'axios';
 import * as actions from '../apiCall';
 
 const api = ({ dispatch }) => (next) => async (action) => {
-  console.log(action);
-  console.log(next);
   if (action.type !== actions.apiCallBegan.type) return next(action);
 
   const { url, method, data, onSuccess, onError, onStart } = action.payload;

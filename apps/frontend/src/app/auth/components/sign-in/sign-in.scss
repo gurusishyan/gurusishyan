@@ -1,0 +1,71 @@
+.login_main_ctn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  min-height: 100vh;
+}
+
+.logo_container {
+  display: flex;
+}
+
+.login_ctn_1 {
+  min-width: 25%;
+}
+
+.login_image {
+  height: 97vh;
+}
+
+.login_header {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 3rem;
+}
+
+.field_padding {
+  padding-bottom: 2rem;
+}
+
+.login_title {
+  width: 100px;
+  margin-top: -0.8rem;
+  white-space: nowrap;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 36px;
+  color: rgba(4, 20, 123, 1);
+}
+
+.line_1 {
+  background-color: rgba(4, 20, 123, 1);
+  width: 70px;
+  height: 5px;
+  border-radius: 5px;
+  margin-left: 0.4rem;
+}
+
+.register {
+  white-space: nowrap;
+  text-align: center;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  color: rgba(255, 255, 255, 1);
+}
+
+.or_text {
+  padding: 0.5rem;
+  font-family: Lato;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  color: rgba(112, 112, 112, 1);
+}
+
+.google_login_page {
+  margin-right: 0.6rem;
+}

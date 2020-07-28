@@ -22,7 +22,7 @@ const slice = createSlice({
 const { SIGN_IN_REQUESTED, SIGNED_IN, SIGN_IN_FAILED } = slice.actions;
 export default slice.reducer;
 
-const url = '/bugs';
+const url = '/auth';
 
 export const signIN = (signInCredentials) => {
   return apiCallBegan({

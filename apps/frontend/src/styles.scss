@@ -1,1 +1,38 @@
 /* You can add global styles to this file, and also import other style files */
+.golden_button {
+  width: 100%;
+  background-color: rgba(255, 128, 0, 1);
+  color: #ffffff;
+  border-radius: 3px;
+  padding: 0.4rem 0.9rem;
+  border: none;
+
+  &:hover {
+    background-color: rgb(255, 144, 32);
+  }
+
+  &:active {
+    background-color: rgb(255, 144, 32);
+  }
+}
+
+.google_button {
+  width: 100%;
+  white-space: nowrap;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  color: rgba(19, 48, 141, 1);
+  background-color: #ffffff;
+  padding: 0.4rem 0.9rem;
+  border: 1px #04147b solid;
+
+  &:hover {
+    background-color: rgb(246, 242, 242);
+  }
+}
+
+.dark_blue {
+  color: #04147b;
+}

@@ -8,11 +8,12 @@ interface hooksForm {
 }
 
 interface formValues {
-  name?: string;
+  name: string;
   register?: any;
   options?: any;
   type?: string;
   placeholder?: string;
+  className?: string;
 }
 
 export const Form = ({ defaultValues, children, onSubmit }: hooksForm) => {
