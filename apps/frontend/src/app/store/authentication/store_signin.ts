@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { createSelector } from 'reselect'
 import { apiCallBegan } from '../apiCall';
 
 const slice = createSlice({
@@ -31,19 +30,13 @@ export default slice.reducer;
 
 const url = '/auth/login';
 
-export const signIN = (signInCredentials) => {
-  return apiCallBegan({
+export const signIN = (signInCredentials) =>
+  apiCallBegan({
     url,
     onStart: SIGN_IN_REQUESTED.type,
     method: 'POST',
     data: signInCredentials,
     onSuccess: SIGNED_IN.type,
     onError: SIGN_IN_FAILED.type,
-  });
-};
+  })
 
-
-export const checkLoginStatus = createSelector(
-  (state: any) => state.signIn,
-  (login: any) => login
-)

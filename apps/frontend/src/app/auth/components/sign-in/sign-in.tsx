@@ -1,6 +1,6 @@
 import React from 'react';
 import { ToastContainer, toast } from 'react-toastify';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { AiOutlineLock } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
 import { useForm } from 'react-hook-form';
@@ -16,7 +16,7 @@ export interface SignInProps {}
 
 export const SignIn = (props: SignInProps) => {
   const { register, handleSubmit } = useForm();
-  const loginState = useSelector((state: any) => state.signIn);
+  const loginState = useSelector((state: any) => state.signIn, shallowEqual);
   const dispatch = useDispatch();
 
   const onLoginRequested = (credentials) => {
