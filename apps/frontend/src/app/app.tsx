@@ -1,17 +1,20 @@
 import React from 'react';
-import { Provider } from 'react-redux';
+import { Route, Switch } from 'react-router-dom';
 
 import './app.scss';
-import configureStore from './store/configureStore';
 import Auth from './auth/auth';
-
-const store = configureStore();
+import RegistrationStudent from './auth/components/registration-student/registration-student';
+import SignIn from './auth/components/sign-in/sign-in';
 
 export const App = () => {
   return (
-    <Provider store={store}>
-      <Auth />
-    </Provider>
+    <div>
+      <Switch>
+        <Route exact path="/" component={Auth} />
+        <Route exact path="/auth/login" component={SignIn} />
+        <Route path="/student-registration" component={RegistrationStudent} />
+      </Switch>
+    </div>
   );
 };
 

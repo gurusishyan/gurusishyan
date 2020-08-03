@@ -1,0 +1,9 @@
+mongodb:
+  image: 'mongo:latest'
+  container_name: gs_container
+  environment:
+    - 'MONGODB_DATABASE="gurusishyan"'
+  ports:
+    - '27019:27017'
+  expose:
+    - 27019

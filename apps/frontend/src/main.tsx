@@ -1,6 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.css';
-import App from './app/app';
+import 'bootstrap/dist/js/bootstrap.js';
+import '@popperjs/core';
+import { BrowserRouter as Router } from 'react-router-dom';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+import App from './app/app';
+import configureStore from './app/store/configureStore';
+
+const store = configureStore();
+
+ReactDOM.render(
+  <Provider store={store}>
+    <Router>
+      <App />
+    </Router>
+  </Provider>,
+
+  document.getElementById('root')
+);
