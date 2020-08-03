@@ -20,6 +20,7 @@ export class AuthService {
       const attempt_user = await this.userService.findUserWithUserName(
         user_name
       );
+      // console.log(attempt_user)
       if (!attempt_user) {
         const user = await this.userService.createUser({
           user_email,

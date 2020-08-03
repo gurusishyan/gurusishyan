@@ -87,4 +87,9 @@ export class UserRepository {
     )
       .then((user) => user)
       .catch((err) => this.commonService.sendErrorMessage(err));
+
+  deleteUser = async (_id: string) =>
+    await User.findOneAndRemove({ _id })
+      .then((user) => user)
+      .catch((err) => this.commonService.sendErrorMessage(err));
 }

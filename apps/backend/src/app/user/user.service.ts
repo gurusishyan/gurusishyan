@@ -1,12 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { CreateUserDTO } from './user.dto';
 import { IUserSchema } from '../../entities';
 import { SharedService } from '../shared/shared.service';
+import { ImploreService } from '../implore/implore.service';
 
 @Injectable()
 export class UserService {
-  constructor(private userRepository: UserRepository) {}
+  constructor(
+    private userRepository: UserRepository,
+    // private imploreService: ImploreService
+  ) {}
   commonService = new SharedService();
   findAllUsers = async () => await this.userRepository.findAllUsers();
 
@@ -46,4 +50,16 @@ export class UserService {
 
   unBookmarkVibe = async (_id: string, vibe_id: string) =>
     await this.userRepository.unBookmarkVibe(_id, vibe_id);
+
+  deleteUser = async (_id: string) => {
+    // const implore = await this.imploreService.getImploresForAUser(_id);
+    // if (implore.length > 0) {
+    //   for (let i = 0; i < implore.length; i++) {
+    //     await this.imploreService.deleteImplore(implore[i]._id, _id);
+    //   }
+    // }
+    // TODO Vibe deletion is pending
+
+    return await this.userRepository.deleteUser(_id);
+  };
 }
