@@ -39,6 +39,7 @@ export class HttpInterceptor implements NestInterceptor {
             `${method} ${res.statusCode} ${url} - Success`,
             'info'
           );
+          return res.send(data)
           return {
             code: res.statusCode,
             payload: data,

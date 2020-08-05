@@ -8,6 +8,7 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { loggerInstance } from '@gurusishyan-logger';
 import { AppModule } from './app/app.module';
+import * as dotenv from 'dotenv';
 import { existsSync, mkdirSync } from 'fs';
 function bindSwagger(app: INestApplication) {
   const options = new DocumentBuilder()
@@ -20,6 +21,7 @@ function bindSwagger(app: INestApplication) {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api-docs', app, document);
 }
+dotenv.config();
 export const mongooseConnection = mongoose.connect(
   process.env.DB_URL,
   {
@@ -27,9 +29,12 @@ export const mongooseConnection = mongoose.connect(
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
-  },
+    user: process.env.DB_USERNAME,
+    pass: process.env.DB_PASSWORD
+},
   (err) => {
     if (err) {
+      console.log(err)
       Logger.error(`Error :: ${err}\n`, 'DatabaseConnection');
     } else {
       Logger.log(

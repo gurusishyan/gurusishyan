@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import { Implore } from '../implore/implore.entity';
 
 export class IUserSchema extends mongoose.Document {
   _id: string;
@@ -74,4 +75,8 @@ export const UserEntity = new mongoose.Schema({
     },
   ],
 });
+UserEntity.pre("remove",(next,doc)=>{
+  console.log(doc)
+})
 export const User = mongoose.model<IUserSchema>('User', UserEntity, 'user');
+

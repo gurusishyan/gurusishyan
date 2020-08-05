@@ -1,4 +1,16 @@
-import { Controller, UseGuards, Get, Put, Param, Logger } from '@nestjs/common';
+import {
+  Controller,
+  UseGuards,
+  Get,
+  Put,
+  Param,
+  Logger,
+  Delete,
+  forwardRef,
+  Inject,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthGuard } from '../shared/guards/auth.guard';
 import { CurrentUser } from '../shared/decorators/user.decorator';
@@ -14,7 +26,9 @@ export class UserController {
     options.param && this.logger.log('param: ' + options.param);
     options.data && this.logger.log('data: ' + options.data);
   }
-  constructor(private userService: UserService) {}
+  constructor(
+    @Inject(forwardRef(() => UserService)) private userService: UserService
+  ) {}
 
   @Get()
   // @UseGuards(new AuthGuard())
@@ -29,6 +43,7 @@ export class UserController {
     @CurrentUser('_id') user_id: string,
     @Param('id') _id: string
   ) {
+    this.logData({ _id, data: _id });
     return await this.userService.bookmarkImplore(user_id, _id);
   }
 
@@ -39,6 +54,7 @@ export class UserController {
     @CurrentUser('_id') user_id: string,
     @Param('id') _id: string
   ) {
+    this.logData({ _id, data: _id });
     return await this.userService.bookmarkVibe(user_id, _id);
   }
 
@@ -49,6 +65,7 @@ export class UserController {
     @CurrentUser('_id') _id: string,
     @Param('role') role: string
   ) {
+    this.logData({ _id, data: role });
     return await this.userService.updateRole(_id, role);
   }
 
@@ -59,6 +76,7 @@ export class UserController {
     @CurrentUser('_id') _id: string,
     @Param('id') implore_id: string
   ) {
+    this.logData({ _id, data: implore_id });
     return await this.userService.unBookmarkImplore(_id, implore_id);
   }
 
@@ -69,6 +87,23 @@ export class UserController {
     @CurrentUser('_id') _id: string,
     @Param('id') vibe_id: string
   ) {
+    this.logData({ _id, data: vibe_id });
     return await this.userService.unBookmarkVibe(_id, vibe_id);
+  }
+
+  @UseGuards(new AuthGuard(), RoleGuard)
+  @Roles('ADMIN', 'OTHERS', 'TEACHER', 'STUDENT')
+  @Delete(':id')
+  async deleteUser(
+    @Param('id') user_id: string,
+    @CurrentUser('_id') _id: string
+  ) {
+    if (_id === user_id) {
+      return await this.userService.deleteUser(_id);
+    }
+    throw new HttpException(
+      'You are not allowed to do this.',
+      HttpStatus.NOT_IMPLEMENTED
+    );
   }
 }

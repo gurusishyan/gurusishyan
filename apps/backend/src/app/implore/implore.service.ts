@@ -1,4 +1,10 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Injectable,
+  HttpException,
+  HttpStatus,
+  Inject,
+  forwardRef,
+} from '@nestjs/common';
 import { ImploreRepository } from './implore.repository';
 import { CreateImploreDTO, UpdateImploreDTO } from './implore.dto';
 import { IFile } from '../shared/interfaces';
@@ -12,6 +18,7 @@ export class ImploreService {
   constructor(
     private imploreRepository: ImploreRepository,
     private commonService: SharedService,
+    @Inject(forwardRef(() => UserService))
     private userService: UserService
   ) {}
 

@@ -23,6 +23,12 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   googleAuthRedirect(@Req() req) {
+    // console.log(req.user)
+    let response_html = "<html><head><title>Main</title></head><body></body><script>res = %value%; window.opener.postMessage(res, '*');window.close();</script></html>".toString()
+    response_html = response_html.replace('%value%', JSON.stringify({
+      user: req.user
+  }));
+  return response_html
     return this.authService.googleLogin(req);
   }
 
