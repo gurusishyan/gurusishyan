@@ -58,6 +58,8 @@
     "react-router-dom": "^5.2.0",
     "react-toastify": "^6.0.8",
     "redux": "^4.0.5",
+    "redux-devtools-extension": "^2.13.8",
+    "redux-thunk": "^2.3.0",
     "reflect-metadata": "^0.1.13",
     "swagger-ui-express": "^4.1.4",
     "winston": "^3.3.2"

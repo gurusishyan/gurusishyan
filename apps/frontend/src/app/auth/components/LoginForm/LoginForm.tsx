@@ -1,31 +1,20 @@
 import React from 'react';
-import { ToastContainer, toast } from 'react-toastify';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { ToastContainer } from 'react-toastify';
 import { AiOutlineLock } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
 import { useForm } from 'react-hook-form';
 
-import './sign-in.scss';
+import './LoginForm.scss';
 import LoginPage from '../../../../assets/png/LoginPage.png';
 import Logo from '../../../../assets/svg/Logo.svg';
-import { CustomButton, Spinner } from '../../../shared/components';
-import { signIN } from '../../../store/authentication/store_signin';
+import { CustomButton } from '../../../shared/components';
 
-/* eslint-disable-next-line */
-export interface SignInProps {}
-
-export const SignIn = (props: SignInProps) => {
+const LoginForm = () => {
   const { register, handleSubmit } = useForm();
-  const loginState = useSelector((state: any) => state.signIn, shallowEqual);
-  const dispatch = useDispatch();
 
-  const onLoginRequested = (credentials) => {
-    dispatch(signIN(credentials));
+  const onLoginRequested = (data) => {
+    console.log(data);
   };
-
-  if (loginState.error) {
-    toast.error(loginState.errorMessage);
-  }
 
   return (
     <div className="login_main_ctn">
@@ -80,11 +69,7 @@ export const SignIn = (props: SignInProps) => {
             </div>
 
             <CustomButton className="golden_button" type="submit">
-              {loginState.loading ? (
-                <Spinner />
-              ) : (
-                <span className="register"> Sign In </span>
-              )}
+              Sign In
             </CustomButton>
             <ToastContainer position="bottom-left" autoClose={3000} />
             <div className="text-center or_text">or</div>
@@ -102,4 +87,4 @@ export const SignIn = (props: SignInProps) => {
   );
 };
 
-export default SignIn;
+export default LoginForm;

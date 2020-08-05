@@ -5,19 +5,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.js';
 import '@popperjs/core';
-import { BrowserRouter as Router } from 'react-router-dom';
 
 import App from './app/app';
-import configureStore from './app/store/configureStore';
-
-const store = configureStore();
+import store from './app/store/configureStore';
 
 ReactDOM.render(
   <Provider store={store}>
-    <Router>
-      <App />
-    </Router>
+    <App />
   </Provider>,
-
   document.getElementById('root')
 );

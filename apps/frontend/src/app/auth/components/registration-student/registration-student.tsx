@@ -4,13 +4,10 @@ import './registration-student.scss';
 import { CustomButton } from '../../../shared/components';
 import { Dropdown, Form, Input } from '../../../shared/components/HooksForm';
 import { useDispatch } from 'react-redux';
-import { registerStudent } from '../../../store/authentication/store_registration';
 
 const RegistrationStudent = () => {
-  const dispatch = useDispatch();
-
   const onSubmit = (data) => {
-    dispatch(registerStudent(data));
+    console.log(data);
   };
   return (
     <div>

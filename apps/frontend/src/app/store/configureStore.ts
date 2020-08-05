@@ -1,10 +1,12 @@
-import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
-import api from './middleware/api';
+import { createStore, applyMiddleware } from "redux";
+import { composeWithDevTools } from 'redux-devtools-extension';
+import thunk from 'redux-thunk';
+
 import reducer from './reducer';
 
-export default function () {
-  return configureStore({
-    reducer,
-    middleware: [...getDefaultMiddleware(), api],
-  });
-}
+const store = createStore(
+  reducer,
+  composeWithDevTools(applyMiddleware(thunk))
+)
+
+export default store

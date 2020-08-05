@@ -1,19 +1,22 @@
-import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
-import './app.scss';
+import { whoami } from './store/auth-store/actions';
 import Auth from './auth/auth';
-import RegistrationStudent from './auth/components/registration-student/registration-student';
-import SignIn from './auth/components/sign-in/sign-in';
+import InitialLoader from './shared/components/InitialLoader';
 
 export const App = () => {
+  const dispatch = useDispatch();
+  const loginStatus = useSelector((state: any) => state.auth);
+  const { isInitializing, currentUser, isLoggingIn } = loginStatus;
+
+  useEffect(() => {
+    dispatch(whoami());
+  }, []);
+
   return (
     <div>
-      <Switch>
-        <Route exact path="/" component={Auth} />
-        <Route exact path="/auth/login" component={SignIn} />
-        <Route path="/student-registration" component={RegistrationStudent} />
-      </Switch>
+      {isInitializing ? <InitialLoader /> : currentUser ? <Auth /> : <Auth />}
     </div>
   );
 };
