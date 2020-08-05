@@ -1,4 +1,5 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import { AiOutlineLock } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
@@ -8,12 +9,14 @@ import './LoginForm.scss';
 import LoginPage from '../../../../assets/png/LoginPage.png';
 import Logo from '../../../../assets/svg/Logo.svg';
 import { CustomButton } from '../../../shared/components';
+import { userLoginRequest } from '../../../store/auth-store/actions';
 
 const LoginForm = () => {
   const { register, handleSubmit } = useForm();
+  const dispatch = useDispatch();
 
   const onLoginRequested = (data) => {
-    console.log(data);
+    dispatch(userLoginRequest(data));
   };
 
   return (
@@ -45,7 +48,7 @@ const LoginForm = () => {
               <input
                 ref={register}
                 type="text"
-                name="username"
+                name="user_name"
                 placeholder="Username"
                 className="form-control"
                 required

@@ -1,27 +1,41 @@
 import React from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import { useSelector, useDispatch } from 'react-redux';
+
+import { closeToast } from '../../store/toast-store/actions';
 
 const MessageToast = () => {
+  const toastState = useSelector((state: any) => state.toast);
+  const dispatch = useDispatch();
+
+  const { toastVisibility, toastMessage, isError } = toastState;
+
+  const showToast = () => {
+    toast.error(toastMessage, { onClose: onToastClose });
+  };
+
+  const onToastClose = () => {
+    dispatch(closeToast());
+  };
+
   return (
-    <div
-      aria-live="polite"
-      aria-atomic="true"
-      style={{ position: 'relative', minHeight: '200px' }}
-    >
-      <div className="toast" style={{ position: 'absolute', top: 0, right: 0 }}>
-        <div className="toast-header">
-          <img src="..." className="rounded mr-2" alt="..." />
-          <strong className="mr-auto">Bootstrap</strong>
-          <button
-            type="button"
-            className="ml-2 mb-1 close"
-            data-dismiss="toast"
-            aria-label="Close"
-          >
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div className="toast-body">Hello, world! This is a toast message.</div>
-      </div>
+    <div>
+      {toastVisibility && isError ? showToast() : ''}
+      {toastVisibility ? (
+        <ToastContainer
+          position="bottom-left"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
+      ) : (
+        ''
+      )}
     </div>
   );
 };

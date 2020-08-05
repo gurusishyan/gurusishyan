@@ -1,8 +1,12 @@
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
+import { showToast } from '../store/toast-store/actions';
+import store from '../store/configureStore';
 
 const axiosInstance = axios.create({
     baseURL: 'http://localhost:5000/api'
 })
+
+const { dispatch } = store
 
 const apiRequestHandler = (request: AxiosRequestConfig) => {
     const token = localStorage.getItem('token')
@@ -18,9 +22,9 @@ const apiResponseHandler = (response: AxiosResponse) => {
 
 const apiErrorHandler = (error: AxiosError) => {
     if (error.response.status = 504) {
-        console.log("Request timed out")
+        dispatch(showToast('Request timed out', true))
     } else {
-        console.log(error.response.data.message)
+        dispatch(showToast(error.response.data.message, true))
     }
     return Promise.reject({ ...error })
 }
