@@ -1,4 +1,4 @@
-import { UserState, LOGIN_SUCCESS } from './types';
+import { UserState, LOGIN_USER } from './types';
 
 const initialState: UserState = {
     currentUser: null,
@@ -12,7 +12,7 @@ const authReducer = (
     action
 ): UserState => {
     switch (action.type) {
-        case LOGIN_SUCCESS:
+        case LOGIN_USER:
             return {
                 ...state,
                 currentUser: action.payload,

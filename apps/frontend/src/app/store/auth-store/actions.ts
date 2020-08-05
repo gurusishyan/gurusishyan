@@ -1,10 +1,10 @@
 import axiosInstance from '../../utils/api';
-import { UserDetails, LOGIN_SUCCESS, LOGIN_FAILURE } from './types';
+import { UserDetails, LOGIN_USER, LOGIN_FAILURE } from './types';
 import { AxiosResponse, AxiosError } from 'axios';
 
-const userLoginSuccess = (userObject: UserDetails) => {
+const loginUser = (userObject: UserDetails) => {
     return {
-        type: LOGIN_SUCCESS,
+        type: LOGIN_USER,
         payload: userObject,
     };
 };
@@ -23,7 +23,7 @@ export const whoami = () => {
             axiosInstance
                 .get('/user/me')
                 .then((res: AxiosResponse) => {
-                    dispatch(userLoginSuccess(res.data.data));
+                    dispatch(loginUser(res.data.data));
                 })
                 .catch((err: AxiosError) => {
                     if (err.response) {
@@ -31,10 +31,10 @@ export const whoami = () => {
                             localStorage.removeItem('token');
                         }
                     }
-                    dispatch(userLoginSuccess(null));
+                    dispatch(loginUser(null));
                 });
         } else {
-            dispatch(userLoginSuccess(null));
+            dispatch(loginUser(null));
         }
     };
 };
@@ -46,7 +46,7 @@ export const userLoginRequest = (credentials) => {
             .then((res) => {
                 if (res.data) {
                     localStorage.setItem('token', res.data.data.token);
-                    dispatch(userLoginSuccess(res.data.data));
+                    dispatch(loginUser(res.data.data));
                 }
             })
             .catch((err) => {
