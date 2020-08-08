@@ -1,4 +1,6 @@
-export const LOGIN_USER = 'LOGIN_USER'
+export const LOGIN = 'LOGIN'
+export const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
+export const TOKEN_LOGIN_FAILED = 'TOKEN_LOGIN_FAILED'
 export const LOGIN_FAILURE = 'LOGIN_FAILURE'
 
 export interface UserState {
