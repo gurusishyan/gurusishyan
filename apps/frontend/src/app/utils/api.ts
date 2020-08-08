@@ -21,10 +21,10 @@ const apiResponseHandler = (response: AxiosResponse) => {
 }
 
 const apiErrorHandler = (error: AxiosError) => {
-    if (error.response.status = 504) {
+    if (error.response.status === 504) {
         dispatch(showToast('Request timed out', true))
     } else {
-        dispatch(showToast(error.response.data.message, true))
+        dispatch(showToast(error.response.data.payload, true))
     }
     return Promise.reject({ ...error })
 }
