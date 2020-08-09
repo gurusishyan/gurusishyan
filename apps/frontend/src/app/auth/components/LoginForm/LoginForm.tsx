@@ -4,6 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import { AiOutlineLock } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
 import { useForm } from 'react-hook-form';
+import { Link } from 'react-router-dom';
 
 import './LoginForm.scss';
 import LoginPage from '../../../../assets/png/LoginPage.png';
@@ -33,7 +34,13 @@ const LoginForm = () => {
             </div>
             <div>
               <CustomButton className="golden_button" type="button">
-                <span className="register"> Register </span>
+                <Link
+                  to="/student-registration"
+                  className="register"
+                  style={{ textDecoration: 'none' }}
+                >
+                  Register
+                </Link>
               </CustomButton>
             </div>
           </div>

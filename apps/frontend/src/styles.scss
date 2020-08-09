@@ -33,6 +33,55 @@
   }
 }
 
+.google_button_1 {
+  width: 48%;
+  white-space: nowrap;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  color: rgba(19, 48, 141, 1);
+  background-color: #ffffff;
+  padding: 0.4rem 1rem;
+  border: 1px #04147b solid;
+
+  &:hover {
+    background-color: rgb(246, 242, 242);
+  }
+}
+
+.register_btn {
+  width: 100%;
+  white-space: nowrap;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  background-color: #5a0068;
+  color: #f4f4f4;
+  padding: 0.4rem 1.5rem;
+}
+
+.light_blue {
+  color: #2771bc;
+}
+
+.link_btn {
+  padding: 0.5rem 1.5rem;
+  font-size: 20px;
+  border: 1px solid #2771bc;
+  border-radius: 3px;
+  text-decoration: none !important;
+}
+
 .dark_blue {
   color: #04147b;
+}
+
+.white {
+  color: #ffffff;
+}
+
+.mg_r {
+  margin-right: 1rem;
 }
