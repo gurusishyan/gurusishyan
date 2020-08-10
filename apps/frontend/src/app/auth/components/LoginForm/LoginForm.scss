@@ -1,9 +1,5 @@
 .login_main_ctn {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  min-height: 100vh;
 }
 
 .logo_container {
@@ -11,11 +7,26 @@
 }
 
 .login_ctn_1 {
-  min-width: 25%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  min-height: 100vh;
+  width: 40vw;
+}
+
+.form_ctn {
+  width: 70%;
+}
+
+.login_ctn_2 {
+  width: 20vw;
 }
 
 .login_image {
-  width: 100%;
+  object-fit: cover;
+  width: 60vw;
+  height: 100vh;
 }
 
 .login_header {
@@ -64,6 +75,21 @@
   font-weight: normal;
   font-size: 16px;
   color: rgba(112, 112, 112, 1);
+}
+
+.fp_container {
+  position: relative;
+  padding-bottom: 1.5rem;
+}
+
+.fp_ {
+  position: absolute;
+  top: 39px;
+  right: 0;
+}
+
+.fp_text {
+  font-size: 15px;
 }
 
 .google_login_page {

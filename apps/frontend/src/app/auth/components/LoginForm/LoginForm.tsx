@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 
 import './LoginForm.scss';
-import LoginPage from '../../../../assets/png/LoginPage.png';
+import Login_Page from '../../../../assets/svg/Login_Page.svg';
 import Logo from '../../../../assets/svg/Logo.svg';
 import { CustomButton } from '../../../shared/components';
 import { userLoginRequest } from '../../../store/auth-store/actions';
@@ -23,7 +23,7 @@ const LoginForm = () => {
   return (
     <div className="login_main_ctn">
       <div className="login_ctn_1">
-        <div>
+        <div className="form_ctn">
           <div className="logo_container field_padding">
             <img src={Logo} />
           </div>
@@ -62,20 +62,30 @@ const LoginForm = () => {
               />
             </div>
 
-            <div className="input-group mb-4 field_padding">
-              <div className="input-group-prepend">
+            <div className="input-group mb-4 fp_container">
+              <div className="form-group input-group mb-12">
                 <span className="input-group-text" id="basic-addon1">
                   <AiOutlineLock />
                 </span>
+                <input
+                  ref={register}
+                  type="password"
+                  name="password"
+                  aria-describedby="emailHelp"
+                  placeholder="password"
+                  className="form-control"
+                  id="emailHelp"
+                  required
+                />
               </div>
-              <input
-                ref={register}
-                type="password"
-                name="password"
-                placeholder="password"
-                className="form-control"
-                required
-              />
+              <div className="fp_">
+                <small id="emailHelp" className="form-text text-muted">
+                  <span className="dark_blue fp_text pointer">
+                    {' '}
+                    Forgot Password{' '}
+                  </span>
+                </small>
+              </div>
             </div>
 
             <CustomButton className="golden_button" type="submit">
@@ -90,8 +100,8 @@ const LoginForm = () => {
           </form>
         </div>
       </div>
-      <div>
-        <img className="login_image" src={LoginPage} />
+      <div className="login_ctn_2">
+        <img className="login_image" src={Login_Page} />
       </div>
     </div>
   );
