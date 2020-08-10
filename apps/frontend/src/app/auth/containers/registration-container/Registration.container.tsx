@@ -8,21 +8,21 @@ import RegistrationTeacher from '../../components/registration-teacher/registrat
 import './Registration.styles.scss';
 
 const RegistrationContainer = () => {
-  let location = useLocation();
+  let location = useLocation().pathname;
   return (
     <div className="student_main_ctn">
       <div className="main_ctn_1">
-        {location.pathname === '/student-registration' ? (
-          <RegistrationStudent />
+        {location === '/student-registration' ? (
+          <RegistrationStudent pathname={location} />
         ) : (
-          <RegistrationTeacher />
+          <RegistrationTeacher pathname={location} />
         )}
       </div>
       <div className="main_ctn_2">
         <img
           className="student_image"
           src={
-            location.pathname === `/student-registration`
+            location === `/student-registration`
               ? Student_Registration
               : Teacher_Registration
           }

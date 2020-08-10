@@ -1,17 +1,24 @@
 import React from 'react';
+import { useForm } from 'react-hook-form';
 
 import './registration-student.scss';
 import { Label, CustomButton } from '../../../shared/components';
-import { Input, Dropdown } from '../../../shared/components/HooksForm';
 import Logo from '../../../../assets/svg/Logo.svg';
 import { Link } from 'react-router-dom';
 
-const RegistrationStudent = () => {
+export interface RegistrationStudentProps {
+  pathname: string;
+}
+
+const RegistrationStudent = (props: RegistrationStudentProps) => {
+  const { register, handleSubmit } = useForm();
+  const options = ['CBSE', 'STATE BOARD'];
+
   const onSubmit = (data) => {
     console.log(data);
   };
   return (
-    <form className="student_form">
+    <form onSubmit={handleSubmit(onSubmit)} className="student_teacher_form">
       <div className="tb_row">
         <div className="tb_cell">
           <img src={Logo} />
@@ -26,7 +33,14 @@ const RegistrationStudent = () => {
               </Link>
             </div>
             <div>
-              <Link to="/student-registration" className="link_btn">
+              <Link
+                to="/student-registration"
+                className={
+                  props.pathname === `/student-registration`
+                    ? 'student_form mg_r'
+                    : 'link_btn'
+                }
+              >
                 Student
               </Link>
             </div>
@@ -35,23 +49,31 @@ const RegistrationStudent = () => {
       </div>
       <div className="tb_row">
         <div className="tb_cell">
-          <Label> Username *</Label>
+          <Label>
+            {' '}
+            Username <span className="tomato">*</span>
+          </Label>
         </div>
         <div className="tb_cell">
-          <Input
+          <input
+            ref={register}
             className="form-control"
             placeholder="Enter your name"
-            type="email"
-            name="email"
+            type="text"
+            name="username"
           />
         </div>
       </div>
       <div className="tb_row">
         <div className="tb_cell">
-          <Label> Class *</Label>
+          <Label>
+            {' '}
+            Class <span className="tomato">*</span>
+          </Label>
         </div>
         <div className="tb_cell">
-          <Input
+          <input
+            ref={register}
             className="form-control"
             placeholder="Enter your class"
             type="class"
@@ -61,10 +83,14 @@ const RegistrationStudent = () => {
       </div>
       <div className="tb_row">
         <div className="tb_cell">
-          <Label> Email ID *</Label>
+          <Label>
+            {' '}
+            Email ID <span className="tomato">*</span>
+          </Label>
         </div>
         <div className="tb_cell">
-          <Input
+          <input
+            ref={register}
             className="form-control"
             placeholder="Enter your email address"
             type="email"
@@ -74,15 +100,20 @@ const RegistrationStudent = () => {
       </div>
       <div className="tb_row">
         <div className="tb_cell">
-          <Label> Phone *</Label>
+          <Label>
+            {' '}
+            Phone <span className="tomato">*</span>
+          </Label>
         </div>
-        <div className="input-group tb_cell">
+        <div className="tb_cell">
           <div>
             <div className="input-group-prepend">
               <span className="input-group-text" id="basic-addon1">
                 +91
               </span>
               <input
+                ref={register}
+                name="phone"
                 type="number"
                 className="form-control"
                 placeholder="Enter your phone number"
@@ -95,23 +126,35 @@ const RegistrationStudent = () => {
       </div>
       <div className="tb_row">
         <div className="tb_cell">
-          <Label> Board of Education *</Label>
+          <Label>
+            {' '}
+            Board of Education <span className="tomato">*</span>
+          </Label>
         </div>
         <div className="tb_cell">
-          <Dropdown
+          <select
             className="form-control"
             name="board_of_education"
-            options={['CBSE', 'STATE_BOARD']}
-            placeholder="Education"
-          />
+            ref={register}
+          >
+            {options.map((value) => (
+              <option key={value} value={value}>
+                {value}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
       <div className="tb_row">
         <div className="tb_cell">
-          <Label> Password *</Label>
+          <Label>
+            {' '}
+            Password <span className="tomato">*</span>
+          </Label>
         </div>
         <div className="tb_cell">
-          <Input
+          <input
+            ref={register}
             className="form-control"
             type="password"
             placeholder="Enter your password"
@@ -122,7 +165,7 @@ const RegistrationStudent = () => {
       <div className="tb_row">
         <div className="tb_cell"></div>
         <div className="tb_cell">
-          <CustomButton className="register_btn mg_r">
+          <CustomButton type="submit" className="register_btn mg_r">
             {' '}
             Register as Student
           </CustomButton>
