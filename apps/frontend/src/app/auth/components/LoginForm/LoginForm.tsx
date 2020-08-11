@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import { AiOutlineLock } from 'react-icons/ai';
@@ -11,8 +11,10 @@ import Login_Page from '../../../../assets/svg/Login_Page.svg';
 import Logo from '../../../../assets/svg/Logo.svg';
 import { CustomButton } from '../../../shared/components';
 import { userLoginRequest } from '../../../store/auth-store/actions';
+import ForgotPassword from '../Forgot-Password/Forgot-Password.component';
 
 const LoginForm = () => {
+  const [modalShow, setModalShow] = useState(false);
   const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
 
@@ -37,7 +39,7 @@ const LoginForm = () => {
                 <Link
                   to="/student-registration"
                   className="register"
-                  style={{ textDecoration: 'none' }}
+                  style={{ textDecoration: 'none', color: '#ffffff' }}
                 >
                   Register
                 </Link>
@@ -79,12 +81,19 @@ const LoginForm = () => {
                 />
               </div>
               <div className="fp_">
-                <small id="emailHelp" className="form-text text-muted">
+                <small
+                  onClick={() => setModalShow(true)}
+                  id="emailHelp"
+                  className="form-text text-muted"
+                >
                   <span className="dark_blue fp_text pointer">
-                    {' '}
-                    Forgot Password{' '}
+                    Forgot Password
                   </span>
                 </small>
+                <ForgotPassword
+                  show={modalShow}
+                  onHide={() => setModalShow(false)}
+                />
               </div>
             </div>
 

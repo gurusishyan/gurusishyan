@@ -3,6 +3,7 @@ import { Switch, Route, Redirect, BrowserRouter } from 'react-router-dom';
 import { Spinner } from '../shared/components';
 
 const LoginForm = lazy(() => import('./components/LoginForm/LoginForm'));
+
 const RegistrationContainer = lazy(() =>
   import('./containers/registration-container/Registration.container')
 );
@@ -19,6 +20,7 @@ export const Auth = () => {
             <Route path="/teacher-registration">
               <RegistrationContainer />
             </Route>
+
             <Route path="/" exact>
               <LoginForm />
             </Route>
