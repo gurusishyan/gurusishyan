@@ -100,7 +100,6 @@ const LoginForm = () => {
             <CustomButton className="golden_button" type="submit">
               Sign In
             </CustomButton>
-            <ToastContainer position="bottom-left" autoClose={3000} />
             <div className="text-center or_text">or</div>
             <CustomButton className="google_button" type="button">
               <FcGoogle size={23} className="google_login_page" />

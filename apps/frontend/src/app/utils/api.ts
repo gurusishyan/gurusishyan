@@ -18,6 +18,7 @@ const apiResponseHandler = (response: AxiosResponse) => {
 }
 
 const apiErrorHandler = (error: AxiosError) => {
+    console.log(error.response)
     if (error.response.status === 504) {
         errorToast('Request Timed out')
     } else {

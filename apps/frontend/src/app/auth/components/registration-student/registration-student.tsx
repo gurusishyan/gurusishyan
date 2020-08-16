@@ -1,21 +1,24 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
 import './registration-student.scss';
 import { Label, CustomButton } from '../../../shared/components';
 import Logo from '../../../../assets/svg/Logo.svg';
 import { Link } from 'react-router-dom';
+import { requestingStudentRegistration } from '../../../store/registration-store/actions';
 
 export interface RegistrationStudentProps {
   pathname: string;
 }
 
 const RegistrationStudent = (props: RegistrationStudentProps) => {
+  const dispatch = useDispatch();
   const { register, handleSubmit } = useForm();
   const options = ['CBSE', 'STATE BOARD'];
 
   const onSubmit = (data) => {
-    console.log(data);
+    dispatch(requestingStudentRegistration(data));
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="student_teacher_form">
