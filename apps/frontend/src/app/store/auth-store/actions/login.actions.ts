@@ -1,6 +1,7 @@
-import axiosInstance from '../../utils/api';
-import { UserDetails, LOGIN_FAILURE, LOGIN, LOGIN_SUCCESS, TOKEN_LOGIN_FAILED } from './types';
+import axiosInstance from '../../../utils/api';
+import { LOGIN_FAILURE, LOGIN, LOGIN_SUCCESS, TOKEN_LOGIN_FAILED } from '../types';
 import { AxiosResponse, AxiosError } from 'axios';
+import { UserDetails } from '@gurusishyan/request-interface';
 
 const login = () => {
     return {

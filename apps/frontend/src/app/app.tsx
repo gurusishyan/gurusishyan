@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { whoami } from './store/auth-store/actions';
+import { whoami } from './store/auth-store/actions/login.actions';
 import Auth from './auth/auth';
 import InitialLoader from './shared/components/InitialLoader';
 import ForgotPassword from './auth/components/Forgot-Password/Forgot-Password.component';

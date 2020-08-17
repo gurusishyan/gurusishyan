@@ -17,3 +17,11 @@ export interface TeacherDetails {
     subject_handled: string
     password: string
 }
+
+export interface UserDetails {
+    username: string;
+    userId: string;
+    email: string;
+    role: string;
+    createdAt: Date;
+}

@@ -1,4 +1,4 @@
-import { UserState, LOGIN_SUCCESS, LOGIN, LOGIN_FAILURE, TOKEN_LOGIN_FAILED } from './types';
+import { UserState, LOGIN_SUCCESS, LOGIN, LOGIN_FAILURE, TOKEN_LOGIN_FAILED } from '../types';
 
 const initialState: UserState = {
     currentUser: null,

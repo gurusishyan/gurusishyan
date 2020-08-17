@@ -10,7 +10,7 @@ import './LoginForm.scss';
 import Login_Page from '../../../../assets/svg/Login_Page.svg';
 import Logo from '../../../../assets/svg/Logo.svg';
 import { CustomButton } from '../../../shared/components';
-import { userLoginRequest } from '../../../store/auth-store/actions';
+import { userLoginRequest } from '../../../store/auth-store/actions/login.actions';
 import ForgotPassword from '../Forgot-Password/Forgot-Password.component';
 
 const LoginForm = () => {
