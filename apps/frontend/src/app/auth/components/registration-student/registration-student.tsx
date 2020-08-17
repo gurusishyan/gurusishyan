@@ -6,7 +6,8 @@ import './registration-student.scss';
 import { Label, CustomButton } from '../../../shared/components';
 import Logo from '../../../../assets/svg/Logo.svg';
 import { Link } from 'react-router-dom';
-import { requestingStudentRegistration } from '../../../store/registration-store/actions';
+import { requestingStudentRegistration } from '../../../store/registration-store/actions/student-actions';
+import { StudentDetails } from '@gurusishyan/request-interface';
 
 export interface RegistrationStudentProps {
   pathname: string;
@@ -17,7 +18,7 @@ const RegistrationStudent = (props: RegistrationStudentProps) => {
   const { register, handleSubmit } = useForm();
   const options = ['CBSE', 'STATE BOARD'];
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: StudentDetails) => {
     dispatch(requestingStudentRegistration(data));
   };
   return (
@@ -97,7 +98,7 @@ const RegistrationStudent = (props: RegistrationStudentProps) => {
             className="form-control"
             placeholder="Enter your email address"
             type="email"
-            name="email"
+            name="email_id"
           />
         </div>
       </div>

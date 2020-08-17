@@ -1,10 +1,14 @@
 import React from 'react';
 
 import './registration-teacher.scss';
-import { CustomButton, Label } from '../../../shared/components';
 import { Link } from 'react-router-dom';
-import Logo from '../../../../assets/svg/Logo.svg';
 import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+
+import { CustomButton, Label } from '../../../shared/components';
+import Logo from '../../../../assets/svg/Logo.svg';
+import { requestingTeacherRegistration } from '../../../store/registration-store/actions/teacher-actions';
+import { TeacherDetails } from '@gurusishyan/request-interface';
 
 /* eslint-disable-next-line */
 export interface RegistrationTeacherProps {
@@ -12,12 +16,13 @@ export interface RegistrationTeacherProps {
 }
 
 export const RegistrationTeacher = (props: RegistrationTeacherProps) => {
+  const dispatch = useDispatch();
   const { register, handleSubmit } = useForm();
   const options = ['CBSE', 'STATE BOARD'];
   const sector = ['Government', 'Private'];
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = (data: TeacherDetails) => {
+    dispatch(requestingTeacherRegistration(data));
   };
 
   return (
@@ -69,7 +74,11 @@ export const RegistrationTeacher = (props: RegistrationTeacherProps) => {
             {' '}
             Teaching Sector <span className="tomato">*</span>
           </Label>
-          <select className="form-control" name="sector" ref={register}>
+          <select
+            className="form-control"
+            name="teaching_sector"
+            ref={register}
+          >
             {sector.map((value) => (
               <option key={value} value={value}>
                 {value}
@@ -90,7 +99,7 @@ export const RegistrationTeacher = (props: RegistrationTeacherProps) => {
             className="form-control "
             placeholder="Enter your email address"
             type="email"
-            name="email"
+            name="email_id"
           />
         </div>
         <div className="tb_cell input_width_teacher">
@@ -161,7 +170,7 @@ export const RegistrationTeacher = (props: RegistrationTeacherProps) => {
             className="form-control "
             placeholder="Enter your subject"
             type="text"
-            name="subject"
+            name="subject_handled"
           />
         </div>
         <div className="tb_cell  input_width_teacher">

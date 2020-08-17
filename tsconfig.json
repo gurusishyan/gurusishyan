@@ -17,7 +17,8 @@
     "baseUrl": ".",
     "paths": {
       "@gurusishyan-logger": ["apps/backend/src/logger"],
-      "@gurusishyan-config":["apps/backend/src/config"]
+      "@gurusishyan-config": ["apps/backend/src/config"],
+      "@gurusishyan/request-interface": ["libs/request-interface/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
