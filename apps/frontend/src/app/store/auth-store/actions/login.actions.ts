@@ -1,34 +1,55 @@
 import axiosInstance from '../../../utils/api';
-import { LOGIN_FAILURE, LOGIN, LOGIN_SUCCESS, TOKEN_LOGIN_FAILED } from '../types';
+import * as ActionTypes from '../types';
 import { AxiosResponse, AxiosError } from 'axios';
 import { UserDetails } from '@gurusishyan/request-interface';
 
 const login = () => {
     return {
-        type: LOGIN
+        type: ActionTypes.LOGIN
     }
 }
 
 const tokenLoginFailed = (obj) => {
     return {
-        type: TOKEN_LOGIN_FAILED,
+        type: ActionTypes.TOKEN_LOGIN_FAILED,
         payload: obj
     }
 }
 
 const loginSuccess = (userObject: UserDetails) => {
     return {
-        type: LOGIN_SUCCESS,
+        type: ActionTypes.LOGIN_SUCCESS,
         payload: userObject,
     };
 };
 
 const loginFailure = (error: string) => {
     return {
-        type: LOGIN_FAILURE,
+        type: ActionTypes.LOGIN_FAILURE,
         payload: error,
     };
 };
+
+
+const signInWithGoogle = () => {
+    return {
+        type: ActionTypes.SIGN_IN_WITH_GOOGLE
+    }
+}
+
+const signInWithGoogleSuccess = (google_user_details) => {
+    return {
+        type: ActionTypes.SIGN_IN_WITH_GOOGLE_SUCCESS,
+        payload: google_user_details
+    }
+}
+
+const signInWithGoogleFailure = (err) => {
+    return {
+        type: ActionTypes.SIGN_IN_WITH_GOOGLE_FAILURE,
+        payload: err
+    }
+}
 
 export const whoami = () => {
     return (dispatch) => {
@@ -72,3 +93,20 @@ export const userLoginRequest = (credentials) => {
             });
     };
 };
+
+export const googleSignInRequest = () => {
+    return ((dispatch) => {
+        dispatch(signInWithGoogle())
+        axiosInstance
+            .post('user/google-signin')
+            .then((res: AxiosResponse) => {
+                if (res.data) {
+                    dispatch(signInWithGoogleSuccess(res.data))
+                }
+            }).catch((err: AxiosError) => {
+                if (err.response) {
+                    dispatch(signInWithGoogleFailure(err.response.data))
+                }
+            })
+    })
+}
