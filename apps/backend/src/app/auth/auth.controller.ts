@@ -9,7 +9,11 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
-import { LoginUserDTO, CreateUserDTO } from '../user/user.dto';
+import {
+  LoginUserDTO,
+  CreateUserDTO,
+  CreateTeacherDTO,
+} from '../user/user.dto';
 import { ValidationPipe } from '../shared/pipes/validator.pipe';
 
 @Controller('auth')
@@ -23,12 +27,6 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   googleAuthRedirect(@Req() req) {
-    // console.log(req.user)
-    let response_html = "<html><head><title>Main</title></head><body></body><script>res = %value%; window.opener.postMessage(res, '*');window.close();</script></html>".toString()
-    response_html = response_html.replace('%value%', JSON.stringify({
-      user: req.user
-  }));
-  return response_html
     return this.authService.googleLogin(req);
   }
 
@@ -42,5 +40,11 @@ export class AuthController {
   @UsePipes(new ValidationPipe())
   async createUser(@Body() user: CreateUserDTO) {
     return await this.authService.register(user);
+  }
+
+  @Post('register/teacher')
+  @UsePipes(new ValidationPipe())
+  async registerTeacher(@Body() newTeacher: CreateTeacherDTO) {
+    return await this.authService.registerTeacher(newTeacher);
   }
 }

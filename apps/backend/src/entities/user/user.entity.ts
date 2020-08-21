@@ -12,6 +12,13 @@ export class IUserSchema extends mongoose.Document {
   token?: string;
   bookmarked_implores: string[];
   bookmarked_vibes: string[];
+  teaching_sector?: string;
+  phone?: number;
+  class?: string;
+  board_of_education?: string;
+  subject_handled?: string;
+  student?: boolean;
+  teacher?: boolean;
 }
 const isValidUserName = async (user_name: string) => {
   const users = await User.find({ user_name });
@@ -21,15 +28,36 @@ const isValidUserName = async (user_name: string) => {
 const uniqueElements = (value, index, self) => {
   return self.indexOf(value) === index;
 };
-
-const filterArrays = async (value) => {
-  const user = await User.find();
-};
 export const UserEntity = new mongoose.Schema({
   user_name: {
     type: String,
     required: true,
     validate: isValidUserName,
+  },
+  teaching_sector: {
+    type: String,
+    required: false,
+  },
+  phone: {
+    type: Number,
+    required: false,
+  },
+  class: { type: String, required: false },
+  board_of_education: {
+    type: String,
+    required: false,
+  },
+  subject_handled: {
+    type: String,
+    required: false,
+  },
+  student: {
+    type: Boolean,
+    required: false,
+  },
+  teacher: {
+    type: Boolean,
+    required: false,
   },
   user_email: {
     type: String,
@@ -75,8 +103,8 @@ export const UserEntity = new mongoose.Schema({
     },
   ],
 });
-UserEntity.pre("remove",(next,doc)=>{
-  console.log(doc)
-})
+UserEntity.pre('remove', (next, doc) => {
+  console.log(doc);
+});
 export const User = mongoose.model<IUserSchema>('User', UserEntity, 'user');
 

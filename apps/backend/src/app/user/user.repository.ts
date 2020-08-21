@@ -1,7 +1,8 @@
 import { User, IUserSchema } from '../../entities';
-import { CreateUserDTO } from './user.dto';
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { CreateUserDTO, CreateTeacherDTO } from './user.dto';
+import { HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
 import { SharedService } from '../shared/shared.service';
+import { loggerInstance } from '@gurusishyan-logger';
 
 export class UserRepository {
   private commonService = new SharedService();
@@ -39,14 +40,48 @@ export class UserRepository {
     if (user) {
       throw new HttpException('User Already Exists', HttpStatus.CONFLICT);
     } else {
-      new_user.password = this.commonService.createHash(new_user.password);
+      new_user.password = new_user.password
+        ? this.commonService.createHash(new_user.password)
+        : null;
       return await new User(new_user)
         .save({ validateBeforeSave: true })
-        .then((user) => user)
-        .catch((err) => this.commonService.sendErrorMessage(err, true));
+        .then((user) => {
+          loggerInstance.log(`New User created ${user._id}`);
+          return user;
+        })
+        .catch((err) => {
+          loggerInstance.log(`Unable to create user. ${err}`);
+          throw new HttpException('Some error occured', 500);
+        });
     }
   };
 
+  createTeacher = async (
+    newTeacher: CreateTeacherDTO
+  ): Promise<IUserSchema> => {
+    const checkForExistence = await this.findUserWithUserName(
+      newTeacher.user_name
+    );
+    if (checkForExistence) {
+      loggerInstance.log(
+        `${checkForExistence.user_name} tried to sign up again`
+      );
+      throw new BadRequestException('User already Exists');
+    }
+    return await new User(newTeacher)
+      .save({ validateBeforeSave: true })
+      .then((user) => {
+        loggerInstance.log(`New Teacher created with name ${user.user_name}`);
+        return user;
+      })
+      .catch((err) => {
+        loggerInstance.log(`Error Occured. ${err}`, 'error', 'UserRepository');
+        throw new HttpException(
+          'Some error occured while registration. Please try after some time.',
+          HttpStatus.INTERNAL_SERVER_ERROR
+        );
+      });
+  };
   bookmarkImplore = async (_id: string, implore_id: string) =>
     await User.findOneAndUpdate(
       { _id },

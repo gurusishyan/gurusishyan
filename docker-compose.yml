@@ -6,8 +6,8 @@ services:
     container_name: gurusishyan_mongodb_container
     environment:
       - 'MONGODB_DATABASE="gurusishyan"'
-      # - MONGO_INITDB_ROOT_USERNAME=gurusishyan_db_admin
-      # - MONGO_INITDB_ROOT_PASSWORD=gsdb@12345
+      - MONGO_INITDB_ROOT_USERNAME=gurusishyan_db_admin
+      - MONGO_INITDB_ROOT_PASSWORD=gsdb@12345
     ports:
       - '27019:27017'
     expose:

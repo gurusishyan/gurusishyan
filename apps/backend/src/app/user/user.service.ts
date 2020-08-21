@@ -1,6 +1,11 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Injectable,
+  HttpException,
+  HttpStatus,
+  BadRequestException,
+} from '@nestjs/common';
 import { UserRepository } from './user.repository';
-import { CreateUserDTO } from './user.dto';
+import { CreateUserDTO, CreateTeacherDTO } from './user.dto';
 import { IUserSchema } from '../../entities';
 import { SharedService } from '../shared/shared.service';
 import { ImploreService } from '../implore/implore.service';
@@ -8,9 +13,9 @@ import { ImploreService } from '../implore/implore.service';
 @Injectable()
 export class UserService {
   constructor(
-    private userRepository: UserRepository,
-    // private imploreService: ImploreService
-  ) {}
+    private userRepository: UserRepository
+  ) // private imploreService: ImploreService
+  {}
   commonService = new SharedService();
   findAllUsers = async () => await this.userRepository.findAllUsers();
 
@@ -44,6 +49,9 @@ export class UserService {
     user.token = this.commonService.signJWT(user);
     return user;
   };
+
+  createTeacher = async (newTeacher: CreateTeacherDTO) =>
+    await this.userRepository.createTeacher(newTeacher);
 
   unBookmarkImplore = async (_id: string, implore_id: string) =>
     await this.userRepository.unBookmarkImplore(_id, implore_id);

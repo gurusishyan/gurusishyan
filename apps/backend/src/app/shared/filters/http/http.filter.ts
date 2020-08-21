@@ -23,7 +23,7 @@ export class HttpErrorFilter implements ExceptionFilter {
       code: status,
       payload:
         status !== HttpStatus.INTERNAL_SERVER_ERROR
-          ? exception.message.error || `${exception.message}` || null
+          ? exception.message.message || exception.message.error || `${exception.message}` || null
           : exception.message.error ||
             `${exception.message}` ||
             'Internal server error',

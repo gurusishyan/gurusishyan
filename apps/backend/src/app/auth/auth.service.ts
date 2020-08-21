@@ -1,10 +1,12 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { SharedService } from '../shared/shared.service';
-import { CreateUserDTO, LoginUserDTO } from '../user/user.dto';
+import {
+  CreateUserDTO,
+  LoginUserDTO,
+  CreateTeacherDTO,
+} from '../user/user.dto';
 import { IUserSchema } from '../../entities';
-import * as jwt from 'jsonwebtoken';
-import { jwtConstants } from './constants';
 @Injectable()
 export class AuthService {
   constructor(
@@ -20,7 +22,6 @@ export class AuthService {
       const attempt_user = await this.userService.findUserWithUserName(
         user_name
       );
-      // console.log(attempt_user)
       if (!attempt_user) {
         const user = await this.userService.createUser({
           user_email,
@@ -58,5 +59,14 @@ export class AuthService {
     const { password, ...result } = created_user.toObject();
     result.token = this.commonService.signJWT(created_user);
     return result;
+  };
+
+  registerTeacher = async (user: CreateTeacherDTO): Promise<IUserSchema> => {
+    user.password = this.commonService.createHash(user.password);
+    user.teacher = true
+    const newTeacher = await this.userService.createTeacher(user);
+    newTeacher.token = this.commonService.signJWT(newTeacher);
+    newTeacher.password = undefined;
+    return newTeacher;
   };
 }
