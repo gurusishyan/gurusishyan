@@ -59,7 +59,7 @@ export class CreateTeacherDTO {
     message:
       'ValidationError: Class of study is mandatory and should be of type string',
   })
-  class: string;
+  classes_handled: string;
 
   @IsString({ message: 'Required Field Error: Board Of Education' })
   @IsIn(globalConfig.board_of_education, {
@@ -68,14 +68,14 @@ export class CreateTeacherDTO {
   @IsNotEmpty({
     message: 'Board Of Education is mandatory and should be of type string',
   })
-  board_of_education: string;
+  board_of_education_teacher: string;
 
   @IsNotEmpty({
     message:
       'ValidationError: Subject Handled is mandatory and should be of type string',
   })
   @IsString({ message: 'Required Field Error: Subject Handled' })
-  subject_handled: string;
+  subjects_handled: string;
 
   @IsNotEmpty({
     message:
@@ -84,7 +84,7 @@ export class CreateTeacherDTO {
   @IsString({ message: 'Required Field Error: Password' })
   password: string;
 
-  teacher:boolean
+  teacher: boolean
 }
 
 export class LoginUserDTO {

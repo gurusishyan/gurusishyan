@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import './registration-teacher.scss';
 import { Link } from 'react-router-dom';
@@ -9,6 +9,8 @@ import { CustomButton, Label } from '../../../shared/components';
 import Logo from '../../../../assets/svg/Logo.svg';
 import { requestingTeacherRegistration } from '../../../store/registration-store/actions/teacher-actions';
 import { TeacherDetails } from '@gurusishyan/request-interface';
+import DropdownComponent from '../../../shared/components/Dropdown.component';
+import { environment } from 'apps/frontend/src/environments/environment';
 
 /* eslint-disable-next-line */
 export interface RegistrationTeacherProps {
@@ -16,14 +18,25 @@ export interface RegistrationTeacherProps {
 }
 
 export const RegistrationTeacher = (props: RegistrationTeacherProps) => {
+  const [classes, setClasses] = useState([]);
+  const [subjects, setSubjects] = useState([]);
+  const [sector, setSector] = useState([]);
+  const [board_of_education, set_board_of_education] = useState([]);
+
   const dispatch = useDispatch();
   const { register, handleSubmit } = useForm();
-  const options = ['CBSE', 'STATE BOARD'];
-  const sector = ['Government', 'Private'];
 
   const onSubmit = (data: TeacherDetails) => {
+    data['subjects_handled'] = valuesFromDropDown(subjects);
+    data['classes_handled'] = valuesFromDropDown(classes);
+    data['teaching_sector'] = sector['value'];
+    data['board_of_education_teacher'] = valuesFromDropDown(board_of_education);
+    data['teacher'] = true;
     dispatch(requestingTeacherRegistration(data));
   };
+
+  const valuesFromDropDown = (values_array) =>
+    values_array.map((selected_values) => selected_values.value);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="student_teacher_form">
@@ -59,6 +72,68 @@ export const RegistrationTeacher = (props: RegistrationTeacherProps) => {
         <div className="tb_cell input_width_teacher">
           <Label>
             {' '}
+            Classes Handled <span className="tomato">*</span>
+          </Label>
+          <DropdownComponent
+            isMulti={true}
+            closeMenuOnSelect={false}
+            selected_options={classes}
+            onChange={setClasses}
+            options={environment.classes}
+            placeholder="Enter your classes"
+          />
+        </div>
+        <div className="tb_cell">
+          <Label>
+            {' '}
+            Subjects Handled <span className="tomato">*</span>
+          </Label>
+          <DropdownComponent
+            isMulti={true}
+            closeMenuOnSelect={false}
+            selected_options={subjects}
+            onChange={setSubjects}
+            options={environment.subjects}
+            placeholder="Enter your subjects"
+          />
+        </div>
+      </div>
+
+      <div className="tb_row">
+        <div className="tb_cell input_width_teacher">
+          <Label>
+            {' '}
+            Teaching Sector <span className="tomato">*</span>
+          </Label>
+          <DropdownComponent
+            isMulti={false}
+            closeMenuOnSelect={true}
+            selected_options={sector}
+            onChange={setSector}
+            options={environment.sector}
+            placeholder="Enter your sector"
+          />
+        </div>
+        <div className="tb_cell">
+          <Label>
+            {' '}
+            Board of education <span className="tomato">*</span>
+          </Label>
+          <DropdownComponent
+            isMulti={true}
+            closeMenuOnSelect={false}
+            selected_options={board_of_education}
+            onChange={set_board_of_education}
+            options={environment.board_of_education}
+            placeholder="Enter your sector"
+          />
+        </div>
+      </div>
+
+      <div className="tb_row">
+        <div className="tb_cell input_width_teacher">
+          <Label>
+            {' '}
             Username <span className="tomato">*</span>
           </Label>
           <input
@@ -66,29 +141,9 @@ export const RegistrationTeacher = (props: RegistrationTeacherProps) => {
             className="form-control "
             placeholder="Enter your name"
             type="text"
-            name="username"
+            name="user_name"
           />
         </div>
-        <div className="tb_cell input_width_teacher">
-          <Label>
-            {' '}
-            Teaching Sector <span className="tomato">*</span>
-          </Label>
-          <select
-            className="form-control"
-            name="teaching_sector"
-            ref={register}
-          >
-            {sector.map((value) => (
-              <option key={value} value={value}>
-                {value}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      <div className="tb_row">
         <div className="tb_cell input_width_teacher">
           <Label>
             {' '}
@@ -99,9 +154,12 @@ export const RegistrationTeacher = (props: RegistrationTeacherProps) => {
             className="form-control "
             placeholder="Enter your email address"
             type="email"
-            name="email_id"
+            name="user_email"
           />
         </div>
+      </div>
+
+      <div className="tb_row">
         <div className="tb_cell input_width_teacher">
           <Label>
             {' '}
@@ -123,55 +181,6 @@ export const RegistrationTeacher = (props: RegistrationTeacherProps) => {
               />
             </div>
           </div>
-        </div>
-      </div>
-
-      <div className="tb_row">
-        <div className="tb_cell input_width_teacher">
-          <Label>
-            {' '}
-            Class <span className="tomato">*</span>
-          </Label>
-          <input
-            ref={register}
-            className="form-control "
-            placeholder="Enter your class"
-            type="text"
-            name="class"
-          />
-        </div>
-        <div className="tb_cell">
-          <Label>
-            {' '}
-            Board of education <span className="tomato">*</span>
-          </Label>
-          <select
-            className="form-control"
-            name="board_of_education"
-            ref={register}
-          >
-            {options.map((value) => (
-              <option key={value} value={value}>
-                {value}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      <div className="tb_row">
-        <div className="tb_cell input_width_teacher">
-          <Label>
-            {' '}
-            Subject Handled <span className="tomato">*</span>
-          </Label>
-          <input
-            ref={register}
-            className="form-control "
-            placeholder="Enter your subject"
-            type="text"
-            name="subject_handled"
-          />
         </div>
         <div className="tb_cell  input_width_teacher">
           <Label>

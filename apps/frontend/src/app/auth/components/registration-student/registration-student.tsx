@@ -178,11 +178,11 @@ const RegistrationStudent = (props: RegistrationStudentProps) => {
       <div className="tb_row">
         <div className="tb_cell"></div>
         <div className="tb_cell">
-          <p className="account_">
+          <div className="account_">
             {' '}
             Already have an account?{' '}
             <span className="light_blue"> Sign In</span>{' '}
-          </p>
+          </div>
         </div>
       </div>
     </form>
