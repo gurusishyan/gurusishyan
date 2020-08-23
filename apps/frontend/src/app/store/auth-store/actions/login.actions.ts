@@ -98,7 +98,7 @@ export const googleSignInRequest = () => {
     return ((dispatch) => {
         dispatch(signInWithGoogle())
         axiosInstance
-            .get('/auth/google/callback')
+            .get('/auth')
             .then((res: AxiosResponse) => {
                 if (res.data) {
                     dispatch(signInWithGoogleSuccess(res.data))
