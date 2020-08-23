@@ -10,7 +10,10 @@ import './LoginForm.scss';
 import Login_Page from '../../../../assets/svg/Login_Page.svg';
 import Logo from '../../../../assets/svg/Logo.svg';
 import { CustomButton } from '../../../shared/components';
-import { userLoginRequest } from '../../../store/auth-store/actions/login.actions';
+import {
+  userLoginRequest,
+  googleSignInRequest,
+} from '../../../store/auth-store/actions/login.actions';
 import ForgotPassword from '../Forgot-Password/Forgot-Password.component';
 
 const LoginForm = () => {
@@ -20,6 +23,10 @@ const LoginForm = () => {
 
   const onLoginRequested = (data) => {
     dispatch(userLoginRequest(data));
+  };
+
+  const signInWithClicked = () => {
+    dispatch(googleSignInRequest());
   };
 
   return (
@@ -101,7 +108,11 @@ const LoginForm = () => {
               Sign In
             </CustomButton>
             <div className="text-center or_text">or</div>
-            <CustomButton className="google_button" type="button">
+            <CustomButton
+              onClick={signInWithClicked}
+              className="google_button"
+              type="button"
+            >
               <FcGoogle size={23} className="google_login_page" />
               Sign In with Google
             </CustomButton>

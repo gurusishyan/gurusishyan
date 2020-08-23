@@ -64,7 +64,7 @@ const RegistrationStudent = (props: RegistrationStudentProps) => {
             className="form-control"
             placeholder="Enter your name"
             type="text"
-            name="username"
+            name="user_name"
           />
         </div>
       </div>
@@ -81,7 +81,7 @@ const RegistrationStudent = (props: RegistrationStudentProps) => {
             className="form-control"
             placeholder="Enter your class"
             type="class"
-            name="class"
+            name="class_studying"
           />
         </div>
       </div>
@@ -98,7 +98,7 @@ const RegistrationStudent = (props: RegistrationStudentProps) => {
             className="form-control"
             placeholder="Enter your email address"
             type="email"
-            name="email_id"
+            name="user_email"
           />
         </div>
       </div>
@@ -138,7 +138,7 @@ const RegistrationStudent = (props: RegistrationStudentProps) => {
         <div className="tb_cell">
           <select
             className="form-control"
-            name="board_of_education"
+            name="board_of_education_student"
             ref={register}
           >
             {options.map((value) => (
