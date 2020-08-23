@@ -1,6 +1,6 @@
-import { UserState, LOGIN_SUCCESS, LOGIN, LOGIN_FAILURE, TOKEN_LOGIN_FAILED } from '../types';
+import * as ActionTypes from '../types';
 
-const initialState: UserState = {
+const initialState: ActionTypes.UserState = {
     currentUser: null,
     isInitializing: true,
     isLoggingIn: false,
@@ -10,30 +10,45 @@ const initialState: UserState = {
 const authReducer = (
     state = initialState,
     action
-): UserState => {
+): ActionTypes.UserState => {
     switch (action.type) {
-        case LOGIN:
+        case ActionTypes.LOGIN:
             return {
                 ...state,
                 isInitializing: false,
                 isLoggingIn: true
             }
-        case TOKEN_LOGIN_FAILED:
+        case ActionTypes.TOKEN_LOGIN_FAILED:
             return {
                 ...state,
                 isInitializing: false,
                 currentUser: null,
                 isLoggingIn: false,
             }
-        case LOGIN_SUCCESS:
+        case ActionTypes.LOGIN_SUCCESS:
             return {
                 ...state,
                 currentUser: action.payload,
                 isInitializing: false,
                 isLoggingIn: false,
             };
-        case LOGIN_FAILURE:
-            return { ...state, error: action.payload, isLoggingIn: false };
+        case ActionTypes.LOGIN_FAILURE:
+            return {
+                ...state,
+                error: action.payload,
+                isLoggingIn: false
+            };
+
+        case ActionTypes.SIGN_IN_WITH_GOOGLE_SUCCESS:
+            return {
+                ...state,
+                currentUser: action.payload,
+            }
+        case ActionTypes.SIGN_IN_WITH_GOOGLE_FAILURE:
+            return {
+                ...state,
+                error: action.payload
+            }
         default:
             return state;
     }

@@ -31,20 +31,20 @@ const loginFailure = (error: string) => {
 };
 
 
-const signInWithGoogle = () => {
+export const signInWithGoogle = () => {
     return {
         type: ActionTypes.SIGN_IN_WITH_GOOGLE
     }
 }
 
-const signInWithGoogleSuccess = (google_user_details) => {
+export const signInWithGoogleSuccess = (google_user_details) => {
     return {
         type: ActionTypes.SIGN_IN_WITH_GOOGLE_SUCCESS,
         payload: google_user_details
     }
 }
 
-const signInWithGoogleFailure = (err) => {
+export const signInWithGoogleFailure = (err) => {
     return {
         type: ActionTypes.SIGN_IN_WITH_GOOGLE_FAILURE,
         payload: err
@@ -94,19 +94,18 @@ export const userLoginRequest = (credentials) => {
     };
 };
 
-export const googleSignInRequest = () => {
+export const verifyGoogleToken = (token_id: string) => {
     return ((dispatch) => {
-        dispatch(signInWithGoogle())
-        axiosInstance
-            .get('/auth')
-            .then((res: AxiosResponse) => {
+        axiosInstance.post('/auth/google/verify', token_id)
+            .then((res) => {
                 if (res.data) {
                     dispatch(signInWithGoogleSuccess(res.data))
                 }
-            }).catch((err: AxiosError) => {
+            }).catch((err) => {
                 if (err.response) {
-                    dispatch(signInWithGoogleFailure(err.response.data))
+                    dispatch(signInWithGoogleFailure(err.response))
                 }
             })
     })
 }
+

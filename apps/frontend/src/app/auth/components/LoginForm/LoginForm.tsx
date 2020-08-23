@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { ToastContainer } from 'react-toastify';
 import { AiOutlineLock } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
+import { useGoogleLogin } from 'react-google-login';
 
 import './LoginForm.scss';
 import Login_Page from '../../../../assets/svg/Login_Page.svg';
@@ -12,9 +12,12 @@ import Logo from '../../../../assets/svg/Logo.svg';
 import { CustomButton } from '../../../shared/components';
 import {
   userLoginRequest,
-  googleSignInRequest,
+  signInWithGoogleFailure,
+  signInWithGoogle,
+  verifyGoogleToken,
 } from '../../../store/auth-store/actions/login.actions';
 import ForgotPassword from '../Forgot-Password/Forgot-Password.component';
+import { environment } from 'apps/frontend/src/environments/environment';
 
 const LoginForm = () => {
   const [modalShow, setModalShow] = useState(false);
@@ -25,9 +28,24 @@ const LoginForm = () => {
     dispatch(userLoginRequest(data));
   };
 
-  const signInWithClicked = () => {
-    dispatch(googleSignInRequest());
+  const signInWithGoogleClicked = () => {
+    dispatch(signInWithGoogle());
   };
+
+  const onSuccess = (res) => {
+    dispatch(verifyGoogleToken(res.tokenId));
+  };
+
+  const onFailure = (err) => {
+    dispatch(signInWithGoogleFailure(err));
+  };
+
+  const { signIn } = useGoogleLogin({
+    onRequest: signInWithGoogleClicked,
+    onSuccess,
+    onFailure,
+    clientId: environment.google_client_id,
+  });
 
   return (
     <div className="login_main_ctn">
@@ -109,7 +127,7 @@ const LoginForm = () => {
             </CustomButton>
             <div className="text-center or_text">or</div>
             <CustomButton
-              onClick={signInWithClicked}
+              onClick={signIn}
               className="google_button"
               type="button"
             >
