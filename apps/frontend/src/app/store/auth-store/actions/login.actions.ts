@@ -96,14 +96,15 @@ export const userLoginRequest = (credentials) => {
 
 export const verifyGoogleToken = (userObject) => {
     return ((dispatch) => {
-        axiosInstance.post('/auth/google/verify', userObject)
+        axiosInstance.post('/auth/google/callback', userObject)
             .then((res) => {
                 if (res.data) {
                     dispatch(signInWithGoogleSuccess(res.data))
+                    localStorage.setItem('token', res.data.token);
                 }
             }).catch((err) => {
                 if (err.response) {
-                    dispatch(signInWithGoogleFailure(err.response))
+                    dispatch(signInWithGoogleFailure(err.response.data))
                 }
             })
     })
