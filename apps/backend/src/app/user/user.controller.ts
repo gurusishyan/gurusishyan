@@ -10,6 +10,7 @@ import {
   Inject,
   HttpException,
   HttpStatus,
+  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthGuard } from '../shared/guards/auth.guard';
@@ -35,6 +36,12 @@ export class UserController {
   async getAllUsers() {
     // this.logData({ _id });
     return await this.userService.findAllUsers();
+  }
+
+  @Get('me')
+  @UseGuards(new AuthGuard())
+  async getMyDetails(@Req() req) {
+    return await this.userService.findUserWithID(req.user._id);
   }
 
   @UseGuards(new AuthGuard())
