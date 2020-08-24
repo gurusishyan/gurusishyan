@@ -1,12 +1,20 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import * as crypto from 'crypto';
 import { IFile } from './interfaces';
-import { existsSync, mkdirSync, writeFileSync, rmdirSync } from 'fs';
+import {
+  existsSync,
+  mkdirSync,
+  writeFileSync,
+  rmdirSync,
+  readFileSync,
+} from 'fs';
 import { join } from 'path';
 import { loggerInstance } from '@gurusishyan-logger';
 import { IUserSchema } from '../../entities';
 import * as jwt from 'jsonwebtoken';
 import { jwtConstants } from '../auth/constants';
+import * as sgMailClient from '@sendgrid/mail';
+sgMailClient.setApiKey(process.env.SMTP_MAIL_API_KEY);
 @Injectable()
 export class SharedService {
   constructor() {}
@@ -81,6 +89,33 @@ export class SharedService {
       { user_name, user_role, user_email, _id },
       jwtConstants.secret,
       { expiresIn: '7d' }
+    );
+  };
+
+  generateRandomTokenForResetPassword = () =>
+    crypto.randomBytes(20).toString('hex');
+
+  readResetPasswordHTMLFile = () =>
+    readFileSync(process.env.RESET_PASSWORD_HTML_FOLDER, { encoding: 'utf-8' });
+
+  sendMail = (
+    from: string,
+    to: string,
+    subject: string,
+    html?: string,
+    multipleMail?: boolean
+  ) => {
+    const msg = { from, to, subject, html };
+    return sgMailClient.send(
+      msg,
+      multipleMail,
+      (err, res) =>
+        new Promise((resolve, reject) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(res);
+        })
     );
   };
 }

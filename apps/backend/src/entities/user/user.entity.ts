@@ -20,6 +20,8 @@ export class IUserSchema extends mongoose.Document {
   student?: boolean;
   teacher?: boolean;
   user_image?: string;
+  reset_password_token_exp?: number;
+  reset_password_token?: string;
 }
 const isValidUserName = async (user_name: string) => {
   const users = await User.find({ user_name });
@@ -50,6 +52,14 @@ export const UserEntity = new mongoose.Schema({
   },
   user_image: {
     type: String,
+    required: false,
+  },
+  reset_password_token: {
+    type: String,
+    required: false,
+  },
+  reset_password_token_exp: {
+    type: Number,
     required: false,
   },
   subject_handled: {

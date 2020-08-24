@@ -31,7 +31,7 @@ export class UserService {
     const user = await this.userRepository.findUserWithID(_id);
     if (!user) {
       this.commonService.sendErrorMessage(
-        'User not found',
+        "Couldn't sign you in!",
         true,
         HttpStatus.NOT_FOUND
       );
@@ -41,6 +41,21 @@ export class UserService {
 
   findUserWithUserName = async (user_name: string): Promise<IUserSchema> =>
     await this.userRepository.findUserWithUserName(user_name);
+
+  findUserWithEmail = async (user_email: string): Promise<IUserSchema> => {
+    const user = await this.userRepository.findUserWithEmail(user_email);
+    if (!user) {
+      this.commonService.sendErrorMessage(
+        'Invalid Email Address',
+        true,
+        HttpStatus.NOT_FOUND
+      );
+    }
+    return user;
+  };
+
+  updateResetPasswordTokenAndTime = async (_id: string): Promise<IUserSchema> =>
+    await this.userRepository.updateResetPasswordTokenAndTime(_id);
 
   createUser = async (user: CreateUserDTO) => {
     return await this.userRepository.createUser(user);

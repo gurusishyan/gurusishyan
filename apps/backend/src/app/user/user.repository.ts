@@ -22,6 +22,32 @@ export class UserRepository {
         )
       );
 
+  findUserWithEmail = async (user_email: string) =>
+    await User.findOne({ user_email })
+      .then((user) => {
+        if (user) return user;
+        return null;
+      })
+      .catch((err) =>
+        this.commonService.sendErrorMessage(
+          err,
+          true,
+          HttpStatus.INTERNAL_SERVER_ERROR
+        )
+      );
+
+  updateResetPasswordTokenAndTime = async (_id: string) =>
+    await User.findOneAndUpdate(
+      { _id },
+      {
+        reset_password_token: this.commonService.generateRandomTokenForResetPassword(),
+        reset_password_token_exp: Date.now() + 43200000,
+      },
+      { new: true, runValidators: true }
+    )
+      .then((res) => res)
+      .catch((err) => this.commonService.sendErrorMessage(err));
+
   findAllUsers = async (): Promise<IUserSchema[]> =>
     await User.find()
       .populate('bookmarked_vibes')

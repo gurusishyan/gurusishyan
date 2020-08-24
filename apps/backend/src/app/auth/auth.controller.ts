@@ -6,8 +6,9 @@ import {
   Post,
   Body,
   UsePipes,
+  Param,
+  Query,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import {
   LoginUserDTO,
@@ -27,7 +28,7 @@ export class AuthController {
 
   @Post('google/callback')
   @UsePipes(new ValidationPipe())
-  async googleAuthRedirect(@Body() userDet:CreateGoogleUserDTO) {
+  async googleAuthRedirect(@Body() userDet: CreateGoogleUserDTO) {
     return this.authService.googleLogin(userDet);
   }
 
@@ -47,5 +48,10 @@ export class AuthController {
   @UsePipes(new ValidationPipe())
   async registerTeacher(@Body() newTeacher: CreateTeacherDTO) {
     return await this.authService.registerTeacher(newTeacher);
+  }
+
+  @Post('reset-password')
+  async resetPassword(@Query('email') email_id: string) {
+    return await this.authService.reserPassword(email_id);
   }
 }
