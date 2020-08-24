@@ -36,6 +36,15 @@ export class UserRepository {
         )
       );
 
+  updatePassword = async (_id: string, password: string) =>
+    await User.findOneAndUpdate(
+      { _id },
+      { password,reset_password_token:undefined,reset_password_token_exp:undefined },
+      { new: true, runValidators: true }
+    )
+      .then((user) => user)
+      .catch((err) => this.commonService.sendErrorMessage(err));
+
   updateResetPasswordTokenAndTime = async (_id: string) =>
     await User.findOneAndUpdate(
       { _id },

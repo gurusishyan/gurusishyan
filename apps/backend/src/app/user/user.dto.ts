@@ -15,7 +15,7 @@ export class CreateUserDTO {
   @IsNotEmpty({ message: 'ValidationError: User name is missing' })
   user_name: string;
 
-  user_image?:string;
+  user_image?: string;
   @IsString({ message: 'User role is missing' })
   @IsIn(globalConfig.roles, { message: 'Invalid option: Invalid user role' })
   @IsNotEmpty({ message: 'User role is missing' })
@@ -33,16 +33,28 @@ export class CreateGoogleUserDTO {
   @IsNotEmpty({ message: 'ValidationError: User name is missing' })
   user_name: string;
 
-  @IsString({ message: 'ValidationError: User Image should be of type string URL' })
+  @IsString({
+    message: 'ValidationError: User Image should be of type string URL',
+  })
   @IsNotEmpty({ message: 'User image is missing' })
   user_image: string;
 
   @IsEmail({}, { message: 'Invalid Format: Email Address' })
-  @IsNotEmpty({message:"RequiredFieldError: Email is mandatory"})
+  @IsNotEmpty({ message: 'RequiredFieldError: Email is mandatory' })
   user_email: string;
 }
 
-
+export class ResetPasswordRequestDTO {
+  @IsString({ message: 'ValidationError: Token is missing' })
+  @IsNotEmpty({ message: 'ValidationError: Token is missing' })
+  reset_password_token: string;
+  @IsString({ message: 'ValidationError: User email is missing' })
+  @IsNotEmpty({ message: 'ValidationError: User email is missing' })
+  user_email: string;
+  @IsString({ message: 'ValidationError: password is missing' })
+  @IsNotEmpty({ message: 'ValidationError: password is missing' })
+  password: string;
+}
 export class CreateTeacherDTO {
   @IsString({ message: 'ValidationError: Username should be of type string' })
   @IsNotEmpty({
@@ -99,7 +111,7 @@ export class CreateTeacherDTO {
   @IsString({ message: 'Required Field Error: Password' })
   password: string;
 
-  teacher: boolean
+  teacher: boolean;
 }
 
 export class LoginUserDTO {

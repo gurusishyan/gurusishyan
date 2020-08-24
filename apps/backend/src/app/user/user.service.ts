@@ -54,6 +54,9 @@ export class UserService {
     return user;
   };
 
+  updatePassword = async (_id: string, password: string) =>
+    await this.userRepository.updatePassword(_id, password);
+
   updateResetPasswordTokenAndTime = async (_id: string): Promise<IUserSchema> =>
     await this.userRepository.updateResetPasswordTokenAndTime(_id);
 

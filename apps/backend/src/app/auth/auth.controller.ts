@@ -15,6 +15,7 @@ import {
   CreateUserDTO,
   CreateTeacherDTO,
   CreateGoogleUserDTO,
+  ResetPasswordRequestDTO,
 } from '../user/user.dto';
 import { ValidationPipe } from '../shared/pipes/validator.pipe';
 
@@ -51,7 +52,12 @@ export class AuthController {
   }
 
   @Post('request-reset-password')
-  async resetPassword(@Query('email') email_id: string) {
-    return await this.authService.reserPassword(email_id);
+  async requestResetPassword(@Query('email') email_id: string) {
+    return await this.authService.requestReserPassword(email_id);
+  }
+  @Post('reset-password')
+  @UsePipes(new ValidationPipe())
+  async resetPassword(@Body() data: ResetPasswordRequestDTO) {
+    return await this.authService.resetPassword(data);
   }
 }

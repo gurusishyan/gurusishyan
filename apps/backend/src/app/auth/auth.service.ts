@@ -6,6 +6,7 @@ import {
   LoginUserDTO,
   CreateTeacherDTO,
   CreateGoogleUserDTO,
+  ResetPasswordRequestDTO,
 } from '../user/user.dto';
 import { IUserSchema } from '../../entities';
 import { loggerInstance } from '@gurusishyan-logger';
@@ -78,7 +79,7 @@ export class AuthService {
     return newTeacher;
   };
 
-  reserPassword = async (user_email: string) => {
+  requestReserPassword = async (user_email: string) => {
     const user = await this.userService.findUserWithEmail(user_email);
     if (
       user.reset_password_token ||
@@ -104,5 +105,34 @@ export class AuthService {
       .catch((err) => {
         this.commonService.sendErrorMessage({ err });
       });
+  };
+
+  resetPassword = async (data: ResetPasswordRequestDTO) => {
+    const user = await this.userService.findUserWithEmail(data.user_email);
+
+    // Check if user already initiated reset password request
+    if (!(user.reset_password_token_exp && user.reset_password_token)) {
+      this.commonService.sendErrorMessage(
+        `Reset password link is expired. Kindly request again Mr/Mrs ${user.user_name}`
+      );
+    }
+
+    // Check if token is same as in the db
+    if (data.reset_password_token !== user.reset_password_token) {
+      this.commonService.sendErrorMessage(
+        'Oops this seems to be an invalid request',
+        true,
+        HttpStatus.BAD_REQUEST
+      );
+    }
+
+    //Check if the generated token did expire
+    if (new Date().getTime() <= user.reset_password_token_exp) {
+      const password = this.commonService.createHash(data.password);
+      return await this.userService.updatePassword(user._id, password);
+    }
+    this.commonService.sendErrorMessage(
+      `Reset password link is expired. Kindly request again Mr/Mrs ${user.user_name}`
+    );
   };
 }
