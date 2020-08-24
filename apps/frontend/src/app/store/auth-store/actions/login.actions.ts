@@ -59,9 +59,11 @@ export const whoami = () => {
             axiosInstance
                 .get('/user/me')
                 .then((res: AxiosResponse) => {
-                    dispatch(loginSuccess(res.data.data));
+                    console.log(res)
+                    dispatch(loginSuccess(res.data));
                 })
                 .catch((err: AxiosError) => {
+                    console.log("IN")
                     if (err.response) {
                         if (err.response.data.code === 401) {
                             localStorage.removeItem('token');

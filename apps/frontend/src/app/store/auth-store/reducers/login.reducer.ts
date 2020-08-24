@@ -31,6 +31,8 @@ const authReducer = (
                 currentUser: action.payload,
                 isInitializing: false,
                 isLoggingIn: false,
+                error: null,
+
             };
         case ActionTypes.LOGIN_FAILURE:
             return {
