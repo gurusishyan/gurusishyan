@@ -94,9 +94,9 @@ export const userLoginRequest = (credentials) => {
     };
 };
 
-export const verifyGoogleToken = (token_id: string) => {
+export const verifyGoogleToken = (userObject) => {
     return ((dispatch) => {
-        axiosInstance.post('/auth/google/verify', token_id)
+        axiosInstance.post('/auth/google/verify', userObject)
             .then((res) => {
                 if (res.data) {
                     dispatch(signInWithGoogleSuccess(res.data))

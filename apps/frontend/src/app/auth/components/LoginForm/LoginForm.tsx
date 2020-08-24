@@ -39,7 +39,12 @@ const LoginForm = () => {
   };
 
   const onSuccess = (res) => {
-    dispatch(verifyGoogleToken(res.tokenId));
+    const user_object = {
+      user_name: res.profileObj.name,
+      user_email: res.profileObj.email,
+      user_image: res.profileObj.imageUrl,
+    };
+    dispatch(verifyGoogleToken(user_object));
   };
 
   const onFailure = (err) => {
