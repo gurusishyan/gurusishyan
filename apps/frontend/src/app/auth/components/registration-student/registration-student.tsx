@@ -163,6 +163,7 @@ const RegistrationStudent = (props: RegistrationStudentProps) => {
             type="password"
             placeholder="Enter your password"
             name="password"
+            autoComplete="off"
           />
         </div>
       </div>
