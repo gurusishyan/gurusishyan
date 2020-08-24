@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AiOutlineLock } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
 import { useForm } from 'react-hook-form';
@@ -9,7 +9,11 @@ import { useGoogleLogin } from 'react-google-login';
 import './LoginForm.scss';
 import Login_Page from '../../../../assets/svg/Login_Page.svg';
 import Logo from '../../../../assets/svg/Logo.svg';
-import { CustomButton } from '../../../shared/components';
+import {
+  CustomButton,
+  InitialLoader,
+  Spinner,
+} from '../../../shared/components';
 import {
   userLoginRequest,
   signInWithGoogleFailure,
@@ -18,8 +22,10 @@ import {
 } from '../../../store/auth-store/actions/login.actions';
 import ForgotPassword from '../Forgot-Password/Forgot-Password.component';
 import { environment } from 'apps/frontend/src/environments/environment';
+import { RootState } from '../../../store/root-reducer';
 
 const LoginForm = () => {
+  const loginState = useSelector((state: RootState) => state.auth);
   const [modalShow, setModalShow] = useState(false);
   const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
@@ -123,7 +129,7 @@ const LoginForm = () => {
             </div>
 
             <CustomButton className="golden_button" type="submit">
-              Sign In
+              {loginState.isLoggingIn ? <Spinner /> : 'Login'}
             </CustomButton>
             <div className="text-center or_text">or</div>
             <CustomButton

@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { whoami } from './store/auth-store/actions/login.actions';
 import Auth from './auth/auth';
 import { ToastContainerComponent, InitialLoader } from './shared/components';
+import Dashboard from './dashboard/Dashboard';
 
 export const App = () => {
   const dispatch = useDispatch();
@@ -16,7 +17,13 @@ export const App = () => {
 
   return (
     <div>
-      {isInitializing ? <InitialLoader /> : currentUser ? <Auth /> : <Auth />}
+      {isInitializing ? (
+        <InitialLoader />
+      ) : currentUser ? (
+        <Dashboard />
+      ) : (
+        <Auth />
+      )}
       <ToastContainerComponent />
     </div>
   );
