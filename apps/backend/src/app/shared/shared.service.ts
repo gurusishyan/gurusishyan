@@ -1,16 +1,11 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import * as crypto from 'crypto';
 import { IFile } from './interfaces';
-import {
-  existsSync,
-  mkdirSync,
-  writeFileSync,
-  rmdirSync,
-} from 'fs';
+import { existsSync, mkdirSync, writeFileSync, rmdirSync } from 'fs';
 import { join } from 'path';
 import { loggerInstance } from '@gurusishyan-logger';
 import { IUserSchema } from '../../entities';
-import * as jwt from 'jsonwebtoken'
+import * as jwt from 'jsonwebtoken';
 import { jwtConstants } from '../auth/constants';
 @Injectable()
 export class SharedService {
@@ -18,9 +13,12 @@ export class SharedService {
   createHash = (stringToHash: string) =>
     crypto.createHash('sha256').update(stringToHash).digest('hex');
 
-  sendErrorMessage = (message: any, error?: boolean) => {
+  sendErrorMessage = (message: any, error?: boolean, status?: number) => {
     message = message.message || message;
-    throw new HttpException(message, HttpStatus.INTERNAL_SERVER_ERROR);
+    throw new HttpException(
+      message,
+      status || HttpStatus.INTERNAL_SERVER_ERROR
+    );
   };
 
   /**
@@ -77,7 +75,7 @@ export class SharedService {
     }
   };
 
-   signJWT = (user: IUserSchema) => {
+  signJWT = (user: IUserSchema) => {
     const { user_name, user_role, user_email, _id } = user;
     return jwt.sign(
       { user_name, user_role, user_email, _id },

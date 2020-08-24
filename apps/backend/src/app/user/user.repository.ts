@@ -10,8 +10,17 @@ export class UserRepository {
 
   findUserWithID = async (_id: string) =>
     await User.findOne({ _id })
-      .then((user) => user)
-      .catch((err) => this.commonService.sendErrorMessage(err));
+      .then((user) => {
+        if (user) return user;
+        return null;
+      })
+      .catch((err) =>
+        this.commonService.sendErrorMessage(
+          err,
+          true,
+          HttpStatus.INTERNAL_SERVER_ERROR
+        )
+      );
 
   findAllUsers = async (): Promise<IUserSchema[]> =>
     await User.find()

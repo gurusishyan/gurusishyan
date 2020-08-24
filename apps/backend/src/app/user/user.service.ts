@@ -13,9 +13,8 @@ import { ImploreService } from '../implore/implore.service';
 @Injectable()
 export class UserService {
   constructor(
-    private userRepository: UserRepository
-  ) // private imploreService: ImploreService
-  {}
+    private userRepository: UserRepository // private imploreService: ImploreService
+  ) {}
   commonService = new SharedService();
   findAllUsers = async () => await this.userRepository.findAllUsers();
 
@@ -28,11 +27,20 @@ export class UserService {
       password
     );
 
-  findUserWithID = async (_id: string): Promise<IUserSchema> =>
-    await this.userRepository.findUserWithID(_id);
+  findUserWithID = async (_id: string): Promise<IUserSchema> => {
+    const user = await this.userRepository.findUserWithID(_id);
+    if (!user) {
+      this.commonService.sendErrorMessage(
+        'User not found',
+        true,
+        HttpStatus.NOT_FOUND
+      );
+    }
+    return user;
+  };
 
   findUserWithUserName = async (user_name: string): Promise<IUserSchema> =>
-    this.userRepository.findUserWithUserName(user_name);
+    await this.userRepository.findUserWithUserName(user_name);
 
   createUser = async (user: CreateUserDTO) => {
     return await this.userRepository.createUser(user);

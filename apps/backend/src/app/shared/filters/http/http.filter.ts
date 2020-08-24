@@ -23,7 +23,10 @@ export class HttpErrorFilter implements ExceptionFilter {
       code: status,
       payload:
         status !== HttpStatus.INTERNAL_SERVER_ERROR
-          ? exception.message.message || exception.message.error || `${exception.message}` || null
+          ? exception.message.message ||
+            exception.message.error ||
+            `${exception.message}` ||
+            null
           : exception.message.error ||
             `${exception.message}` ||
             'Internal server error',
@@ -31,13 +34,13 @@ export class HttpErrorFilter implements ExceptionFilter {
       url,
       method,
     };
-    Logger.log(`${method} ${status} ${url}`, 'CustomErrorHandler');
-    loggerInstance.log(
-      `${method} ${status} ${url} ${
-        exception.message || error_response.payload
-      }`,
-      'error'
-    );
+    if (!error_response.payload.includes('starting at object')) {
+      Logger.log(`${method} ${status} ${url}`, 'CustomErrorHandler');
+      loggerInstance.log(
+        `${method} ${status} ${url} ${error_response.payload}`,
+        'error'
+      );
+    }
     res.status(status).json(error_response);
   }
 }
