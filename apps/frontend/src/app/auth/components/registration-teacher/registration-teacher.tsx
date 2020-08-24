@@ -5,11 +5,14 @@ import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 
-import { CustomButton, Label } from '../../../shared/components';
+import {
+  CustomButton,
+  Label,
+  DropdownComponent,
+} from '../../../shared/components';
 import Logo from '../../../../assets/svg/Logo.svg';
 import { requestingTeacherRegistration } from '../../../store/registration-store/actions/teacher-actions';
 import { TeacherDetails } from '@gurusishyan/request-interface';
-import DropdownComponent from '../../../shared/components/Dropdown.component';
 import { environment } from 'apps/frontend/src/environments/environment';
 
 /* eslint-disable-next-line */

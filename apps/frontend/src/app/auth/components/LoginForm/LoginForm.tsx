@@ -1,22 +1,31 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { ToastContainer } from 'react-toastify';
+import { useDispatch, useSelector } from 'react-redux';
 import { AiOutlineLock } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
+import { useGoogleLogin } from 'react-google-login';
 
 import './LoginForm.scss';
 import Login_Page from '../../../../assets/svg/Login_Page.svg';
 import Logo from '../../../../assets/svg/Logo.svg';
-import { CustomButton } from '../../../shared/components';
+import {
+  CustomButton,
+  InitialLoader,
+  Spinner,
+} from '../../../shared/components';
 import {
   userLoginRequest,
-  googleSignInRequest,
+  signInWithGoogleFailure,
+  signInWithGoogle,
+  verifyGoogleToken,
 } from '../../../store/auth-store/actions/login.actions';
 import ForgotPassword from '../Forgot-Password/Forgot-Password.component';
+import { environment } from 'apps/frontend/src/environments/environment';
+import { RootState } from '../../../store/root-reducer';
 
 const LoginForm = () => {
+  const loginState = useSelector((state: RootState) => state.auth);
   const [modalShow, setModalShow] = useState(false);
   const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
@@ -25,9 +34,24 @@ const LoginForm = () => {
     dispatch(userLoginRequest(data));
   };
 
-  const signInWithClicked = () => {
-    dispatch(googleSignInRequest());
+  const signInWithGoogleClicked = () => {
+    dispatch(signInWithGoogle());
   };
+
+  const onSuccess = (res) => {
+    dispatch(verifyGoogleToken(res.tokenId));
+  };
+
+  const onFailure = (err) => {
+    dispatch(signInWithGoogleFailure(err));
+  };
+
+  const { signIn } = useGoogleLogin({
+    onRequest: signInWithGoogleClicked,
+    onSuccess,
+    onFailure,
+    clientId: environment.google_client_id,
+  });
 
   return (
     <div className="login_main_ctn">
@@ -105,11 +129,11 @@ const LoginForm = () => {
             </div>
 
             <CustomButton className="golden_button" type="submit">
-              Sign In
+              {loginState.isLoggingIn ? <Spinner /> : 'Login'}
             </CustomButton>
             <div className="text-center or_text">or</div>
             <CustomButton
-              onClick={signInWithClicked}
+              onClick={signIn}
               className="google_button"
               type="button"
             >

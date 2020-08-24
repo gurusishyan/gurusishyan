@@ -3,6 +3,7 @@
 
 export const environment = {
   production: false,
+  google_client_id: '583926172582-s3d7mouif5hd0h7r71obc5p0bqvvo8cd.apps.googleusercontent.com',
   sector: [
     { label: 'Government', value: 'government', },
     { label: 'Private', value: 'private' }
