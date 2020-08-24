@@ -19,6 +19,7 @@ export class IUserSchema extends mongoose.Document {
   subject_handled?: string;
   student?: boolean;
   teacher?: boolean;
+  user_image?: string;
 }
 const isValidUserName = async (user_name: string) => {
   const users = await User.find({ user_name });
@@ -44,6 +45,10 @@ export const UserEntity = new mongoose.Schema({
   },
   class: { type: String, required: false },
   board_of_education: {
+    type: String,
+    required: false,
+  },
+  user_image: {
     type: String,
     required: false,
   },
@@ -107,4 +112,3 @@ UserEntity.pre('remove', (next, doc) => {
   console.log(doc);
 });
 export const User = mongoose.model<IUserSchema>('User', UserEntity, 'user');
-

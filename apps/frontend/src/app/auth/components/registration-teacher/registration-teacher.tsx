@@ -196,6 +196,7 @@ export const RegistrationTeacher = (props: RegistrationTeacherProps) => {
             type="password"
             placeholder="Enter your password"
             name="password"
+            autoComplete="off"
           />
         </div>
       </div>

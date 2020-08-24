@@ -5,8 +5,10 @@ import {
   CreateUserDTO,
   LoginUserDTO,
   CreateTeacherDTO,
+  CreateGoogleUserDTO,
 } from '../user/user.dto';
 import { IUserSchema } from '../../entities';
+import { loggerInstance } from '@gurusishyan-logger';
 @Injectable()
 export class AuthService {
   constructor(
@@ -14,25 +16,21 @@ export class AuthService {
     private commonService: SharedService
   ) {}
 
-  googleLogin = async (req: any): Promise<IUserSchema> => {
-    if (!req.user) {
-      throw new HttpException('Invalid User', HttpStatus.UNAUTHORIZED);
+  googleLogin = async (userDet: CreateGoogleUserDTO): Promise<IUserSchema> => {
+    const { user_name, user_email,user_image } = userDet
+    const attempt_user = await this.userService.findUserWithUserName(user_name);
+    if (!attempt_user) {
+      const user = await this.userService.createUser({
+        user_email,
+        user_name,
+        user_image
+      });
+      user.token = this.commonService.signJWT(user);
+      return user;
     } else {
-      const { user_name, user_email } = req.user;
-      const attempt_user = await this.userService.findUserWithUserName(
-        user_name
-      );
-      if (!attempt_user) {
-        const user = await this.userService.createUser({
-          user_email,
-          user_name,
-        });
-        user.token = this.commonService.signJWT(user);
-        return user;
-      } else {
-        attempt_user.token = this.commonService.signJWT(attempt_user);
-        return attempt_user;
-      }
+      attempt_user.token = this.commonService.signJWT(attempt_user);
+      loggerInstance.log(`${attempt_user.user_name} logged in to GS Application`);
+      return attempt_user;
     }
   };
 
@@ -63,7 +61,7 @@ export class AuthService {
 
   registerTeacher = async (user: CreateTeacherDTO): Promise<IUserSchema> => {
     user.password = this.commonService.createHash(user.password);
-    user.teacher = true
+    user.teacher = true;
     const newTeacher = await this.userService.createTeacher(user);
     newTeacher.token = this.commonService.signJWT(newTeacher);
     newTeacher.password = undefined;

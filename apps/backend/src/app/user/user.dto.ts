@@ -15,6 +15,7 @@ export class CreateUserDTO {
   @IsNotEmpty({ message: 'ValidationError: User name is missing' })
   user_name: string;
 
+  user_image?:string;
   @IsString({ message: 'User role is missing' })
   @IsIn(globalConfig.roles, { message: 'Invalid option: Invalid user role' })
   @IsNotEmpty({ message: 'User role is missing' })
@@ -27,6 +28,20 @@ export class CreateUserDTO {
   @IsEmail({}, { message: 'Invalid Format: Email Address' })
   user_email: string;
 }
+export class CreateGoogleUserDTO {
+  @IsString({ message: 'ValidationError: User name is missing' })
+  @IsNotEmpty({ message: 'ValidationError: User name is missing' })
+  user_name: string;
+
+  @IsString({ message: 'ValidationError: User Image should be of type string URL' })
+  @IsNotEmpty({ message: 'User image is missing' })
+  user_image: string;
+
+  @IsEmail({}, { message: 'Invalid Format: Email Address' })
+  @IsNotEmpty({message:"RequiredFieldError: Email is mandatory"})
+  user_email: string;
+}
+
 
 export class CreateTeacherDTO {
   @IsString({ message: 'ValidationError: Username should be of type string' })
