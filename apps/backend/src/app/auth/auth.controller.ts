@@ -50,7 +50,7 @@ export class AuthController {
     return await this.authService.registerTeacher(newTeacher);
   }
 
-  @Post('reset-password')
+  @Post('request-reset-password')
   async resetPassword(@Query('email') email_id: string) {
     return await this.authService.reserPassword(email_id);
   }
