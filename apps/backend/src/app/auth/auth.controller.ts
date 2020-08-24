@@ -13,6 +13,7 @@ import {
   LoginUserDTO,
   CreateUserDTO,
   CreateTeacherDTO,
+  CreateGoogleUserDTO,
 } from '../user/user.dto';
 import { ValidationPipe } from '../shared/pipes/validator.pipe';
 
@@ -20,14 +21,14 @@ import { ValidationPipe } from '../shared/pipes/validator.pipe';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @UseGuards(AuthGuard('google'))
-  @Get()
-  googleAuth(@Req() req) {}
+  // @UseGuards(AuthGuard('google'))
+  // @Get()
+  // googleAuth(@Req() req) {}
 
-  @Get('google/callback')
-  @UseGuards(AuthGuard('google'))
-  googleAuthRedirect(@Req() req) {
-    return this.authService.googleLogin(req);
+  @Post('google/callback')
+  @UsePipes(new ValidationPipe())
+  async googleAuthRedirect(@Body() userDet:CreateGoogleUserDTO) {
+    return this.authService.googleLogin(userDet);
   }
 
   @Post('login')
