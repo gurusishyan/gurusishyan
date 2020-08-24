@@ -1,5 +1,7 @@
 export { CustomButton } from './custom-button.component';
-export { FormInput } from './form-input.component';
 export { Label } from './label.component';
-export { Info } from './info.component';
 export { Spinner } from './spinner.component';
+export { DropdownComponent } from './Dropdown.component'
+export { ToastContainerComponent } from './ToastContainer'
+export { InitialLoader } from './InitialLoader';
+export { RestrictedRoute } from './RestrictedRoute';

@@ -1,7 +1,7 @@
 import React from 'react';
 import Select from 'react-select';
 
-const DropdownComponent = ({
+export const DropdownComponent = ({
   options,
   placeholder,
   selected_options,
@@ -22,5 +22,3 @@ const DropdownComponent = ({
     />
   );
 };
-
-export default DropdownComponent;
