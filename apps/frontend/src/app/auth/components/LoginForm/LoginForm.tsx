@@ -9,11 +9,7 @@ import { useGoogleLogin } from 'react-google-login';
 import './LoginForm.scss';
 import Login_Page from '../../../../assets/svg/Login_Page.svg';
 import Logo from '../../../../assets/svg/Logo.svg';
-import {
-  CustomButton,
-  InitialLoader,
-  Spinner,
-} from '../../../shared/components';
+import { CustomButton, Spinner } from '../../../shared/components';
 import {
   userLoginRequest,
   signInWithGoogleFailure,

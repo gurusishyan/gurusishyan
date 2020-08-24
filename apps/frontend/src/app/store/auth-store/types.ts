@@ -16,6 +16,8 @@ export const RESET_PASSWORD_REQUEST = 'RESET_PASSWORD_REQUEST'
 export const RESET_PASSWORD_SUCCESS = 'RESET_PASSWORD_SUCCESS'
 export const RESET_PASSWORD_FAILURE = 'RESET_PASSWORD_FAILURE'
 
+export const LOGOUT_USER = 'LOGOUT_USER'
+
 export interface UserState {
     isInitializing: boolean
     isLoggingIn: boolean,

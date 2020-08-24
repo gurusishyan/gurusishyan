@@ -51,6 +51,12 @@ export const signInWithGoogleFailure = (err) => {
     }
 }
 
+export const logOutUser = () => {
+    return {
+        type: ActionTypes.LOGOUT_USER
+    }
+}
+
 export const whoami = () => {
     return (dispatch) => {
         dispatch(login())
@@ -109,6 +115,12 @@ export const verifyGoogleToken = (userObject) => {
                     dispatch(signInWithGoogleFailure(err.response.data))
                 }
             })
+    })
+}
+
+export const userLogoutRequest = () => {
+    return ((dispatch) => {
+        dispatch(logOutUser())
     })
 }
 
