@@ -8,6 +8,7 @@ import reducer from './root-reducer';
 
 const persistConfig = {
   key: 'root',
+  blacklist: ['resetPassword'],
   storage,
 }
 

@@ -1,7 +1,10 @@
-import { RESET_PASSWORD_REQUEST, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_FAILURE } from "../types"
+import * as ActionTypes from "../types"
 
 const initialState = {
-    requesting: false
+    modal: false,
+    requesting: false,
+    user_details: null,
+    error: null
 }
 
 const resetPasswordReducer = (
@@ -9,20 +12,36 @@ const resetPasswordReducer = (
     action
 ) => {
     switch (action.type) {
-        case RESET_PASSWORD_REQUEST:
+        case ActionTypes.SHOW_MODAL:
+            return {
+                ...state,
+                modal: true
+            }
+        case ActionTypes.CLOSE_MODAL:
+            return {
+                ...state,
+                modal: false
+            }
+        case ActionTypes.RESET_PASSWORD_REQUEST:
             return {
                 ...state,
                 requesting: true
             }
-        case RESET_PASSWORD_SUCCESS:
+        case ActionTypes.RESET_PASSWORD_SUCCESS:
             return {
                 ...state,
-                requesting: false
+                requesting: false,
+                error: null,
+                user_details: action.payload,
+                modal: false
             }
-        case RESET_PASSWORD_FAILURE:
+        case ActionTypes.RESET_PASSWORD_FAILURE:
             return {
                 ...state,
-                requesting: false
+                requesting: false,
+                user_details: null,
+                error: action.payload,
+                modal: false
             }
         default:
             return state
