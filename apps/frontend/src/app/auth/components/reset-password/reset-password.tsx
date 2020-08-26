@@ -3,24 +3,34 @@ import { useDispatch } from 'react-redux';
 import { Card, Form, Button, InputGroup, FormControl } from 'react-bootstrap';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import { useForm } from 'react-hook-form';
-import { useParams } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import './reset-password.scss';
 import { errorToast } from '../../../utils/toast';
 import { resetPasswordRequest } from '../../../store/auth-store/actions/reset-password.actions';
 
 export const ResetPassword = () => {
+  const historyParams = useHistory();
+  const paramsFromBackend = historyParams.location.search.match(
+    'email=(.*)&token=(.*)$'
+  );
+
   const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setshowConfirmPassword] = useState(false);
   const { register, handleSubmit } = useForm();
 
   const onSubmit = (data) => {
-    const params = useParams();
-    console.log(params);
+    const user_email = paramsFromBackend[1];
+    const reset_password_token = paramsFromBackend[2];
     const { password, confirm_password } = data;
     if (password === confirm_password) {
-      dispatch(resetPasswordRequest(password));
+      const password_details = {
+        user_email,
+        reset_password_token,
+        password,
+      };
+      dispatch(resetPasswordRequest(password_details, historyParams));
     } else {
       errorToast('Passwords do not match');
     }

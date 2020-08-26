@@ -2,6 +2,7 @@ import * as ActionTypes from '../types'
 import axiosInstance from '../../../utils/api'
 import { AxiosResponse, AxiosError } from 'axios'
 import { successToast } from '../../../utils/toast'
+import { Router, Route } from 'react-router-dom'
 
 const forgotPasswordRequest = (email_details) => {
     return {
@@ -57,6 +58,8 @@ export const closeModal = () => {
     }
 }
 
+
+
 export const forgotPassword = (email_details) => {
     return ((dispatch) => {
         dispatch(forgotPasswordRequest(email_details))
@@ -65,6 +68,7 @@ export const forgotPassword = (email_details) => {
                 if (res.data) {
                     successToast("Please check your mail to reset password")
                     dispatch(forgotPasswordRequestSuccess(res.data))
+
                 }
             })
             .catch((err: AxiosError) => {
@@ -75,18 +79,21 @@ export const forgotPassword = (email_details) => {
     })
 }
 
-export const resetPasswordRequest = (password_details) => {
+export const resetPasswordRequest = (password_details, history) => {
     return ((dispatch) => {
         dispatch(resetPassword(password_details))
         axiosInstance.post(`auth/reset-password`, password_details)
             .then((res) => {
                 if (res.data) {
                     dispatch(resetPasswordSuccess(res.data))
+                    successToast("Password changed successfully, please login to continue")
+                    history.push('/')
                 }
             })
             .catch((err) => {
                 if (err.response) {
                     dispatch(resetPasswordFailure(err.response))
+                    history.push('/')
                 }
             })
     })
