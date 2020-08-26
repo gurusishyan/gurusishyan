@@ -1,19 +1,26 @@
 import React, { useState } from 'react';
-import './reset-password.scss';
+import { useDispatch } from 'react-redux';
 import { Card, Form, Button, InputGroup, FormControl } from 'react-bootstrap';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import { useForm } from 'react-hook-form';
+import { useParams } from 'react-router-dom';
+
+import './reset-password.scss';
 import { errorToast } from '../../../utils/toast';
+import { resetPasswordRequest } from '../../../store/auth-store/actions/reset-password.actions';
 
 export const ResetPassword = () => {
+  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setshowConfirmPassword] = useState(false);
   const { register, handleSubmit } = useForm();
 
   const onSubmit = (data) => {
+    const params = useParams();
+    console.log(params);
     const { password, confirm_password } = data;
     if (password === confirm_password) {
-      console.log('Success');
+      dispatch(resetPasswordRequest(password));
     } else {
       errorToast('Passwords do not match');
     }

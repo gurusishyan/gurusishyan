@@ -13,13 +13,13 @@ import { FaUserCircle } from 'react-icons/fa';
 
 import './Forgot-Password.styles.css';
 import {
-  requestingPasswordReset,
+  forgotPassword,
   closeModal,
 } from '../../../store/auth-store/actions/reset-password.actions';
 import { RootState } from '../../../store/root-reducer';
 import { Spinner } from '../../../shared/components';
 
-const ForgotPassword = (props) => {
+const ForgotPasswordComponent = (props) => {
   const forgot_password = useSelector(
     (state: RootState) => state.resetPassword
   );
@@ -27,7 +27,7 @@ const ForgotPassword = (props) => {
   const dispatch = useDispatch();
 
   const onEmailSubmitted = (data) => {
-    dispatch(requestingPasswordReset(data.user_email));
+    dispatch(forgotPassword(data.user_email));
   };
 
   return (
@@ -85,4 +85,4 @@ const ForgotPassword = (props) => {
   );
 };
 
-export default ForgotPassword;
+export default ForgotPasswordComponent;

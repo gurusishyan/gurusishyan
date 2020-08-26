@@ -22,12 +22,12 @@ const resetPasswordReducer = (
                 ...state,
                 modal: false
             }
-        case ActionTypes.RESET_PASSWORD_REQUEST:
+        case ActionTypes.FORGOT_PASSWORD_REQUEST:
             return {
                 ...state,
                 requesting: true
             }
-        case ActionTypes.RESET_PASSWORD_SUCCESS:
+        case ActionTypes.FORGOT_PASSWORD_REQUEST_SUCCESS:
             return {
                 ...state,
                 requesting: false,
@@ -35,7 +35,7 @@ const resetPasswordReducer = (
                 user_details: action.payload,
                 modal: false
             }
-        case ActionTypes.RESET_PASSWORD_FAILURE:
+        case ActionTypes.FORGOT_PASSWORD_REQUEST_FAILURE:
             return {
                 ...state,
                 requesting: false,
