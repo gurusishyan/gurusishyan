@@ -57,8 +57,16 @@ export class UserService {
   updatePassword = async (_id: string, password: string) =>
     await this.userRepository.updatePassword(_id, password);
 
-  updateResetPasswordTokenAndTime = async (_id: string): Promise<IUserSchema> =>
-    await this.userRepository.updateResetPasswordTokenAndTime(_id);
+  updateResetPasswordTokenAndTime = async (
+    _id: string,
+    reset_password_token: string,
+    reset_password_token_exp: number
+  ): Promise<IUserSchema> =>
+    await this.userRepository.updateResetPasswordTokenAndTime(
+      _id,
+      reset_password_token,
+      reset_password_token_exp
+    );
 
   createUser = async (user: CreateUserDTO) => {
     return await this.userRepository.createUser(user);

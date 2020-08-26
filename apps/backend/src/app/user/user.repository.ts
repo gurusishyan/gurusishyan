@@ -39,18 +39,25 @@ export class UserRepository {
   updatePassword = async (_id: string, password: string) =>
     await User.findOneAndUpdate(
       { _id },
-      { password,reset_password_token:undefined,reset_password_token_exp:undefined },
+      {
+        password,
+        $unset: { reset_password_token: 1, reset_password_token_exp: 1 },
+      },
       { new: true, runValidators: true }
     )
       .then((user) => user)
       .catch((err) => this.commonService.sendErrorMessage(err));
 
-  updateResetPasswordTokenAndTime = async (_id: string) =>
+  updateResetPasswordTokenAndTime = async (
+    _id: string,
+    reset_password_token: string,
+    reset_password_token_exp: number
+  ) =>
     await User.findOneAndUpdate(
       { _id },
       {
-        reset_password_token: this.commonService.generateRandomTokenForResetPassword(),
-        reset_password_token_exp: Date.now() + 43200000,
+        reset_password_token,
+        reset_password_token_exp,
       },
       { new: true, runValidators: true }
     )
