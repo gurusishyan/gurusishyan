@@ -15,16 +15,27 @@ export class AuthService {
   constructor(
     private userService: UserService,
     private commonService: SharedService
-  ) { }
-  getResetPasswordHTML = (user: any) =>
+  ) {}
+
+  getResetPasswordHTML = (user: any, reset_password_token: string) =>
     this.commonService
       .readResetPasswordHTMLFile()
       .split('%resetlink%')
-      .join(process.env.RESETLINK)
+      .join(
+        `${process.env.RESETLINK}?email=${user.user_email}&token=${reset_password_token}`
+      )
       .split('%user_name%')
       .join(user.user_name.charAt(0).toUpperCase() + user.user_name.slice(1))
       .split('[type_of_action]')
       .join('reset password');
+
+  computeTokenAndExpiryTime = () => ({
+    reset_password_token: this.commonService.generateRandomTokenForResetPassword(),
+    reset_password_token_exp:
+      Date.now() +
+      (parseInt(process.env.RESET_PASSWORD_EXP, 10) || 432) * 100000,
+  });
+
   googleLogin = async (userDet: CreateGoogleUserDTO): Promise<IUserSchema> => {
     const { user_name, user_email, user_image } = userDet;
     const attempt_user = await this.userService.findUserWithUserName(user_name);
@@ -92,15 +103,24 @@ export class AuthService {
         HttpStatus.NOT_ACCEPTABLE
       );
     }
+    const {
+      reset_password_token,
+      reset_password_token_exp,
+    } = this.computeTokenAndExpiryTime();
+
     return await this.commonService
       .sendMail(
         'svvsathyanarayanan@gmail.com',
         `${user.user_email}`,
         `Request for password reset by ${user.user_name}`,
-        this.getResetPasswordHTML(user)
+        this.getResetPasswordHTML(user, reset_password_token)
       )
       .then(async (res) => {
-        return await this.userService.updateResetPasswordTokenAndTime(user._id);
+        return await this.userService.updateResetPasswordTokenAndTime(
+          user._id,
+          reset_password_token,
+          reset_password_token_exp
+        );
       })
       .catch((err) => {
         this.commonService.sendErrorMessage({ err });
