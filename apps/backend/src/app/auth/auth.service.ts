@@ -15,7 +15,7 @@ export class AuthService {
   constructor(
     private userService: UserService,
     private commonService: SharedService
-  ) {}
+  ) { }
   getResetPasswordHTML = (user: any) =>
     this.commonService
       .readResetPasswordHTMLFile()
@@ -95,7 +95,7 @@ export class AuthService {
     return await this.commonService
       .sendMail(
         'svvsathyanarayanan@gmail.com',
-        'svvsathyanarayanan@gmail.com',
+        `${user.user_email}`,
         `Request for password reset by ${user.user_name}`,
         this.getResetPasswordHTML(user)
       )

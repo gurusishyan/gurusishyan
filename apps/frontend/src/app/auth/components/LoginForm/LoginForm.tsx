@@ -19,9 +19,16 @@ import {
 import ForgotPassword from '../Forgot-Password/Forgot-Password.component';
 import { environment } from 'apps/frontend/src/environments/environment';
 import { RootState } from '../../../store/root-reducer';
+import {
+  showModal,
+  closeModal,
+} from '../../../store/auth-store/actions/reset-password.actions';
 
 const LoginForm = () => {
   const loginState = useSelector((state: RootState) => state.auth);
+  const modalState = useSelector(
+    (state: RootState) => state.resetPassword.modal
+  );
   const [modalShow, setModalShow] = useState(false);
   const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
@@ -115,7 +122,7 @@ const LoginForm = () => {
               </div>
               <div className="fp_">
                 <small
-                  onClick={() => setModalShow(true)}
+                  onClick={() => dispatch(showModal())}
                   id="emailHelp"
                   className="form-text text-muted"
                 >
@@ -124,8 +131,8 @@ const LoginForm = () => {
                   </span>
                 </small>
                 <ForgotPassword
-                  show={modalShow}
-                  onHide={() => setModalShow(false)}
+                  show={modalState}
+                  onHide={() => dispatch(closeModal())}
                 />
               </div>
             </div>
