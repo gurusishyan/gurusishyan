@@ -2,7 +2,6 @@ import * as ActionTypes from '../types'
 import axiosInstance from '../../../utils/api'
 import { AxiosResponse, AxiosError } from 'axios'
 import { successToast } from '../../../utils/toast'
-import { Router, Route } from 'react-router-dom'
 
 const forgotPasswordRequest = (email_details) => {
     return {
