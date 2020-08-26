@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { whoami } from './store/auth-store/actions/login.actions';
-import Auth from './auth/auth';
+import AuthContainer from './auth/auth';
 import { ToastContainerComponent, InitialLoader } from './shared/components';
 import Dashboard from './dashboard/Dashboard';
 
@@ -22,7 +22,7 @@ export const App = () => {
       ) : currentUser ? (
         <Dashboard />
       ) : (
-        <Auth />
+        <AuthContainer />
       )}
       <ToastContainerComponent />
     </div>
