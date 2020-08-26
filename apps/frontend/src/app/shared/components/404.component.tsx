@@ -12,11 +12,7 @@ const NotFoundComponent = () => {
         Maybe this page moved? Got deleted? Is hiding out in quarantine? Never
         existed in the first place?
         <p>
-          Let's go{' '}
-          <Link style={{ color: '#ffffff' }} to="/">
-            Home
-          </Link>{' '}
-          and try from there.
+          Let's go <a href="/">Home</a> and try from there.
         </p>
       </div>
     </div>
