@@ -2,6 +2,7 @@ import { STUDENT_REGISTRATION_REQUEST, STUDENT_REGISTRATION_SUCCESS, STUDENT_REG
 import axiosInstance from '../../../utils/api'
 import { AxiosResponse, AxiosError } from 'axios';
 import { StudentDetails } from '@gurusishyan/request-interface'
+import { startLoader, stopLoader } from '../../loader-store/loader.actions';
 
 export const studentRegistrationRequest = (student_details: StudentDetails) => {
     return {
@@ -28,15 +29,18 @@ export const studentRegistrationFailure = (error) => {
 export const requestingStudentRegistration = (student_details: StudentDetails) => {
     return ((dispatch) => {
         dispatch(studentRegistrationRequest(student_details))
+        dispatch(startLoader())
         axiosInstance.post('student/registration', student_details)
             .then((res: AxiosResponse) => {
                 if (res.data) {
                     dispatch(studentRegistrationSuccess(res.data))
+                    dispatch(stopLoader())
                 }
             })
             .catch((err: AxiosError) => {
                 if (err.response) {
                     dispatch(studentRegistrationFailure(err.response.data))
+                    dispatch(stopLoader())
                 }
             })
     })

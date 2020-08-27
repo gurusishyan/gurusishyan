@@ -2,6 +2,7 @@ import * as ActionTypes from '../types'
 import axiosInstance from '../../../utils/api'
 import { AxiosResponse, AxiosError } from 'axios'
 import { successToast } from '../../../utils/toast'
+import { startLoader, stopLoader } from '../../loader-store/loader.actions'
 
 const forgotPasswordRequest = (email_details) => {
     return {
@@ -62,17 +63,20 @@ export const closeModal = () => {
 export const forgotPassword = (email_details) => {
     return ((dispatch) => {
         dispatch(forgotPasswordRequest(email_details))
+        dispatch(startLoader())
         axiosInstance.post(`auth/request-reset-password?email=${email_details}`)
             .then((res: AxiosResponse) => {
                 if (res.data) {
                     successToast("Please check your mail to reset password")
                     dispatch(forgotPasswordRequestSuccess(res.data))
+                    dispatch(stopLoader())
 
                 }
             })
             .catch((err: AxiosError) => {
                 if (err.response) {
                     dispatch(forgotPasswordRequestFailure(err.response))
+                    dispatch(stopLoader())
                 }
             })
     })
@@ -81,18 +85,21 @@ export const forgotPassword = (email_details) => {
 export const resetPasswordRequest = (password_details, history) => {
     return ((dispatch) => {
         dispatch(resetPassword(password_details))
+        dispatch(startLoader())
         axiosInstance.post(`auth/reset-password`, password_details)
             .then((res) => {
                 if (res.data) {
                     dispatch(resetPasswordSuccess(res.data))
                     successToast("Password changed successfully, please login to continue")
                     history.push('/')
+                    dispatch(stopLoader())
                 }
             })
             .catch((err) => {
                 if (err.response) {
                     dispatch(resetPasswordFailure(err.response))
                     history.push('/')
+                    dispatch(stopLoader())
                 }
             })
     })

@@ -25,11 +25,10 @@ import {
 } from '../../../store/auth-store/actions/reset-password.actions';
 
 const LoginForm = () => {
-  const loginState = useSelector((state: RootState) => state.auth);
+  const loaderState = useSelector((state: RootState) => state.auth.isLoggingIn);
   const modalState = useSelector(
     (state: RootState) => state.resetPassword.modal
   );
-  const [modalShow, setModalShow] = useState(false);
   const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
 
@@ -138,7 +137,7 @@ const LoginForm = () => {
             </div>
 
             <CustomButton className="golden_button" type="submit">
-              {loginState.isLoggingIn ? <Spinner /> : 'Login'}
+              {loaderState ? <Spinner /> : 'Login'}
             </CustomButton>
             <div className="text-center or_text">or</div>
             <CustomButton

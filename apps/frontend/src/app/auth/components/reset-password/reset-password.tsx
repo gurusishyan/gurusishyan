@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Card, Form, Button, InputGroup, FormControl } from 'react-bootstrap';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import { useForm } from 'react-hook-form';
@@ -8,10 +8,13 @@ import { useHistory } from 'react-router-dom';
 import './reset-password.scss';
 import { errorToast } from '../../../utils/toast';
 import { resetPasswordRequest } from '../../../store/auth-store/actions/reset-password.actions';
+import { RootState } from '../../../store/root-reducer';
+import { Spinner } from '../../../shared/components';
 
 export const ResetPassword = () => {
+  const loaderState = useSelector((state: RootState) => state.loader);
   const historyParams = useHistory();
-  const paramsFromBackend = historyParams.location.search.match(
+  const paramsFromBackend = historyParams?.location.search.match(
     'email=(.*)&token=(.*)$'
   );
 
@@ -98,7 +101,7 @@ export const ResetPassword = () => {
               </InputGroup>
               <div className="text-center">
                 <Button className="text-center" variant="primary" type="submit">
-                  Submit
+                  {loaderState.isLoading ? <Spinner /> : 'Submit'}
                 </Button>
               </div>
             </Form>

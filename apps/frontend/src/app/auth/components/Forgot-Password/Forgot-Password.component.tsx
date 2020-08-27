@@ -20,9 +20,7 @@ import { RootState } from '../../../store/root-reducer';
 import { Spinner } from '../../../shared/components';
 
 const ForgotPasswordComponent = (props) => {
-  const forgot_password = useSelector(
-    (state: RootState) => state.resetPassword
-  );
+  const loaderState = useSelector((state: RootState) => state.loader);
   const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
 
@@ -75,7 +73,7 @@ const ForgotPasswordComponent = (props) => {
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={handleSubmit(onEmailSubmitted)}>
-              {forgot_password.requesting ? <Spinner /> : 'Send'}
+              {loaderState.isLoading ? <Spinner /> : 'Send'}
             </Button>
             <Button onClick={() => dispatch(closeModal())}>Close</Button>
           </Modal.Footer>

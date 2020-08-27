@@ -3,17 +3,19 @@ import React, { useState } from 'react';
 import './registration-teacher.scss';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
   CustomButton,
   Label,
   DropdownComponent,
+  Spinner,
 } from '../../../shared/components';
 import Logo from '../../../../assets/svg/Logo.svg';
 import { requestingTeacherRegistration } from '../../../store/registration-store/actions/teacher-actions';
 import { TeacherDetails } from '@gurusishyan/request-interface';
 import { environment } from 'apps/frontend/src/environments/environment';
+import { RootState } from '../../../store/root-reducer';
 
 /* eslint-disable-next-line */
 export interface RegistrationTeacherProps {
@@ -22,6 +24,7 @@ export interface RegistrationTeacherProps {
 
 export const RegistrationTeacher = (props: RegistrationTeacherProps) => {
   const [classes, setClasses] = useState([]);
+  const loaderState = useSelector((state: RootState) => state.loader.isLoading);
   const [subjects, setSubjects] = useState([]);
   const [sector, setSector] = useState([]);
   const [board_of_education, set_board_of_education] = useState([]);
@@ -205,13 +208,17 @@ export const RegistrationTeacher = (props: RegistrationTeacherProps) => {
         <div className="tb_cell input_width_teacher">
           <CustomButton type="submit" className="register_btn mg_r">
             {' '}
-            Register as Teacher
+            {loaderState ? <Spinner /> : 'Register as Teacher'}
           </CustomButton>
         </div>
         <div className="tb_cell input_width_teacher">
           <CustomButton className="register_btn mg_r">
             {' '}
-            Already have an account ? Sign In
+            Already have an account ?{' '}
+            <Link style={{ color: 'white  ' }} to="/">
+              {' '}
+              Sign In{' '}
+            </Link>
           </CustomButton>
         </div>
       </div>

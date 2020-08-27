@@ -1,13 +1,14 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import './registration-student.scss';
-import { Label, CustomButton } from '../../../shared/components';
+import { Label, CustomButton, Spinner } from '../../../shared/components';
 import Logo from '../../../../assets/svg/Logo.svg';
 import { Link } from 'react-router-dom';
 import { requestingStudentRegistration } from '../../../store/registration-store/actions/student-actions';
 import { StudentDetails } from '@gurusishyan/request-interface';
+import { RootState } from '../../../store/root-reducer';
 
 export interface RegistrationStudentProps {
   pathname: string;
@@ -15,6 +16,7 @@ export interface RegistrationStudentProps {
 
 const RegistrationStudent = (props: RegistrationStudentProps) => {
   const dispatch = useDispatch();
+  const loaderState = useSelector((state: RootState) => state.loader.isLoading);
   const { register, handleSubmit } = useForm();
   const options = ['CBSE', 'STATE BOARD'];
 
@@ -172,7 +174,7 @@ const RegistrationStudent = (props: RegistrationStudentProps) => {
         <div className="tb_cell">
           <CustomButton type="submit" className="register_btn mg_r">
             {' '}
-            Register as Student
+            {loaderState ? <Spinner /> : 'Register as Student'}
           </CustomButton>
         </div>
       </div>
@@ -182,7 +184,13 @@ const RegistrationStudent = (props: RegistrationStudentProps) => {
           <div className="account_">
             {' '}
             Already have an account?{' '}
-            <span className="light_blue"> Sign In</span>{' '}
+            <span className="light_blue">
+              {' '}
+              <Link style={{ textDecoration: 'none  ' }} to="/">
+                {' '}
+                Sign In{' '}
+              </Link>
+            </span>{' '}
           </div>
         </div>
       </div>

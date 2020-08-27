@@ -2,10 +2,18 @@ import axiosInstance from '../../../utils/api';
 import * as ActionTypes from '../types';
 import { AxiosResponse, AxiosError } from 'axios';
 import { UserDetails } from '@gurusishyan/request-interface';
+import { startLoader, stopLoader } from '../../loader-store/loader.actions';
 
-const login = () => {
+const login = (user_details) => {
     return {
-        type: ActionTypes.LOGIN
+        type: ActionTypes.LOGIN,
+        payload: user_details
+    }
+}
+
+const tokenLogin = () => {
+    return {
+        type: ActionTypes.TOKEN_LOGIN
     }
 }
 
@@ -59,17 +67,15 @@ export const logOutUser = () => {
 
 export const whoami = () => {
     return (dispatch) => {
-        dispatch(login())
+        dispatch(tokenLogin())
         const token = localStorage.token;
         if (token) {
             axiosInstance
                 .get('/user/me')
                 .then((res: AxiosResponse) => {
-                    console.log(res)
                     dispatch(loginSuccess(res.data));
                 })
                 .catch((err: AxiosError) => {
-                    console.log("IN")
                     if (err.response) {
                         if (err.response.data.code === 401) {
                             localStorage.removeItem('token');
@@ -85,17 +91,20 @@ export const whoami = () => {
 
 export const userLoginRequest = (credentials) => {
     return (dispatch) => {
-        dispatch(login())
+        dispatch(login(credentials))
+        dispatch(startLoader())
         axiosInstance
             .post('/auth/login', credentials)
             .then((res) => {
                 if (res.data) {
                     dispatch(loginSuccess(res.data));
+                    dispatch(stopLoader())
                     localStorage.setItem('token', res.data.token);
                 }
             })
             .catch((err) => {
                 if (err.response) {
+                    dispatch(stopLoader())
                     dispatch(loginFailure(err.response.data));
                 }
             });
