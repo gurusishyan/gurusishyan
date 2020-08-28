@@ -15,7 +15,35 @@
     outline: 0;
   }
 }
-
+.Toastify__toast--error {
+  background: #dc3545 !important;
+}
+.snackbarClass {
+  outline: none;
+  border: none;
+  border-radius: 4px !important;
+  min-height: 12rem;
+  padding: 18px !important;
+}
+.Toastify__close-button:hover,
+.Toastify__close-button:focus {
+  opacity: 1;
+  border: none;
+  outline: none;
+  width: 30px;
+  box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
+    0 1px 3px 0 rgba(0, 0, 0, 0.12);
+  height: 27px;
+}
+.Toastify__close-button {
+  opacity: 1;
+  border: none;
+  outline: none;
+  width: 30px;
+  // box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
+  //   0 1px 3px 0 rgba(0, 0, 0, 0.12);
+  height: 27px;
+}
 .google_button {
   width: 100%;
   white-space: nowrap;
