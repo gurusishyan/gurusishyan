@@ -28,7 +28,7 @@ export const studentRegistrationFailure = (error) => {
 export const requestingStudentRegistration = (student_details: StudentDetails) => {
     return ((dispatch) => {
         dispatch(studentRegistrationRequest(student_details))
-        axiosInstance.post('student/registration', student_details)
+        axiosInstance.post('auth/register/student', student_details)
             .then((res: AxiosResponse) => {
                 if (res.data) {
                     dispatch(studentRegistrationSuccess(res.data))
