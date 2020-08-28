@@ -109,7 +109,7 @@ export const UserEntity = new mongoose.Schema({
   classes_handled: [
     {
       type: String,
-      required: true,
+      required: false,
       validate: customValidator.validateClassesHandled,
     },
   ],

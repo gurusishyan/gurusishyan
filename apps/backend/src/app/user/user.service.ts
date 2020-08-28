@@ -5,7 +5,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { UserRepository } from './user.repository';
-import { CreateUserDTO, CreateTeacherDTO } from './user.dto';
+import { CreateUserDTO, CreateTeacherDTO, CreateStudentDTO } from './user.dto';
 import { IUserSchema } from '../../entities';
 import { SharedService } from '../shared/shared.service';
 import { ImploreService } from '../implore/implore.service';
@@ -86,6 +86,9 @@ export class UserService {
 
   createTeacher = async (newTeacher: CreateTeacherDTO) =>
     await this.userRepository.createTeacher(newTeacher);
+
+    createStudent = async (newTeacher: CreateStudentDTO) =>
+    await this.userRepository.createStudent(newTeacher);
 
   unBookmarkImplore = async (_id: string, implore_id: string) =>
     await this.userRepository.unBookmarkImplore(_id, implore_id);

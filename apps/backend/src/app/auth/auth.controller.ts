@@ -64,7 +64,7 @@ export class AuthController {
 
   @Post('register/student')
   @UsePipes(new ValidationPipe())
-  async registerStudent(@Body() data:CreateStudentDTO){
-    return data
+  async registerStudent(@Body() data: CreateStudentDTO) {
+    return await this.authService.registerStudent(data);
   }
 }

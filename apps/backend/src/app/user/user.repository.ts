@@ -1,5 +1,5 @@
 import { User, IUserSchema } from '../../entities';
-import { CreateUserDTO, CreateTeacherDTO } from './user.dto';
+import { CreateUserDTO, CreateTeacherDTO, CreateStudentDTO } from './user.dto';
 import { HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
 import { SharedService } from '../shared/shared.service';
 import { loggerInstance } from '@gurusishyan-logger';
@@ -124,6 +124,33 @@ export class UserRepository {
       .then((user) => {
         loggerInstance.log(`New Teacher created with name ${user.user_name}`);
         return user;
+      })
+      .catch((err) => {
+        loggerInstance.log(`Error Occured. ${err}`, 'error', 'UserRepository');
+        throw new HttpException(
+          'Some error occured while registration. Please try after some time.',
+          HttpStatus.INTERNAL_SERVER_ERROR
+        );
+      });
+  };
+
+  createStudent = async (newStudent: CreateStudentDTO) => {
+    const checkForExistence = await this.findUserWithUserName(
+      newStudent.user_name
+    );
+    if (checkForExistence) {
+      loggerInstance.log(
+        `${checkForExistence.user_name} tried to sign up again`
+      );
+      throw new BadRequestException('User already Exists');
+    }
+    return await new User(newStudent)
+      .save({ validateBeforeSave: true })
+      .then((student) => {
+        loggerInstance.log(
+          `New student signed up with name ${student.user_name} and _id ${student._id}`
+        );
+        return student;
       })
       .catch((err) => {
         loggerInstance.log(`Error Occured. ${err}`, 'error', 'UserRepository');
