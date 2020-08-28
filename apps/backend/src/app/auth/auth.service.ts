@@ -7,6 +7,7 @@ import {
   CreateTeacherDTO,
   CreateGoogleUserDTO,
   ResetPasswordRequestDTO,
+  CreateStudentDTO,
 } from '../user/user.dto';
 import { IUserSchema } from '../../entities';
 import { loggerInstance } from '@gurusishyan-logger';
@@ -88,6 +89,15 @@ export class AuthService {
     newTeacher.token = this.commonService.signJWT(newTeacher);
     newTeacher.password = undefined;
     return newTeacher;
+  };
+
+  registerStudent = async (user: CreateStudentDTO): Promise<IUserSchema> => {
+    user.password = this.commonService.createHash(user.password);
+    user.student = true;
+    const newStudent = await this.userService.createStudent(user);
+    newStudent.token = this.commonService.signJWT(newStudent);
+    newStudent.password = undefined;
+    return newStudent;
   };
 
   requestReserPassword = async (user_email: string) => {

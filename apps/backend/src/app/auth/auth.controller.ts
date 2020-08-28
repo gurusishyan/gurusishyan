@@ -16,6 +16,7 @@ import {
   CreateTeacherDTO,
   CreateGoogleUserDTO,
   ResetPasswordRequestDTO,
+  CreateStudentDTO,
 } from '../user/user.dto';
 import { ValidationPipe } from '../shared/pipes/validator.pipe';
 
@@ -59,5 +60,11 @@ export class AuthController {
   @UsePipes(new ValidationPipe())
   async resetPassword(@Body() data: ResetPasswordRequestDTO) {
     return await this.authService.resetPassword(data);
+  }
+
+  @Post('register/student')
+  @UsePipes(new ValidationPipe())
+  async registerStudent(@Body() data: CreateStudentDTO) {
+    return await this.authService.registerStudent(data);
   }
 }

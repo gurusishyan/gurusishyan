@@ -1,54 +1,49 @@
 import * as mongoose from 'mongoose';
-import { Implore } from '../implore/implore.entity';
-
+import { customValidator } from '../validators';
 export class IUserSchema extends mongoose.Document {
+  //Common fields for all users
   _id: string;
+  is_active?: boolean;
+  created_on?: string;
   user_name?: string;
   user_email?: string;
   password?: string;
-  user_role?: string;
-  is_active?: boolean;
-  created_on?: Date;
-  token?: string;
-  bookmarked_implores: string[];
-  bookmarked_vibes: string[];
-  teaching_sector?: string;
-  phone?: number;
-  class?: string;
-  board_of_education?: string;
-  subject_handled?: string;
-  student?: boolean;
-  teacher?: boolean;
   user_image?: string;
+  user_role?: string;
+  phone?: number;
+
+  token?: string;
   reset_password_token_exp?: number;
   reset_password_token?: string;
+
+  bookmarked_implores: string[];
+  bookmarked_vibes: string[];
+
+  //Fields specific to Teachers
+  classes_handled: Array<string>;
+  teaching_sector?: string;
+  board_of_education_teacher: string;
+  subjects_handled?: Array<string>;
+  teacher?: boolean;
+
+  //Fields specific to Students
+  student?: boolean;
+  class_studying: string;
+  board_of_education_student: string;
 }
+
 const isValidUserName = async (user_name: string) => {
   const users = await User.find({ user_name });
   if (users.length === 0) return true;
   return false;
 };
-const uniqueElements = (value, index, self) => {
-  return self.indexOf(value) === index;
-};
+
 export const UserEntity = new mongoose.Schema({
+  // Common fields for all users
   user_name: {
     type: String,
     required: true,
     validate: isValidUserName,
-  },
-  teaching_sector: {
-    type: String,
-    required: false,
-  },
-  phone: {
-    type: Number,
-    required: false,
-  },
-  class: { type: String, required: false },
-  board_of_education: {
-    type: String,
-    required: false,
   },
   user_image: {
     type: String,
@@ -60,18 +55,6 @@ export const UserEntity = new mongoose.Schema({
   },
   reset_password_token_exp: {
     type: Number,
-    required: false,
-  },
-  subject_handled: {
-    type: String,
-    required: false,
-  },
-  student: {
-    type: Boolean,
-    required: false,
-  },
-  teacher: {
-    type: Boolean,
     required: false,
   },
   user_email: {
@@ -103,6 +86,10 @@ export const UserEntity = new mongoose.Schema({
     type: String,
     required: false,
   },
+  phone: {
+    type: Number,
+    required: false,
+  },
   bookmarked_implores: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -117,8 +104,54 @@ export const UserEntity = new mongoose.Schema({
       ref: 'Vibe',
     },
   ],
+  //Fields specific to Teachers
+
+  classes_handled: [
+    {
+      type: String,
+      required: false,
+      validate: customValidator.validateClassesHandled,
+    },
+  ],
+  teaching_sector: {
+    type: String,
+    required: false,
+    validate: customValidator.validateTeachingSector,
+  },
+  teacher: {
+    type: Boolean,
+    required: false,
+  },
+  board_of_education_teacher: [
+    {
+      type: String,
+      required: false,
+      validate: customValidator.validateBoardOfEducation,
+    },
+  ],
+  subjects_handled: [
+    {
+      type: String,
+      required: false,
+      validate: customValidator.validateSubjectsHandled,
+    },
+  ],
+
+  // Fields specific to students
+  student: {
+    type: Boolean,
+    required: false,
+  },
+  class_studying: {
+    type: String,
+    required: false,
+    validate: customValidator.validateClassesHandled,
+  },
+  board_of_education_student: {
+    type: String,
+    required: false,
+    validate: customValidator.validateBoardOfEducation,
+  },
 });
-UserEntity.pre('remove', (next, doc) => {
-  console.log(doc);
-});
+
 export const User = mongoose.model<IUserSchema>('User', UserEntity, 'user');

@@ -8,14 +8,17 @@ import {
   IsNumber,
   IsNumberString,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import { globalConfig } from '@gurusishyan-config';
 import { BadRequestException } from '@nestjs/common';
+
 export class CreateUserDTO {
   @IsString({ message: 'ValidationError: User name is missing' })
   @IsNotEmpty({ message: 'ValidationError: User name is missing' })
   user_name: string;
 
   user_image?: string;
+
   @IsString({ message: 'User role is missing' })
   @IsIn(globalConfig.roles, { message: 'Invalid option: Invalid user role' })
   @IsNotEmpty({ message: 'User role is missing' })
@@ -48,9 +51,11 @@ export class ResetPasswordRequestDTO {
   @IsString({ message: 'ValidationError: Token is missing' })
   @IsNotEmpty({ message: 'ValidationError: Token is missing' })
   reset_password_token: string;
+  
   @IsString({ message: 'ValidationError: User email is missing' })
   @IsNotEmpty({ message: 'ValidationError: User email is missing' })
   user_email: string;
+  
   @IsString({ message: 'ValidationError: password is missing' })
   @IsNotEmpty({ message: 'ValidationError: password is missing' })
   password: string;
@@ -73,7 +78,7 @@ export class CreateTeacherDTO {
   @IsPhoneNumber('IN', {
     message: (args) => {
       if (args.value && args.value.length != 10) {
-        throw new BadRequestException('Not a proper Indian Phone Number');
+        throw new BadRequestException('Not a proper IN Phone Number');
       }
       return 'ValidationError: Not a proper mobile number';
     },
@@ -81,28 +86,29 @@ export class CreateTeacherDTO {
   @IsNumberString({ no_symbols: true })
   phone: number;
 
-  @IsIn(globalConfig.classes, { message: 'Invalid Option: Class of Study' })
   @IsNotEmpty({
     message:
       'ValidationError: Class of study is mandatory and should be of type string',
   })
-  classes_handled: string;
+  classes_handled: Array<string>;
 
-  @IsString({ message: 'Required Field Error: Board Of Education' })
-  @IsIn(globalConfig.board_of_education, {
-    message: 'Invalid Option: Board Of Education',
+  @IsString({
+    each: true,
+    message: 'Board of education is not of type string',
   })
   @IsNotEmpty({
     message: 'Board Of Education is mandatory and should be of type string',
   })
-  board_of_education_teacher: string;
+  board_of_education_teacher: Array<string>;
 
-  @IsNotEmpty({
-    message:
-      'ValidationError: Subject Handled is mandatory and should be of type string',
+  @IsString({
+    each: true,
+    message: `Invalid option for subjects handled`,
   })
-  @IsString({ message: 'Required Field Error: Subject Handled' })
-  subjects_handled: string;
+  @IsNotEmpty({
+    message: 'Subjects handled is mandatory and should be of type string',
+  })
+  subjects_handled: Array<string>;
 
   @IsNotEmpty({
     message:
@@ -122,4 +128,46 @@ export class LoginUserDTO {
   @IsString({ message: 'Required Field Error: Password is a required field' })
   @IsNotEmpty({ message: 'Required Field Error: Password is a required field' })
   password: string;
+}
+
+export class CreateStudentDTO {
+  @IsString({ message: 'ValidationError: User name is missing' })
+  @IsNotEmpty({ message: 'ValidationError: User name is missing' })
+  user_name: string;
+
+  @IsIn(globalConfig.classes, { message: 'Invalid Option: Class of Study' })
+  @IsNotEmpty({
+    message:
+      'ValidationError: Class of study is mandatory and should be of type string',
+  })
+  class_studying: string;
+
+  @IsEmail({}, { message: 'Invalid Format: Email Address' })
+  @IsNotEmpty({ message: 'RequiredFieldError: Email is mandatory' })
+  user_email: string;
+
+  @IsPhoneNumber('IN', {
+    message: (args) => {
+      if (args.value && args.value.length != 10) {
+        throw new BadRequestException('Not a proper Indian Phone Number');
+      }
+      return 'ValidationError: Not a proper mobile number';
+    },
+  })
+  @IsNumberString({ no_symbols: true })
+  phone: string;
+
+  @IsString({ message: 'Required Field Error: Board Of Education' })
+  @IsIn(globalConfig.board_of_education, {
+    message: 'Invalid Option: Board Of Education',
+  })
+  @IsNotEmpty({
+    message: 'Board Of Education is mandatory and should be of type string',
+  })
+  board_of_education_student: string;
+
+  @IsString({ message: 'Required Field Error: Password' })
+  password: string;
+
+  student: boolean;
 }

@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import { requestingStudentRegistration } from '../../../store/registration-store/actions/student-actions';
 import { StudentDetails } from '@gurusishyan/request-interface';
 import { RootState } from '../../../store/root-reducer';
+import { environment } from 'apps/frontend/src/environments/environment';
 
 export interface RegistrationStudentProps {
   pathname: string;
@@ -18,7 +19,10 @@ const RegistrationStudent = (props: RegistrationStudentProps) => {
   const dispatch = useDispatch();
   const loaderState = useSelector((state: RootState) => state.loader.isLoading);
   const { register, handleSubmit } = useForm();
-  const options = ['CBSE', 'STATE BOARD'];
+  const options = [
+    { label: 'CBSE', value: 'cbse' },
+    { label: 'State Board', value: 'state_board' },
+  ];
 
   const onSubmit = (data: StudentDetails) => {
     dispatch(requestingStudentRegistration(data));
@@ -78,13 +82,18 @@ const RegistrationStudent = (props: RegistrationStudentProps) => {
           </Label>
         </div>
         <div className="tb_cell">
-          <input
+          <select
             ref={register}
             className="form-control"
             placeholder="Enter your class"
-            type="class"
             name="class_studying"
-          />
+          >
+            {environment.classes.map((option, idx) => (
+              <option key={idx} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
       <div className="tb_row">
@@ -143,9 +152,9 @@ const RegistrationStudent = (props: RegistrationStudentProps) => {
             name="board_of_education_student"
             ref={register}
           >
-            {options.map((value) => (
-              <option key={value} value={value}>
-                {value}
+            {options.map((option, idx) => (
+              <option key={idx} value={option.value}>
+                {option.label}
               </option>
             ))}
           </select>
