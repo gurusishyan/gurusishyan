@@ -10,10 +10,10 @@ export interface StudentDetails {
 export interface TeacherDetails {
     user_name: string
     user_email: string
+    phone: number
     password: string
     classes_handled: Array<string>
     teaching_sector: string
-    phone: number
     board_of_education_teacher: string
     subjects_handled: Array<string>
     teacher: boolean

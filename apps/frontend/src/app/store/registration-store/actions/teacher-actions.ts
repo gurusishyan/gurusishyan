@@ -29,7 +29,7 @@ const teacherRegistrationFailure = (err: AxiosError) => {
 export const requestingTeacherRegistration = (teacher_details: TeacherDetails) => {
     return ((dispatch) => {
         dispatch(teacherRegistrationRequest(teacher_details))
-        axiosInstance.post('teacher/registration', teacher_details)
+        axiosInstance.post('auth/register/teacher', teacher_details)
             .then((res: AxiosResponse) => {
                 if (res.data) {
                     dispatch(teacherRegistrationSuccess(res.data))
