@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import './registration-student.scss';
 import { Label, CustomButton, Spinner } from '../../../shared/components';
 import Logo from '../../../../assets/svg/Logo.svg';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { requestingStudentRegistration } from '../../../store/registration-store/actions/student-actions';
 import { StudentDetails } from '@gurusishyan/request-interface';
 import { RootState } from '../../../store/root-reducer';
@@ -17,15 +17,16 @@ export interface RegistrationStudentProps {
 
 const RegistrationStudent = (props: RegistrationStudentProps) => {
   const dispatch = useDispatch();
+  const historyParams = useHistory();
   const loaderState = useSelector((state: RootState) => state.loader.isLoading);
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, errors } = useForm();
   const options = [
     { label: 'CBSE', value: 'cbse' },
     { label: 'State Board', value: 'state_board' },
   ];
 
   const onSubmit = (data: StudentDetails) => {
-    dispatch(requestingStudentRegistration(data));
+    dispatch(requestingStudentRegistration(data, historyParams));
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="student_teacher_form">
@@ -65,13 +66,24 @@ const RegistrationStudent = (props: RegistrationStudentProps) => {
           </Label>
         </div>
         <div className="tb_cell">
-          <input
-            ref={register}
-            className="form-control"
-            placeholder="Enter your name"
-            type="text"
-            name="user_name"
-          />
+          <div>
+            <div>
+              <input
+                ref={register({ minLength: 4 })}
+                className="form-control"
+                placeholder="Enter your name"
+                type="text"
+                name="user_name"
+                required
+              />
+            </div>
+            {errors.user_name && errors.user_name.type === 'minLength' && (
+              <small className="red_text">
+                {' '}
+                Username must contain atleast 4 characters
+              </small>
+            )}
+          </div>
         </div>
       </div>
       <div className="tb_row">
@@ -87,6 +99,7 @@ const RegistrationStudent = (props: RegistrationStudentProps) => {
             className="form-control"
             placeholder="Enter your class"
             name="class_studying"
+            required
           >
             {environment.classes.map((option, idx) => (
               <option key={idx} value={option.value}>
@@ -110,6 +123,7 @@ const RegistrationStudent = (props: RegistrationStudentProps) => {
             placeholder="Enter your email address"
             type="email"
             name="user_email"
+            required
           />
         </div>
       </div>
@@ -127,15 +141,21 @@ const RegistrationStudent = (props: RegistrationStudentProps) => {
                 +91
               </span>
               <input
-                ref={register}
+                ref={register({ required: true, minLength: 10, maxLength: 10 })}
                 name="phone"
                 type="number"
                 className="form-control"
                 placeholder="Enter your phone number"
-                aria-label="Username"
                 aria-describedby="basic-addon1"
+                required
               />
             </div>
+            {errors.phone &&
+              (errors.phone.type || errors.phone.type === 'maxLength') && (
+                <small className="red_text">
+                  Invalid Mobile Number, must contain 10 numbers{' '}
+                </small>
+              )}
           </div>
         </div>
       </div>
@@ -168,14 +188,32 @@ const RegistrationStudent = (props: RegistrationStudentProps) => {
           </Label>
         </div>
         <div className="tb_cell">
-          <input
-            ref={register}
-            className="form-control"
-            type="password"
-            placeholder="Enter your password"
-            name="password"
-            autoComplete="off"
-          />
+          <div>
+            <div>
+              <input
+                ref={register({
+                  pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+                })}
+                className="form-control"
+                type="password"
+                placeholder="Enter your password"
+                name="password"
+                autoComplete="off"
+                required
+              />
+            </div>
+            {!errors.password && (
+              <small>
+                8 characters, atleast 1 letter,1 number & 1 special character
+              </small>
+            )}
+            {errors.password && errors.password.type === 'pattern' && (
+              <small className="red_text">
+                Minimum eight characters, at least one letter, one number and
+                one special character
+              </small>
+            )}
+          </div>
         </div>
       </div>
       <div className="tb_row">

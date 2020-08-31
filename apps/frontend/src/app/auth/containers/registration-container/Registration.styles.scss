@@ -2,17 +2,22 @@
   display: flex;
   overflow: hidden;
 }
-.main_ctn_2 {
-  width: 40vw;
-}
 
 .main_ctn_1 {
   width: 60vw;
   display: flex;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.main_ctn_2 {
+  width: 40vw;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .student_image {
   object-fit: cover;
-  width: 40.01vw;
+  width: 40.02vw;
   height: 100vh;
 }

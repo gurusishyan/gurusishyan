@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
-
-import './registration-teacher.scss';
-import { Link } from 'react-router-dom';
+import React, { useState, Fragment } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
+import './registration-teacher.scss';
 import {
   CustomButton,
   Label,
@@ -16,6 +15,7 @@ import { requestingTeacherRegistration } from '../../../store/registration-store
 import { TeacherDetails } from '@gurusishyan/request-interface';
 import { environment } from 'apps/frontend/src/environments/environment';
 import { RootState } from '../../../store/root-reducer';
+import { errorToast } from '../../../utils/toast';
 
 /* eslint-disable-next-line */
 export interface RegistrationTeacherProps {
@@ -23,6 +23,7 @@ export interface RegistrationTeacherProps {
 }
 
 export const RegistrationTeacher = (props: RegistrationTeacherProps) => {
+  const historyParams = useHistory();
   const [classes, setClasses] = useState([]);
   const loaderState = useSelector((state: RootState) => state.loader.isLoading);
   const [subjects, setSubjects] = useState([]);
@@ -30,7 +31,7 @@ export const RegistrationTeacher = (props: RegistrationTeacherProps) => {
   const [board_of_education, set_board_of_education] = useState([]);
 
   const dispatch = useDispatch();
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, errors } = useForm();
 
   const onSubmit = (data: TeacherDetails) => {
     data['subjects_handled'] = valuesFromDropDown(subjects);
@@ -38,11 +39,25 @@ export const RegistrationTeacher = (props: RegistrationTeacherProps) => {
     data['teaching_sector'] = sector['value'];
     data['board_of_education_teacher'] = valuesFromDropDown(board_of_education);
     data['teacher'] = true;
-    dispatch(requestingTeacherRegistration(data));
+    if (
+      !data['subjects_handled'] ||
+      !data['classes_handled'] ||
+      !data['teaching_sector'] ||
+      !data['board_of_education_teacher']
+    ) {
+      errorToast('Please fill in the required fields');
+    } else {
+      console.log(data);
+      dispatch(requestingTeacherRegistration(data, historyParams));
+    }
   };
 
-  const valuesFromDropDown = (values_array) =>
-    values_array.map((selected_values) => selected_values.value);
+  const valuesFromDropDown = (values_array) => {
+    console.log(values_array);
+    if (values_array) {
+      return values_array.map((selected_values) => selected_values.value);
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="student_teacher_form">
@@ -80,14 +95,16 @@ export const RegistrationTeacher = (props: RegistrationTeacherProps) => {
             {' '}
             Classes Handled <span className="tomato">*</span>
           </Label>
-          <DropdownComponent
-            isMulti={true}
-            closeMenuOnSelect={false}
-            selected_options={classes}
-            onChange={setClasses}
-            options={environment.classes}
-            placeholder="Enter your classes"
-          />
+          <Fragment>
+            <DropdownComponent
+              isMulti={true}
+              closeMenuOnSelect={false}
+              selected_options={classes}
+              onChange={setClasses}
+              options={environment.classes}
+              placeholder="Enter your classes"
+            />
+          </Fragment>
         </div>
         <div className="tb_cell">
           <Label>
@@ -142,13 +159,23 @@ export const RegistrationTeacher = (props: RegistrationTeacherProps) => {
             {' '}
             Username <span className="tomato">*</span>
           </Label>
-          <input
-            ref={register}
-            className="form-control "
-            placeholder="Enter your name"
-            type="text"
-            name="user_name"
-          />
+          <div>
+            <div>
+              <input
+                ref={register({ minLength: 4 })}
+                className="form-control "
+                placeholder="Enter your name"
+                type="text"
+                name="user_name"
+                required
+              />
+            </div>
+            {errors.user_name && errors.user_name.type === 'minLength' && (
+              <small className="red_text">
+                Username must be atleast 4 characters long
+              </small>
+            )}
+          </div>
         </div>
         <div className="tb_cell input_width_teacher">
           <Label>
@@ -161,6 +188,7 @@ export const RegistrationTeacher = (props: RegistrationTeacherProps) => {
             placeholder="Enter your email address"
             type="email"
             name="user_email"
+            required
           />
         </div>
       </div>
@@ -177,15 +205,18 @@ export const RegistrationTeacher = (props: RegistrationTeacherProps) => {
                 +91
               </span>
               <input
-                ref={register}
+                ref={register({ required: true, minLength: 10, maxLength: 10 })}
                 name="phone"
                 type="number"
                 className="form-control"
                 placeholder="Enter your phone number"
-                aria-label="Username"
                 aria-describedby="basic-addon1"
               />
             </div>
+            {errors.phone &&
+              (errors.phone.type || errors.phone.type === 'maxLength') && (
+                <small className="red_text">Invalid Mobile Number</small>
+              )}
           </div>
         </div>
         <div className="tb_cell  input_width_teacher">
@@ -193,14 +224,33 @@ export const RegistrationTeacher = (props: RegistrationTeacherProps) => {
             {' '}
             Password <span className="tomato">*</span>
           </Label>
-          <input
-            ref={register}
-            className="form-control"
-            type="password"
-            placeholder="Enter your password"
-            name="password"
-            autoComplete="off"
-          />
+          <div>
+            <div>
+              <input
+                ref={register({
+                  pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+                })}
+                className="form-control"
+                type="password"
+                placeholder="Enter your password"
+                name="password"
+                autoComplete="off"
+                required
+              />
+            </div>
+            {!errors.password && (
+              <small>
+                {' '}
+                8 characters, atleast 1 letter,1 number & 1 special character
+              </small>
+            )}
+            {errors.password && errors.password.type === 'pattern' && (
+              <small className="red_text">
+                Minimum eight characters, at least one letter, one number and
+                one special character
+              </small>
+            )}
+          </div>
         </div>
       </div>
 

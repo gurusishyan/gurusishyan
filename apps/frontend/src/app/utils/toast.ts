@@ -9,5 +9,9 @@ export const errorToast = (message: string) => {
 };
 
 export const successToast = (message: string) => {
-  return toast.success(message);
+  return toast.success(message, {
+    className: 'snackbarClass',
+    position: 'bottom-center',
+    progressClassName: 'snackbarProgress',
+  });
 };

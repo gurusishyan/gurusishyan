@@ -3,6 +3,7 @@ import axiosInstance from '../../../utils/api'
 import { AxiosResponse, AxiosError } from 'axios';
 import { StudentDetails } from '@gurusishyan/request-interface'
 import { startLoader, stopLoader } from '../../loader-store/loader.actions';
+import { successToast } from '../../../utils/toast';
 
 export const studentRegistrationRequest = (student_details: StudentDetails) => {
     return {
@@ -26,15 +27,17 @@ export const studentRegistrationFailure = (error) => {
 }
 
 
-export const requestingStudentRegistration = (student_details: StudentDetails) => {
+export const requestingStudentRegistration = (student_details: StudentDetails, history) => {
     return ((dispatch) => {
         dispatch(studentRegistrationRequest(student_details))
         dispatch(startLoader())
         axiosInstance.post('auth/register/student', student_details)
             .then((res: AxiosResponse) => {
                 if (res.data) {
+                    successToast("Registration Successful, Sign in with your email address to continue")
                     dispatch(studentRegistrationSuccess(res.data))
                     dispatch(stopLoader())
+                    history.push('/')
                 }
             })
             .catch((err: AxiosError) => {
