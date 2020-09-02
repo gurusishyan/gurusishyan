@@ -10,4 +10,4 @@ RUN npm install
 
 COPY . .
 
-RUN npm start backend
+RUN npm run build server
