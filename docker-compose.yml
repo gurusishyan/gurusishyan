@@ -1,6 +1,11 @@
 version: '3.1'
 
 services:
+  gurusishyan:
+    build:
+      dockerfile: dockerFile
+      context: .
+      image: 'gurusishyan:0.0.1'
   backend:
     image: 'gurusishyan:0.0.1'
     container_name: gurusishyan_backend_container
