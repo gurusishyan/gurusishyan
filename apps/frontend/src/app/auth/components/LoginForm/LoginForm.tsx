@@ -96,7 +96,7 @@ const LoginForm = () => {
                 ref={register}
                 type="text"
                 name="user_name"
-                placeholder="Username"
+                placeholder="Username or E-mail or Phone number"
                 className="form-control"
                 required
               />

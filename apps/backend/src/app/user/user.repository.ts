@@ -75,7 +75,16 @@ export class UserRepository {
     user_name: string,
     password: string
   ): Promise<IUserSchema> => {
-    return await User.findOne({ user_name, password })
+    return await User.findOne({
+      $or: [
+        {
+          user_name: user_name,
+        },
+        { password },
+        { user_email: user_name },
+        { phone: user_name },
+      ],
+    })
       .then((user) => {
         return user;
       })

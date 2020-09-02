@@ -10,7 +10,7 @@ export class IUserSchema extends mongoose.Document {
   password?: string;
   user_image?: string;
   user_role?: string;
-  phone?: number;
+  phone?: string;
 
   token?: string;
   reset_password_token_exp?: number;
@@ -87,7 +87,7 @@ export const UserEntity = new mongoose.Schema({
     required: false,
   },
   phone: {
-    type: Number,
+    type: String,
     required: false,
   },
   bookmarked_implores: [
