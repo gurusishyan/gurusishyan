@@ -1,6 +1,35 @@
 version: '3.1'
 
 services:
+  backend:
+    image: 'gurusishyan:0.0.1'
+    container_name: gurusishyan_backend_container
+    working_dir: /app/gurusishyan/dist/app/backend
+    environment:
+      - PORT=5000
+      - NODE_NO_WARNINGS=1
+      - DB_URL=mongodb://localhost:27019/gurusishyan?authSource=admin
+      - DB_USERNAME=gurusishyan_db_user
+      - DB_PASSWORD=guru@sishyan@2020
+      - DB_HOST=0.0.0.0
+      - DB_PORT=27019
+      - DATABASE_NAME=gurusishyan
+      - CONFIG_FILE_PATH=/Users/sathya/Documents/gs_acl.json
+      - GOOGLE_CLIENT_ID=279728375283-3dva53gkisu070mi9octebk8fk3hgval.apps.googleusercontent.com
+      - GOOGLE_SECRET=PdZ-xnr9L_jumnl2ECWb5V7u
+      - BASE_DIR_PATH=/home/prem/coding/personal_workspace/gurusishyan/storage
+      - HOST=0.0.0.0
+      - HOMEPAGELINK=http://localhost:4200
+      - RESETLINK=http://localhost:4200/reset-password
+      - SMTP_MAIL_API_KEY=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
+      - RESET_PASSWORD_EMAIL=noreply@gurusishiyan.com
+      - RESET_PASSWORD_HTML_FOLDER=/home/prem/coding/personal_workspace/gurusishyan/apps/backend/src/assets/html/reset-password.html
+    restart: always
+    ports:
+      - '5000:5000'
+    command: ['node', 'main.js']
+    expose:
+      - 5000
   db:
     image: 'mongo:latest'
     container_name: gurusishyan_mongodb_container
