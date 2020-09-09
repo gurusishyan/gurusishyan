@@ -20,15 +20,6 @@ jobs:
                 key: 'dependency-cache-{{checksum "package.json"}}'
                 paths:
                     - ./node_modules
-            - restore_cache: 
-                keys:
-                    - 'v1-dependencies-{{ checksum "package.json" }}'
-                    - v1-dependencies-
-            
-            - save_cache: 
-                paths:
-                  - node_modules
-                key: 'v1-dependencies-{{ checksum "package.json" }}'
             - run: npm run test
             - run: 
                 name: Build Success
@@ -36,7 +27,7 @@ jobs:
                 context:
                     - gurushishyan_build
                 command: |
-                    echo "$DOCKER_PASSWORD" | docker login --username=DOCKER_LOGIN --password-stdin
+                    echo "$DOCKER_PASSWORD" | winpty docker login --username=DOCKER_LOGIN --password-stdin
                     docker build -t gurushishyan/gurushishyan:$CIRCLE_BRANCH
                     --build-arg
                     MACHINE_NAME=gurushishyan-$CIRCLE_BRANCH .
