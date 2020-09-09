@@ -9,7 +9,7 @@ jobs:
                 image: 'circleci/node:8.0'
             -
                 image: 'docker:17.09.1-ce-git'
-        working_directory:
+        working_directory: ~/public
             steps:
                 - checkout
                 - setup_remote_docker
