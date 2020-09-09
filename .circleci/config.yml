@@ -5,30 +5,24 @@ jobs:
         only:
             - develop
         docker:
-            -
-                image: 'circleci/node:8.0'
-            -
-                image: 'docker:17.09.1-ce-git'
+            - image: 'circleci/node:8.0'
+            - image: 'docker:17.09.1-ce-git'
         working_directory: ~/public
         steps:
             - checkout
             - setup_remote_docker
-            - run:
-                name: update-npm
-                command: sudo npm install -g npm@latest
+            - run: sudo npm install -g npm@latest
             - restore_cache:
                 key: 'dependency-cache-{{checksum "package.json"}}'
-            - run:
-                name: install-npm
-                command: npm install
+            - run: npm install
             - save_cache:
                 key: 'dependency-cache-{{checksum "package.json"}}'
                 paths:
                     - ./node_modules
             - restore_cache: 
                 keys:
-                - 'v1-dependencies-{{ checksum "package.json" }}'
-                - v1-dependencies-
+                    - 'v1-dependencies-{{ checksum "package.json" }}'
+                    - v1-dependencies-
             - run: npm cache clear --force
             - run: npm install
             - save_cache: 
