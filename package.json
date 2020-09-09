@@ -65,6 +65,7 @@
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
     "reflect-metadata": "^0.1.13",
+    "strip": "^3.0.0",
     "swagger-ui-express": "^4.1.4",
     "winston": "^3.3.2"
   },
