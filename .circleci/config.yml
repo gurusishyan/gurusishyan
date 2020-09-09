@@ -13,40 +13,30 @@ jobs:
         steps:
             - checkout
             - setup_remote_docker
-            -
-                run:
+            - run:
                 name: update-npm
                 command: sudo npm install -g npm@latest
-            -
-                restore_cache:
+            - restore_cache:
                 key: 'dependency-cache-{{checksum "package.json"}}'
-            -
-                run:
+            - run:
                 name: install-npm
                 command: npm install
-            -
-                save_cache:
+            - save_cache:
                 key: 'dependency-cache-{{checksum "package.json"}}'
                 paths:
                     - ./node_modules
-            -
-                restore_cache: null
+            - restore_cache: 
                 keys:
                 - 'v1-dependencies-{{ checksum "package.json" }}'
                 - v1-dependencies-
-            -
-                run: npm cache clear --force
-            -
-                run: npm install
-            -
-                save_cache: null
+            - run: npm cache clear --force
+            - run: npm install
+            - save_cache: 
                 paths:
-                - node_modules
+                  - node_modules
                 key: 'v1-dependencies-{{ checksum "package.json" }}'
-            -
-                run: npm run test
-            -
-                run: null
+            - run: npm run test
+            - run: 
                 name: Build Success
                 when: on_success
                 command: >
@@ -62,8 +52,7 @@ jobs:
 
                     echo "Docker build made sucessfully!! for
                     <application_name> $CIRCLE_BRANCH"
-            -
-                run: null
+            - run:
                 name: Build Failure
                 when: on_fail
                 command: |
