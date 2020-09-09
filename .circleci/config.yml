@@ -12,7 +12,7 @@ jobs:
             - checkout
             - setup_remote_docker
             - run: sudo npm install -g npm@latest
-            - run: npm cache clear --force
+            # - run: npm cache clear --force
             - restore_cache:
                 key: 'dependency-cache-{{checksum "package.json"}}'
             - run: npm install
