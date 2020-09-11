@@ -1,6 +1,7 @@
 version: 2
 jobs:
     build:
+        context: gurushishyan_build
         branches:
         only:
             - develop
