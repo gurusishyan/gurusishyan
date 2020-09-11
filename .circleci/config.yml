@@ -21,6 +21,13 @@ jobs:
                 paths:
                     - ./node_modules
             - run: npm run test
+            - run:
+                context:
+                    - gurushishyan_build
+                name: Check environment variables
+                command: |
+                     echo ${DOCKER_PASSWORD}
+                     echo ${DOCKER_LOGIN}
             - run: 
                 name: Build Success
                 when: on_success
@@ -28,7 +35,7 @@ jobs:
                     - gurushishyan_build
                 command: |
                     echo "$DOCKER_PASSWORD" "$DOCKER_LOGIN"
-                    echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_LOGIN --password-stdin
+                    echo "$DOCKER_PASSWORD" | docker login -u=$DOCKER_LOGIN --password-stdin
                     docker build -t gurushishyan/gurushishyan:$CIRCLE_BRANCH
                     --build-arg
                     MACHINE_NAME=gurushishyan-$CIRCLE_BRANCH .
