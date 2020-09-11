@@ -1,13 +1,13 @@
 FROM node:alpine
 
-RUN mkdir -p /app/gurusishyan
+RUN mkdir -p /app/gurushishyan
 
-WORKDIR /app/gurusishyan
+WORKDIR /app/gurushishyan
 
 COPY package.json .
 
 RUN npm install
 
 COPY . .
-
+RUN ls -lrt
 RUN npm run build backend
