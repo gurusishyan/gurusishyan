@@ -40,9 +40,7 @@ jobs:
                 command: |
                     echo "$DOCKER_PASSWORD" "$DOCKER_LOGIN"
                     echo "$DOCKER_PASSWORD" | docker login -u=$DOCKER_LOGIN --password-stdin
-                    docker build -t gurushishyan/gurushishyan:$CIRCLE_BRANCH
-                    --build-arg
-                    MACHINE_NAME=gurushishyan-$CIRCLE_BRANCH .
+                    docker build -t gurushishyan/gurushishyan:$CIRCLE_BRANCH --build-arg MACHINE_NAME=gurushishyan-$CIRCLE_BRANCH .
                     docker push gurushishyan/gurushishyan:$CIRCLE_BRANCH
                     echo "Docker build made sucessfully!! for
                     gurushishyan $CIRCLE_BRANCH"
