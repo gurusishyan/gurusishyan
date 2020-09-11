@@ -1,10 +1,13 @@
 version: 2.1
+workflows:
+    gurushishyan_workflows:
+      jobs: 
+        - gurushishyan_build:
+            context:
+                - gurushishyan_build
 jobs:
-    build:
-        context: gurushishyan_build
-        branches:
-        only:
-            - develop
+    gurushishyan_build:
+        
         docker:
             - image: 'circleci/node'
             - image: 'docker'
@@ -48,7 +51,3 @@ jobs:
                 when: on_fail
                 command: |
                     echo "ERROR building gurushishyan $CIRCLE_BRANCH"
-workflows:
-  gurushishyan_workflows:
-    jobs:
-    - build
