@@ -15,6 +15,11 @@ jobs:
             # - run: npm cache clear --force
             - restore_cache:
                 key: 'dependency-cache-{{checksum "package.json"}}'
+                when: on_success
+                command: |
+                     echo "Restoring cache successfull"
+                     echo ${DOCKER_LOGIN}
+                     echo ${DOCKER_PASSWORD}
             - run: npm install
             - save_cache:
                 key: 'dependency-cache-{{checksum "package.json"}}'
