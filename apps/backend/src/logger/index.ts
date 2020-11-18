@@ -29,7 +29,7 @@ const timeStamp = () => {
 var logger = winston.createLogger({
   transports: [
     new winston.transports.File({
-      filename: './logs/gs.log',
+      filename: './logs/app.log',
       level: 'silly',
     }),
   ],
@@ -46,13 +46,13 @@ export const loggerInstance = {
       logger.log(level, message, {
         timeStamp: timeStamp(),
         level,
-        label: label || 'GurusishyanLogger',
+        label: label || 'AppLogger',
       });
     } else {
       logger.log('info', message, {
         timeStamp: timeStamp(),
         level,
-        label: label || 'GurusishyanLogger',
+        label: label || 'AppLogger',
       });
     }
     return;

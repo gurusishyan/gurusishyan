@@ -14,6 +14,7 @@ import { HttpErrorFilter } from './shared/filters/http/http.filter';
 import { LoggerInterceptor } from './shared/interceptors/logger/logger.interceptor';
 import { StaticDataModule } from './static_data/static-data.module';
 import { AuthModule } from './auth/auth.module';
+import { StaticContentModule } from './static-content/static-content.module';
 @Module({
   imports: [
     ImploreModule,
@@ -21,6 +22,7 @@ import { AuthModule } from './auth/auth.module';
     SharedModule,
     StaticDataModule,
     AuthModule,
+    StaticContentModule,
   ],
   controllers: [AppController],
   providers: [
